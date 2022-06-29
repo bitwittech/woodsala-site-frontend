@@ -1,0 +1,9 @@
+.itemSec {
+    padding: 5% 3%;
+}
+
+.cardAction {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}

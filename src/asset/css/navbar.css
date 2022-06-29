@@ -1,0 +1,48 @@
+.nav {
+    color: aliceblue;
+}
+
+.topBox {
+    background-color: rgba(0, 0, 0, 0.849);
+    width: 90px;
+    padding: 0.2% 0%;
+}
+
+.center {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.secondBar {
+    padding: 0.2% 10%;
+    color: #000000;
+    background-color: #fcefef;
+    display: flex;
+    justify-content: space-between;
+}
+
+.secondBar div {
+    font-weight: 500 !important;
+    display: flex;
+    justify-content: center;
+}
+
+.secondBar div p {
+    cursor: pointer;
+}
+
+.secondBar div p:hover {
+    color: rgb(146, 59, 38);
+}
+
+.main-1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1% 0%;
+}
+
+.main-2 {
+    padding: 1% 2%;
+}

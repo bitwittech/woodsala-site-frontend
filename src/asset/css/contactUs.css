@@ -1,0 +1,37 @@
+.contactBanner {
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(rgba(250, 243, 230, 0.644), rgba(250, 243, 230, 0.678)), url('../images/cart/cartHead.png');
+    background-size: cover;
+    height: fit-content;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 7% 0% !important;
+    text-align: center;
+    font-weight: 500 !important;
+    color: #88250E;
+    font-family: 'Poppins', sans-serif;
+}
+
+.formContainer {
+    margin: 5% auto;
+    padding: 3% 4%;
+    width: 90% !important;
+}
+
+.sideBox {
+    padding: 2%;
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+}
+
+.subheadings {
+    display: flex;
+    align-items: center;
+    padding-top: 1%;
+}
+
+button {
+    font-weight: 400 !important;
+}

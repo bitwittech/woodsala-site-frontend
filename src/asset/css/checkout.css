@@ -1,0 +1,77 @@
+.cartBanner {
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(rgba(250, 243, 230, 0.644), rgba(250, 243, 230, 0.678)), url('../images/cart/cartHead.png');
+    background-size: cover;
+    height: fit-content;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 7% 0% !important;
+    text-align: center;
+    font-weight: 500 !important;
+    color: #88250E;
+    font-family: 'Poppins', sans-serif;
+}
+
+.mainSec {
+    padding: 5% 3%;
+}
+
+.couponBox {
+    margin-top: 2%;
+    padding: 1% 3%;
+    background-color: rgba(245, 245, 245, 0.514);
+}
+
+.couponBox .css-k50mv2-MuiTypography-root {
+    font-weight: 400 !important;
+}
+
+.applyBox {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.billingDetails {
+    margin-top: 2%;
+    border: 1px solid rgba(136, 136, 136, 0.329);
+    padding: 1%;
+}
+
+.yourOrder {
+    margin-top: 2%;
+    padding: 1%;
+}
+
+.productBox {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    padding: 3% 3%;
+}
+
+.productBox img {
+    width: 25%;
+}
+
+.text .css-1g4dizw-MuiTypography-root {
+    font-weight: 500 !important;
+}
+
+.orderSummary {
+    margin-top: 2%;
+    padding: 3% 5%;
+    border: 1px solid rgba(136, 136, 136, 0.329);
+}
+
+.payMethod {
+    margin-top: 5%;
+    border: 1px solid rgba(136, 136, 136, 0.329);
+    padding: 5%;
+}
+
+.orderButton {
+    padding: 3% 2%;
+}

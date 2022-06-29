@@ -1,0 +1,42 @@
+.footerContainer {
+    margin-top: 5%;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(rgba(247, 198, 142, 0.377), rgba(250, 208, 150, 0.384)), url('../images/footer/footerEnd.jpg');
+    background-size: cover;
+    height: fit-content;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.footerContainer img {
+    width: -webkit-fill-available;
+}
+
+.footerBottom {
+    background-color: #206974;
+    color: aliceblue;
+    text-align: center;
+    padding: 0.5%;
+}
+
+.linkContainer {
+    padding: 2% 2% 3% 2%;
+    justify-content: center;
+}
+
+.socialIcons {
+    padding: 2%;
+    align-items: center;
+}
+
+.socialIcons img {
+    width: auto;
+}
+
+@media screen and (max-width :800px) {
+    .linkContainer {
+        text-align: center !important;
+        row-gap: 25px !important;
+    }
+}

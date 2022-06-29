@@ -27,7 +27,7 @@ export default function ContactUs() {
           <Typography variant="h6">Leave A Message</Typography>
         </Grid>
 
-        <Grid xs={12} md={8} item className="form">
+        <Grid xs={12} md={7.5} item className="form">
           <form>
             <Grid
               container

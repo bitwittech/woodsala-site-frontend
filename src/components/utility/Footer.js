@@ -24,10 +24,10 @@ export default function Footer() {
           <Grid container className="linkContainer">
             <Grid item xs={12} md={2.5}>
               <Stack>
-                <Typography variant="h6">Relations</Typography>
-                <Typography variant="body2">Bulk Orders</Typography>
-                <Typography variant="body2">Bespoke Furniture </Typography>
-                <Typography variant="body2">
+                <Typography variant="h5">Relations</Typography>
+                <Typography variant="h6">Bulk Orders</Typography>
+                <Typography variant="h6">Bespoke Furniture </Typography>
+                <Typography variant="h6">
                   Architects/interior/Sourcing{" "}
                 </Typography>
               </Stack>
@@ -35,34 +35,34 @@ export default function Footer() {
             <Grid item xs={12} md={2.5}>
               <Stack>
                 <Typography variant="h6">Reviews</Typography>
-                <Typography variant="body2">Google Review </Typography>
-                <Typography variant="body2">Website Reviews </Typography>
+                <Typography variant="h6">Google Review </Typography>
+                <Typography variant="h6">Website Reviews </Typography>
               </Stack>
             </Grid>
             <Grid item xs={12} md={2.5}>
               <Stack>
                 <Typography variant="h6">Policy</Typography>
-                <Typography variant="body2">Assembly Services</Typography>
-                <Typography variant="body2">Refund/Exchange </Typography>
-                <Typography variant="body2">Privacy Policy</Typography>
-                <Typography variant="body2">Terms of Service</Typography>
-                <Typography variant="body2">Warranty</Typography>
+                <Typography variant="h6">Assembly Services</Typography>
+                <Typography variant="h6">Refund/Exchange </Typography>
+                <Typography variant="h6">Privacy Policy</Typography>
+                <Typography variant="h6">Terms of Service</Typography>
+                <Typography variant="h6">Warranty</Typography>
               </Stack>
             </Grid>
             <Grid item xs={12} md={2.5}>
               <Stack>
                 <Typography variant="h6">About Us</Typography>
-                <Typography variant="body2">Company</Typography>
-                <Typography variant="body2">Videos</Typography>
-                <Typography variant="body2">Blogs</Typography>
+                <Typography variant="h6">Company</Typography>
+                <Typography variant="h6">Videos</Typography>
+                <Typography variant="h6">Blogs</Typography>
               </Stack>
               <br></br>
               <Stack>
-                <Typography variant="body2">Whatsapp: +91 950658944</Typography>
-                <Typography variant="body2">
+                <Typography variant="h6">Whatsapp: +91 950658944</Typography>
+                <Typography variant="h6">
                   Toll Free: +91 8587918978
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="h6">
                   Email: sales@woodsala.com
                 </Typography>
               </Stack>
@@ -85,7 +85,7 @@ export default function Footer() {
         {/* links Ends */}
         {/* bottom */}
         <Grid item xs={12} className="footerBottom">
-          <Typography variant="body2">
+          <Typography variant="h6">
             DESIGN BY Bitwit- © 2022 ALL RIGHTS RESERVED.
           </Typography>
         </Grid>

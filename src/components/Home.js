@@ -98,7 +98,7 @@ export default function Home() {
     },
   ];
 
-  let content = [banner, banner];
+  let content = [banner];
 
   let customer = [
     {
@@ -212,6 +212,8 @@ export default function Home() {
       </Grid>
 
       {/* Ends Banner  */}
+
+    
 
       {/* Shop by room  */}
 
@@ -347,7 +349,7 @@ export default function Home() {
               <img className="image" src={perfaction} alt="living" />
               <Typography className="sub-heading" variant="h5">
                 Perfection by Hand
-                <Typography variant="body2">
+                <Typography variant="h6">
                   Not only it takes years to learn, but Lots of efforts to
                   achieve the quality and precision.
                 </Typography>
@@ -357,7 +359,7 @@ export default function Home() {
               <img className="image" src={delivery} alt="WFH" />
               <Typography className="sub-heading" variant="h5">
                 Safe Delivery Promise
-                <Typography variant="body2">
+                <Typography variant="h6">
                   We have done countless test to achieve 98% Safe Delivery
                   without any damage.{" "}
                 </Typography>
@@ -367,7 +369,7 @@ export default function Home() {
               <img className="image" src={quality} alt="bedroom" />
               <Typography className="sub-heading" variant="h5">
                 Quality Traditional
-                <Typography variant="body2">
+                <Typography variant="h6">
                   We Focus on improving on daily basis. Learning from Good & Bad
                   experience to enhance our offering and quality.
                 </Typography>
@@ -377,7 +379,7 @@ export default function Home() {
               <img className="image" src={woodFurniture} alt="bedroom" />
               <Typography className="sub-heading" variant="h5">
                 Furniture At A Price
-                <Typography variant="body2">
+                <Typography variant="h6">
                   In this competitive age, Getting a Piece of furniture at Great
                   price is easy and good quality.
                 </Typography>
@@ -411,7 +413,7 @@ export default function Home() {
                         />
                       </CardActionArea>
                       <CardActions className="center-TC">
-                        <Typography sx={{ float: "start" }} variant="h6">
+                        <Typography sx={{ float: "start" }} className = "sub-heading" variant="h6">
                           {data.name}
                         </Typography>
                         <Button
@@ -468,10 +470,12 @@ export default function Home() {
             {content.map((article, index) => (
               <div
                 key={index}
+                className = "sliderBanner"
                 style={{
                   backgroundImage: `url('${article}')`,
                   backgroundSize: "100vw 100%",
                   backgroundRepeat: "no-repeat",
+                  height : "30rem",
                   display: "flex",
                   justifyContent: "center",
                 }}
@@ -483,14 +487,14 @@ export default function Home() {
                         Warranty against manufacturing defects or damage during
                         transit
                       </Typography>
-                      <Typography variant="h4" className="banner1Text2">
+                      <Typography variant="h5" className="banner1Text2">
                         Transit Warranty
                       </Typography>
                       <Button
+                      size = "medium"
+                      variant = "outlined"
                         endIcon={<ArrowForwardIcon />}
-                        sx={{ margin: "5px" }}
-                        small = {true}
-                        variant="outlined"
+                        sx={{ margin: "5px 0px" }}
                       >
                         Shop Now
                       </Button>
@@ -505,12 +509,11 @@ export default function Home() {
       {/* banner Slider EDNs */}
 
       {/* Let Customers Speak for us */}
-      <Grid container className="slider">
+      <Grid container className = "customer">
         <Grid
           item
           xs={12}
-          className="heading underline video-text"
-          variant="h4"
+          className=" video-text"
         >
           <Typography className="heading underline" variant="h4">
             Customers Testimonial
@@ -548,7 +551,7 @@ export default function Home() {
               );
             })}
           </Carousel>
-          )
+          
         </Grid>
       </Grid>
 
@@ -608,7 +611,7 @@ export default function Home() {
         <Grid item xs={12} md={7} className="FJ-items">
           <img className="image" src={FJ3} alt="FJ_Image" />
           <Typography variant="caption">May, 28</Typography>
-          <Typography variant="h6">
+          <Typography variant="h5">
             A Complete Room-Wise Interior Furniture Design Guide
           </Typography>
         </Grid>
@@ -617,14 +620,14 @@ export default function Home() {
             <Grid item xs={12}>
               <img src={FJ2} className="image" alt="FJ_Image" />
               <Typography variant="caption">May, 28</Typography>
-              <Typography variant="h6">
+              <Typography variant="h5">
                 Creative Ways to Design a Study Table for your Kids
               </Typography>
             </Grid>
             <Grid item xs={12}>
               <img src={FJ1} className="image" alt="FJ_Image" />
               <Typography variant="caption">May, 28</Typography>
-              <Typography variant="h6">
+              <Typography variant="h5">
                 The Ultimate Guide to Installing Wooden Kitchen Cabinets
               </Typography>
             </Grid>
@@ -655,7 +658,7 @@ export default function Home() {
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h6">
+              <Typography variant="h5">
                 WHY BUY YOUR WOODEN FURNITURE ONLINE?
               </Typography>
               <Typography variant="body1">
@@ -673,7 +676,7 @@ export default function Home() {
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h6">WHAT YOU CAN EXPECT FROM US</Typography>
+              <Typography variant="h5">WHAT YOU CAN EXPECT FROM US</Typography>
               <Typography variant="body1">
                 In one word – quality. Outstanding design, impeccable
                 craftsmanship and absolutely professional service, if you want
@@ -684,7 +687,7 @@ export default function Home() {
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h6">
+              <Typography variant="h5">
                 CHECK OUT OUR ENTIRE CATALOGUE – RIGHT NOW!
               </Typography>
               <Typography variant="body1">

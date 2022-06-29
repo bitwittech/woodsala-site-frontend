@@ -107,13 +107,13 @@ export default function Navbar(props) {
               />
             </Grid>
             <Grid item xs={12} md={3} className="center">
-              <IconButton color="primary" size="small">
+              <IconButton color="primary" >
                 <PersonOutlineOutlinedIcon />
               </IconButton>
-              <IconButton color="primary" size="small">
+              <IconButton color="primary" >
                 <FavoriteBorderOutlinedIcon />
               </IconButton>
-              <IconButton color="primary" onClick = {()=>{props.history('/cart')}} size="small">
+              <IconButton color="primary" onClick = {()=>{props.history('/cart')}} >
                 {window.location.pathname === '/cart' ? <ShoppingCartIcon/>  : <ShoppingCartOutlinedIcon />}
               </IconButton>
             </Grid>

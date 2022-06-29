@@ -26,10 +26,12 @@
     font-weight: 500 !important;
     display: flex;
     justify-content: center;
+    flex-flow: wrap;
 }
 
-.secondBar div p {
+.secondBar p {
     cursor: pointer;
+    font-size: 1rem;
 }
 
 .secondBar div p:hover {
@@ -45,4 +47,8 @@
 
 .main-2 {
     padding: 1% 2%;
+}
+
+.main-2 a {
+    font-size: 1.2rem;
 }

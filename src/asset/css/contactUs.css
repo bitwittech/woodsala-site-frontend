@@ -16,6 +16,7 @@
 .formContainer {
     margin: 5% auto;
     padding: 3% 4%;
+    gap: 30px;
     width: 90% !important;
 }
 
@@ -34,4 +35,11 @@
 
 button {
     font-weight: 400 !important;
+}
+
+@media screen and (max-width:800px) {
+    .sideBox {
+        margin-top: 5%;
+        padding: 5% !important;
+    }
 }

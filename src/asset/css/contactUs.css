@@ -22,7 +22,7 @@
 
 .sideBox {
     padding: 2%;
-    background-color: black;
+    background-color: #923e17;
     color: white;
     border-radius: 20px;
 }
@@ -35,6 +35,10 @@
 
 button {
     font-weight: 400 !important;
+}
+
+.sideBox h6 {
+    font-weight: 500;
 }
 
 @media screen and (max-width:800px) {

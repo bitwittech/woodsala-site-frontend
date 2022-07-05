@@ -52,3 +52,38 @@
 .main-2 a {
     font-size: 1.2rem;
 }
+
+.hamburgerContainer {
+    display: none;
+    padding: 1% 2%;
+}
+
+.hamburgerPanel a {
+    font-size: 1.5rem;
+    justify-content: flex-start;
+    padding: 0% 5%;
+    gap: 100px;
+    min-width: 100% !important;
+}
+
+.hamburgerPanel a:hover {
+    background-color: #96363618;
+}
+
+.hamburgerPanel img {
+    width: 60px;
+    border-radius: 20px;
+}
+
+@media screen and (max-width:600px) {
+    .main-2 {
+        display: none;
+    }
+    .hamburgerContainer {
+        display: flex;
+    }
+}
+
+.hamburgerPanel .css-4t3x6l-MuiPaper-root-MuiDrawer-paper {
+    width: 100% !important;
+}

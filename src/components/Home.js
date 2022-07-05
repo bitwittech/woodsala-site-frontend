@@ -219,7 +219,7 @@ export default function Home() {
 
       <Grid container className="SBR">
         <Grid item xs={12}>
-          <Typography className="heading" variant="h4">
+          <Typography className="heading2" variant="h4">
             Shop By Room
           </Typography>
         </Grid>
@@ -442,10 +442,10 @@ export default function Home() {
         <Grid
           item
           xs={12}
-          className="heading underline video-text"
+          className="video-text"
           variant="h4"
         >
-          <Typography className="heading underline" variant="h4">
+          <Typography className="heading" variant="h4">
             Watch This Video
           </Typography>
         </Grid>

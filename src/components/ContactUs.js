@@ -109,8 +109,8 @@ export default function ContactUs() {
 
         <Grid xs={12} md={4} item className="sideBox">
           <Stack>
-            <Typography variant="h6">Let's start a conversation.</Typography>
-            <Typography variant="body2">
+            <Typography  variant="h6">Let's start a conversation.</Typography>
+            <Typography variant="body1">
               Team Woodsala is always a Message away! Please let us know for any
               Query! For us Customer Satisfaction is Top Most Priority & That
               Commitment is shown by Our Customer Service!!!
@@ -119,7 +119,7 @@ export default function ContactUs() {
               <HomeIcon />
               <Typography variant="h6">Address</Typography>
             </Box>
-            <Typography variant="body2">
+            <Typography variant="body1">
               G-2, G.S. Appartment, Near Sunshine Honda Showroom, Civil Lines,
               Hawa Sadak, Jaipur.
             </Typography>
@@ -127,12 +127,12 @@ export default function ContactUs() {
               <EmailIcon />
               <Typography variant="h6">Email</Typography>
             </Box>
-            <Typography variant="body2">sales@woodsala.com</Typography>
+            <Typography variant="body1">sales@woodsala.com</Typography>
             <Box className="subheadings">
               <CallRoundedIcon />
               <Typography variant="h6">Have Any Questions?</Typography>
             </Box>
-            <Typography variant="body2">
+            <Typography variant="body1">
               +91-8587918978 (10:00 AM to 6:00 PM)
             </Typography>
           </Stack>

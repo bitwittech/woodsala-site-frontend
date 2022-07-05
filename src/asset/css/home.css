@@ -60,9 +60,27 @@ html {
 }
 
 .heading {
+    position: relative;
     font-weight: 400 !important;
     padding: 3% 2%;
     font-size: 3rem !important;
+}
+
+.heading2 {
+    text-align: center;
+    position: relative;
+    font-weight: 400 !important;
+    padding: 3% 2%;
+    font-size: 3rem !important;
+}
+
+.heading::after {
+    content: "";
+    display: block;
+    width: calc(80vw - 60%);
+    position: absolute;
+    top: 80%;
+    border-bottom: 2px solid #883c29;
 }
 
 .sub-heading {
@@ -83,11 +101,12 @@ html {
     width: -webkit-fill-available;
 }
 
-.underline {
+
+/* .underline {
     text-underline-position: under;
     text-decoration: underline;
     text-decoration-color: #733829a3;
-}
+} */
 
 .service {
     background-color: #FAF3E6;
@@ -293,6 +312,15 @@ html {
     }
     .SBF {
         padding: 5% 3% !important;
+    }
+    .heading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .heading::after {
+        width: calc(80vw - 40%);
+        top: 90%;
     }
 }
 

@@ -205,7 +205,7 @@ export default function Home() {
             We bet you can't find an identical piece, <br></br> any where in the
             world
           </Typography>
-          <Button sx={{ margin: "5px" }} small = {true} variant="outlined">
+          <Button sx={{ margin: "5px" }} small = {"true"} variant="outlined">
             Shop Now
           </Button>
         </Grid>
@@ -394,21 +394,19 @@ export default function Home() {
             </Grid>
             <Grid item xs={12} className="TC">
               <Carousel
-                dotListClass="custom-dot-list-style"
                 keyBoardControl={true}
-                autoPlaySpeed={1000}
                 ssr={true}
                 responsive={responsive_TC}
               >
                 {items.map((data, i) => {
                   return (
-                    <Card className="card" sx={{ maxWidth: 300, boxShadow: 0 }}>
+                    <Card key = {i} className="card" sx={{ maxWidth: 300, boxShadow: 0 }}>
                       <CardActionArea>
                         <CardMedia
                           className="cardMedia"
                           component="img"
                           height={200}
-                          image={Object.values(data.image)}
+                          image={JSON.stringify(Object.values(data.image))}
                           alt="green iguana"
                         />
                       </CardActionArea>
@@ -529,7 +527,7 @@ export default function Home() {
           >
             {customer.map((article, index) => {
               return (
-                <Card className="card" sx={{ maxWidth: 400, boxShadow: 3 }}>
+                <Card key = {index} className="card" sx={{ maxWidth: 400, boxShadow: 3 }}>
                   <CardActionArea>
                     <CardMedia
                       className="cardMedia"
@@ -575,7 +573,7 @@ export default function Home() {
           >
             {instaPost.map((article, index) => {
               return (
-                <Card className="card" sx={{ maxWidth: 200 }}>
+                <Card key = {index} className="card" sx={{ maxWidth: 200 }}>
                   <CardActionArea>
                     <CardMedia
                       className="cardMedia"

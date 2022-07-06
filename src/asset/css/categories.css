@@ -1,9 +1,56 @@
-.itemSec {
-    padding: 5% 3%;
+.subInfo {
+    padding: 3% 10%;
 }
 
-.cardAction {
+.subCatContainer {
+    padding: 0% 20% 3% 20%;
+}
+
+.card {
+    padding: 10%;
+}
+
+.filters {
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
+    flex-direction: column !important;
+    padding: 1%;
+    margin-top: 2%;
+}
+
+.productContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0% 1%;
+    margin-top: 2%;
+}
+
+.innerProductWrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.productCard {
+    padding: 1%;
+}
+
+.productCard img {
+    width: 100%;
+}
+
+.hamFilterPanel {
+    display: none;
+}
+
+@media screen and (max-width: 800px) {
+    .subCatContainer {
+        padding: 0% 10% 3% 10%;
+    }
+    .hamFilterPanel {
+        display: block;
+    }
+    .showFilters {
+        display: none;
+    }
 }

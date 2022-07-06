@@ -23,7 +23,7 @@ export default function ContactUs() {
 
       {/* Main Section */}
       <Grid container className="formContainer" sx={{ boxShadow: 2 }}>
-        <Grid xs={12}>
+        <Grid item xs={12}>
           <Typography variant="h6">Leave A Message</Typography>
         </Grid>
 
@@ -144,6 +144,7 @@ export default function ContactUs() {
       <Grid container>
         <Grid item xs={12}>
           <iframe
+          frameBorder="0"
             src="https://www.google.com/maps/embed?pb=!1m26!1m12!1m3!1d1832211.5585405184!2d72.71205862842459!3d26.24419060339314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m11!3e6!4m3!3m2!1d26.461175599999997!2d74.62833119999999!4m5!1s0x39418b7695555555%3A0xb91d331a8528cdb8!2swoodsala!3m2!1d26.2320302!2d73.0333385!5e0!3m2!1sen!2sin!4v1656327635819!5m2!1sen!2sin"
             width={"100%"}
             height={450}

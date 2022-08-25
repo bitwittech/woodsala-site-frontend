@@ -145,8 +145,10 @@ export default function Categories() {
           <Carousel keyBoardControl={true} ssr={true} responsive={responsive}>
             {items.map((item, index) => {
               return (
-                <Box key={index} className="card">
-                  <img src={item.image} alt={index} />
+                <Box key={index} sx={{
+                  padding: "10%",
+                }} className="card ">
+                  <img src={item.image} alt={index}  />
                   <Typography
                     sx={{
                       fontSize: "1.2rem",

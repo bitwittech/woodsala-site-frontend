@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   AppBar,
   Grid,
@@ -41,14 +41,28 @@ import exclusive from "../../asset/images/hamburger/exclusive.png";
 // css
 import "../../asset/css/navbar.css";
 
+// context 
+import {LogBox} from '../../App.js'
+
 export default function Navbar(props) {
   const [Ham, setHam] = useState(false);
 
-  const navBarComponent = ["/", "/login"];
+  //context 
+  const modelBox = useContext(LogBox);
+
+  const navBarComponent = ["/", "/checkout"];
 
   const handleChange = (e, newVal) => {
     props.history(newVal);
   };
+
+  const handleLog = ()=>{
+    console.log(modelBox)
+    modelBox.setLog({
+      open : true,
+      type : 'signUp'
+    })
+  }
 
   return (
     <>
@@ -265,7 +279,7 @@ export default function Navbar(props) {
             </Grid>
             <Grid item xs={12} md={3} className="center">
               <IconButton color="primary">
-                <PersonOutlineOutlinedIcon />
+                <PersonOutlineOutlinedIcon onClick = {handleLog} />
               </IconButton>
               <IconButton color="primary">
                 <FavoriteBorderOutlinedIcon />

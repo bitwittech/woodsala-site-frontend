@@ -1,0 +1,13 @@
+hr {
+    margin-top: 10px;
+    border-color: rgba(226, 226, 226, 0.356);
+}
+
+.formBox {
+    padding: 5%;
+}
+
+.posterImage {
+    height: 100%;
+    width: 100%;
+}

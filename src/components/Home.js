@@ -406,7 +406,7 @@ export default function Home() {
                           className="cardMedia"
                           component="img"
                           height={200}
-                          image={JSON.stringify(Object.values(data.image))}
+                          image={Object.values(data.image)}
                           alt="green iguana"
                         />
                       </CardActionArea>

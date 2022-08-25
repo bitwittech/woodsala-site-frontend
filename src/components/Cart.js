@@ -147,6 +147,7 @@ const Cart = (props) => {
           getRowHeight={() => 100}
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
+          disableColumnMenu
           components={{
             Pagination: CustomPagination,
           }}

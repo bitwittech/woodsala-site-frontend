@@ -42,13 +42,14 @@ import exclusive from "../../asset/images/hamburger/exclusive.png";
 import "../../asset/css/navbar.css";
 
 // context 
-import {LogBox} from '../../App.js'
+import {LogBox, Auth} from '../../App.js'
 
 export default function Navbar(props) {
   const [Ham, setHam] = useState(false);
 
   //context 
   const modelBox = useContext(LogBox);
+  const auth = useContext(Auth);
 
   const navBarComponent = ["/", "/checkout"];
 
@@ -57,10 +58,10 @@ export default function Navbar(props) {
   };
 
   const handleLog = ()=>{
-    console.log(modelBox)
+    console.log(auth.cred )
     modelBox.setLog({
       open : true,
-      type : 'signUp'
+      type : 'logIn'
     })
   }
 

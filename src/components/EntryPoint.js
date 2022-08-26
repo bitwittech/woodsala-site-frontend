@@ -1,15 +1,25 @@
 import React, { useContext, useState } from 'react';
 import Backdrop from '@mui/material/Backdrop';
-import { Box, Modal, Fade, Grid, TextField, Typography, Button, FormControl,
-InputAdornment,
-IconButton
- } from '@mui/material';
+import {
+    Box,
+    Modal,
+    Fade,
+    Grid,
+    TextField,
+    Typography,
+    Button,
+    FormControl,
+    InputAdornment,
+    IconButton,
+    CircularProgress
+
+} from '@mui/material';
 
 // image 
 import sidePic from '../asset/images/logBox/sidePicLog.jpg'
 
 // context 
-import { LogBox } from '../App.js'
+import { LogBox, Notify, Auth } from '../App.js'
 
 // css 
 import '../asset/css/entrypoint.css'
@@ -18,29 +28,215 @@ import '../asset/css/entrypoint.css'
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
+// services 
+import { register, login } from '../service/service.js'
+
+
+export default function EntryPoint() {
+ // context
+ const modelState = useContext(LogBox);
+ const notification = useContext(Notify);
+ const auth = useContext(Auth);
+
+
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 700,
+    width: modelState.type === 'signUp' ? 800 : 700,
     bgcolor: 'background.paper',
     boxShadow: 24,
 
 };
 
-export default function EntryPoint() {
-
-    // context
-    const modelState = useContext(LogBox);
-
-    // password visibility 
-    const [visible,setVisible] = useState(false);
-
-    const handleClose = () => modelState.setLog({
-        open: false,
-        type: undefined
+   
+    // controller state 
+    const [controller, setController] = useState({
+        visible: false,
+        loading: false
     });
+
+    // data state
+    const [data, setData] = useState({
+        username: '',
+        mobile: '',
+        email: '',
+        password: '',
+        repassword: ''
+    })
+
+    // error state
+    const [error, setError] = useState({
+        username: false,
+        mobile: false,
+        email: false,
+        password: false,
+        repassword: false
+    })
+
+    const handleClose = () => {
+        modelState.setLog({
+            open: false,
+            type: undefined
+        })
+
+        setData({
+            username: '',
+            mobile: '',
+            email: '',
+            password: '',
+            repassword: ''
+        })
+
+    };
+
+    // validation
+    const handleValue = (e) => {
+
+        console.log(e.target.name)
+
+        const phoneCheck = new RegExp(/^\d{10}$/);
+        const passwordCheck = new RegExp(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/);
+
+        switch (e.target.name) {
+            case 'mobile':
+                if (phoneCheck.test(e.target.value)) {
+                    setData({ ...data, [e.target.name]: e.target.value })
+                    setError({ ...error, [e.target.name]: false });
+                }
+                else setError({ ...error, [e.target.name]: true });
+                break;
+            case 'password':
+                if (passwordCheck.test(e.target.value)) {
+                    setData({ ...data, [e.target.name]: e.target.value })
+                    setError({ ...error, [e.target.name]: false });
+                }
+                else setError({ ...error, [e.target.name]: true });
+                break;
+            case 'repassword':
+                if (e.target.value === data.password) {
+                    setData({ ...data, [e.target.name]: e.target.value })
+                    setError({ ...error, [e.target.name]: false });
+                }
+                else setError({ ...error, [e.target.name]: true });
+                break;
+            default:
+                setData({ ...data, [e.target.name]: e.target.value })
+        }
+
+
+    }
+
+    // for register 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        let submit = true;
+        // verify the error
+        Object.values(error).map(value => {
+            if (value === true) submit = false;
+            return 0;
+        })
+        if (!submit) return 0;
+
+        let response = register(data);
+
+        setController({
+            ...controller,
+            loading: true
+        })
+
+        response
+            .then((data) => {
+                // console.log(data)
+                setController({
+                    ...controller,
+                    loading: false
+                })
+                notification.setNote({
+                    open: true,
+                    message: data.data.message,
+                    variant: 'success',
+                })
+                handleClose();
+            })
+            .catch((err) => {
+                // console.log(err)
+                setController({
+                    ...controller,
+                    loading: false
+                })
+                notification.setNote({
+                    open: true,
+                    message: err.response.data.message,
+                    variant: 'error',
+                })
+
+            })
+
+    }
+
+    // for login
+    const handleLogIn = (e) => {
+        e.preventDefault();
+
+        const response = login(data)
+
+        setController({
+            ...controller,
+            loading: true
+        })
+
+        response
+            .then((data) => {
+                // console.log(data)
+                if (data.status === 200) {
+                    setController({
+                        ...controller,
+                        loading: false
+                    })
+
+                    notification.setNote({
+                        open: true,
+                        message: data.data.message,
+                        variant: 'success',
+                    })
+                    auth.setCred({
+                        username : data.data.name,
+                        email : data.data.email,
+                        CID : data.data.CID,
+                        token : data.data.token
+                    })
+                    handleClose();
+                }
+                else {
+                    setController({
+                        ...controller,
+                        loading: false
+                    })
+                    notification.setNote({
+                        open: true,
+                        message: data.data.message,
+                        variant: 'error',
+                    })
+                }
+            })
+            .catch((err) => {
+                // console.log(err)
+                setController({
+                    ...controller,
+                    loading: false
+                })
+                notification.setNote({
+                    open: true,
+                    message: err.response.data.message,
+                    variant: 'error',
+                })
+
+            })
+    }
+
 
     return (
         <>
@@ -57,70 +253,206 @@ export default function EntryPoint() {
             >
                 <Fade in={modelState.logState.open}>
                     <Box sx={style}>
-                        {modelState.logState.type === 'signUp' &&
-                            <Grid container >
+                        {modelState.logState.type === 'logIn' &&
+                            <Grid container className = 'login' >
                                 {/* // form  */}
-                                <Grid className = 'formBox' item xs={12} md={5} >
-                                    <form className='form' action='' method='post'>
-                                        <Typography sx = {{marginBottom : '5px'}} variant='h4'>
+                                <Grid className='formBox' item xs={12} md={5} >
+                                    <form onSubmit={handleLogIn} className='form' action='' method='post'>
+                                        <Typography sx={{ marginBottom: '5px' }} variant='h4'>
                                             Log-In
                                         </Typography>
-                                        <Typography  variant='caption'>
+                                        <Typography variant='caption'>
                                             Log-In with data that you have entered during the registration.
                                         </Typography>
 
-                                        <FormControl sx={{ mt: 2  }} variant="outlined">
+                                        <FormControl sx={{ mt: 2 }} variant="outlined">
                                             {/* <InputLabel htmlFor="outlined-adornment-password">email</InputLabel> */}
                                             <TextField
-                                            fullWidth
+                                                fullWidth
+                                                required
+                                                name='email'
+                                                onChange={handleValue}
                                                 id="outlined-adornment-email"
-                                                type='text'
+                                                type='email'
                                                 label="Email"
-                                                size = {'small'}
+                                                size={'small'}
                                             />
                                         </FormControl>
-                                        <FormControl sx={{ mt: 2 , mb : 2 }} variant="outlined">
+                                        <FormControl sx={{ mt: 2, mb: 2 }} variant="outlined">
                                             <TextField
-                                            fullWidth
+                                                fullWidth
+                                                required
+                                                name='password'
                                                 id="outlined-adornment-password"
-                                                type={!visible ? 'text' : 'password'}
-                                                size = {'small'}
+                                                type={!controller.visible ? 'text' : 'password'}
+                                                size={'small'}
+                                                onChange={handleValue}
                                                 InputProps={{
                                                     endAdornment: <InputAdornment position="end">
-                                                          <IconButton
+                                                        <IconButton
                                                             aria-label="toggle password visibility"
-                                                            onClick={()=>{ setVisible(!visible)} }
+                                                            onClick={() => { setController({ ...controller, visible: !controller.visible }) }}
                                                             edge="end"
                                                         >
-                                                            {visible ? <VisibilityOff /> : <Visibility />}
+                                                            {!controller.visible ? <VisibilityOff /> : <Visibility />}
                                                         </IconButton>
                                                     </InputAdornment>,
-                                                  }}
-                                                
+                                                }}
+
                                                 label="Password"
                                             />
                                         </FormControl>
-                                        <Button fullWidth variant='contained'>Log In</Button>
-                                        <Typography sx = {{mt : 2 ,  textAlign : 'center' , width : '100%', display : 'block'}} color = 'primary'  variant='body'>
+                                        <Button fullWidth type='submit' disabled={controller.loading} variant='contained'>{controller.loading ? <CircularProgress size={'2rem'} /> : 'Log In'} </Button>
+                                        <Typography sx={{ mt: 2, mb: 2, textAlign: 'center', width: '100%', display: 'block' }} color='primary' variant='body'>
                                             Forgot Password ?
                                         </Typography>
 
                                     </form>
                                     <hr ></hr>
-                                    <Button sx = {{m : 'auto', mt : 3, display : 'block'}} variant = 'outlined'>Sign Up</Button>
+                                    <Button sx={{ m: 'auto', mt: 3, display: 'block' }}
+                                        onClick={() => {
+                                            modelState.setLog({
+                                                open: true,
+                                                type: 'signUp'
+                                            })
+                                        }}
+                                        variant='outlined'>Sign Up</Button>
 
                                 </Grid>
                                 {/* // form end  */}
 
                                 {/* Side pic */}
-                                <Grid item xs={12} md={7} >
-                                    <img className = 'posterImage' alt = 'logPic' src = {sidePic}/>
+                                <Grid item className = 'sidePic' xs={12} md={7} >
+                                    <img className='posterImage' alt='logPic' src={sidePic} />
                                 </Grid>
                                 {/* end Side pic */}
                             </Grid>
                         }
-                        {/* {modelState.logState.type === 'signUp' &&
-                            <h1>Sign Up</h1> } */}
+                        {modelState.logState.type === 'signUp' &&
+                            <Grid container >
+
+                                {/* Side pic */}
+                                <Grid item xs={12} md={7} >
+                                    <img className='posterImage' alt='logPic' src={sidePic} />
+                                </Grid>
+                                {/* end Side pic */}
+
+                                {/* // form  */}
+                                <Grid className='formBox' item xs={12} md={5} >
+                                    <form className='form' onSubmit={handleSubmit} action='' method='post'>
+                                        <Typography sx={{ marginBottom: '5px' }} variant='h4'>
+                                            Sing-Up
+                                        </Typography>
+                                        <Typography variant='caption'>
+                                            Hey, don't worry, your details are in safe hands.
+                                        </Typography>
+
+                                        <FormControl sx={{ mt: 2 }} variant="outlined">
+                                            <TextField
+                                                fullWidth
+                                                id="outlined-adornment-email"
+                                                type='text'
+                                                label="Username"
+                                                required
+                                                size={'small'}
+                                                name='username'
+                                                onChange={handleValue}
+                                            />
+                                        </FormControl>
+                                        <FormControl sx={{ mt: 2 }} variant="outlined">
+                                            <TextField
+                                                fullWidth
+                                                required
+                                                error={error.mobile}
+                                                id="outlined-adornment-email"
+                                                type='number'
+                                                onChange={handleValue}
+                                                helperText={error.password ? '10 digit number would be accepted !!!' : ''}
+                                                name='mobile'
+                                                label="Contact Number"
+                                                size={'small'}
+                                            />
+                                        </FormControl>
+                                        <FormControl sx={{ mt: 2 }} variant="outlined">
+                                            <TextField
+                                                fullWidth
+                                                error={error.email}
+                                                id="outlined-adornment-email"
+                                                type='email'
+                                                required
+                                                label="Email"
+                                                onChange={handleValue}
+                                                name="email"
+                                                size={'small'}
+                                            />
+                                        </FormControl>
+
+                                        <FormControl sx={{ mt: 2, }} variant="outlined">
+                                            <TextField
+                                                fullWidth
+                                                error={error.password}
+                                                required
+                                                onChange={handleValue}
+                                                id="outlined-adornment-password"
+                                                type={!controller.visible ? 'text' : 'password'}
+                                                size={'small'}
+                                                helperText={error.password ? 'Minimum eight characters, at least one letter, one number and one special character.' : 'Please choose a strong password !!!'}
+                                                InputProps={{
+                                                    endAdornment: <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={() => { setController({ ...controller, visible: !controller.visible }) }}
+                                                            edge="end"
+                                                        >
+                                                            {!controller.visible ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>,
+                                                }}
+                                                name='password'
+                                                label="Password"
+                                            />
+                                        </FormControl>
+                                        <FormControl sx={{ mt: 2, mb: 2 }} variant="outlined">
+                                            <TextField
+                                                fullWidth
+                                                error={error.repassword}
+                                                onChange={handleValue}
+                                                id="outlined-adornment-password"
+                                                type={'password'}
+                                                size={'small'}
+                                                // InputProps={{
+                                                //     endAdornment: <InputAdornment position="end">
+                                                //           <IconButton
+                                                //             aria-label="toggle password visibility"
+                                                //             onClick={()=>{ setController(!controller.visible)} }
+                                                //             edge="end"
+                                                //         >
+                                                //             {controller.visible ? <VisibilityOff /> : <Visibility />}
+                                                //         </IconButton>
+                                                //     </InputAdornment>,
+                                                //   }}
+                                                name='repassword'
+                                                label="Retype Password"
+                                            />
+                                        </FormControl>
+                                        <Button fullWidth type='submit' disabled={controller.loading} variant='contained'>{controller.loading ? <CircularProgress size={'2rem'} /> : 'Sign Up'} </Button>
+
+                                    </form>
+                                    <hr ></hr>
+                                    <Button sx={{ m: 'auto', mt: 2, display: 'block' }}
+                                        onClick={() => {
+                                            modelState.setLog({
+                                                open: true,
+                                                type: 'logIn'
+                                            })
+                                        }}
+                                        variant='outlined'>Log In</Button>
+                                </Grid>
+                                {/* // form end  */}
+
+                            </Grid>
+
+                        }
                     </Box>
                 </Fade>
             </Modal>

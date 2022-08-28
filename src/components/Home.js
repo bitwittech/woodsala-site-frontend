@@ -205,7 +205,7 @@ export default function Home() {
             We bet you can't find an identical piece, <br></br> any where in the
             world
           </Typography>
-          <Button sx={{ margin: "5px" }} small = {"true"} variant="outlined">
+          <Button sx={{ margin: "5px" }} small={"true"} variant="outlined">
             Shop Now
           </Button>
         </Grid>
@@ -213,7 +213,7 @@ export default function Home() {
 
       {/* Ends Banner  */}
 
-    
+
 
       {/* Shop by room  */}
 
@@ -400,7 +400,7 @@ export default function Home() {
               >
                 {items.map((data, i) => {
                   return (
-                    <Card key = {i} className="card" sx={{ maxWidth: 300, boxShadow: 0 }}>
+                    <Card key={i} className="card" sx={{ maxWidth: 300, boxShadow: 0 }}>
                       <CardActionArea>
                         <CardMedia
                           className="cardMedia"
@@ -411,7 +411,7 @@ export default function Home() {
                         />
                       </CardActionArea>
                       <CardActions className="center-TC">
-                        <Typography sx={{ float: "start" }} className = "sub-heading" variant="h6">
+                        <Typography sx={{ float: "start" }} className="sub-heading" variant="h6">
                           {data.name}
                         </Typography>
                         <Button
@@ -436,7 +436,7 @@ export default function Home() {
 
       {/* Video */}
 
-      <Grid container id = 'video' className="video">
+      <Grid container id='video' className="video">
         <Grid
           item
           xs={12}
@@ -468,12 +468,12 @@ export default function Home() {
             {content.map((article, index) => (
               <div
                 key={index}
-                className = "sliderBanner"
+                className="sliderBanner"
                 style={{
                   backgroundImage: `url('${article}')`,
                   backgroundSize: "100vw 100%",
                   backgroundRepeat: "no-repeat",
-                  height : "30rem",
+                  height: "30rem",
                   display: "flex",
                   justifyContent: "center",
                 }}
@@ -489,8 +489,8 @@ export default function Home() {
                         Transit Warranty
                       </Typography>
                       <Button
-                      size = "medium"
-                      variant = "outlined"
+                        size="medium"
+                        variant="outlined"
                         endIcon={<ArrowForwardIcon />}
                         sx={{ margin: "5px 0px" }}
                       >
@@ -507,7 +507,7 @@ export default function Home() {
       {/* banner Slider EDNs */}
 
       {/* Let Customers Speak for us */}
-      <Grid container className = "customer">
+      <Grid container className="customer">
         <Grid
           item
           xs={12}
@@ -527,7 +527,7 @@ export default function Home() {
           >
             {customer.map((article, index) => {
               return (
-                <Card key = {index} className="card" sx={{ maxWidth: 400, boxShadow: 3 }}>
+                <Card key={index} className="card" sx={{ maxWidth: 400, boxShadow: 3 }}>
                   <CardActionArea>
                     <CardMedia
                       className="cardMedia"
@@ -549,12 +549,12 @@ export default function Home() {
               );
             })}
           </Carousel>
-          
+
         </Grid>
       </Grid>
 
       {/* Let Customers Speak for us end */}
-<br></br>
+      <br></br>
       {/* Instagram Section  */}
 
       <Grid className="instaSection" container>
@@ -573,7 +573,7 @@ export default function Home() {
           >
             {instaPost.map((article, index) => {
               return (
-                <Card key = {index} className="card" sx={{ maxWidth: 200 }}>
+                <Card key={index} className="card" sx={{ maxWidth: 200 }}>
                   <CardActionArea>
                     <CardMedia
                       className="cardMedia"
@@ -643,7 +643,7 @@ export default function Home() {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <Grid container sx = {{padding :  "0% 2%", gap : "15px" }}>
+          <Grid container sx={{ padding: "0% 2%", gap: "15px" }}>
             <Grid item xs={12}>
               <Typography variant="body1">
                 Picking wooden furniture online was never this easy! Exquisitely

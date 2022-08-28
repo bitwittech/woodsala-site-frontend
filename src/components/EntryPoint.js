@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import {
     Box,
@@ -21,8 +21,10 @@ import sidePic from '../asset/images/logBox/sidePicLog.jpg'
 // css 
 import '../asset/css/entrypoint.css'
 
-// context
-import { Store } from '../context/Context';
+// Store
+import { Store } from '../store/Context';
+import { LogBox, Notify, Auth } from '../store/Types';
+
 
 // icon
 import Visibility from '@mui/icons-material/Visibility';
@@ -34,8 +36,8 @@ import { register, login } from '../service/service.js'
 
 export default function EntryPoint() {
     // context
-    const { state : {Auth, LogBox, Notify}
-    ,dispatch } = Store();
+    const { state
+        , dispatch } = Store();
 
 
 
@@ -64,9 +66,9 @@ export default function EntryPoint() {
     })
 
     const handleClose = () => {
-       
+
         dispatch({
-            type: 'LogBox',
+            type: LogBox,
             payload: {
                 open: false,
                 type: undefined
@@ -146,11 +148,13 @@ export default function EntryPoint() {
                     ...controller,
                     loading: false
                 })
-                dispatch({type : 'Notify', payload : {
-                    open: true,
-                    message: data.data.message,
-                    variant: 'success',}
-                 })
+                dispatch({
+                    type: Notify, payload: {
+                        open: true,
+                        message: data.data.message,
+                        variant: 'success',
+                    }
+                })
                 handleClose();
             })
             .catch((err) => {
@@ -159,11 +163,13 @@ export default function EntryPoint() {
                     ...controller,
                     loading: false
                 })
-                dispatch({type : 'Notify', payload : {
-                    open: true,
-                    message: data.data.message,
-                    variant: 'error',}
-                 })
+                dispatch({
+                    type: Notify, payload: {
+                        open: true,
+                        message: data.data.message,
+                        variant: 'error',
+                    }
+                })
 
             })
 
@@ -189,13 +195,15 @@ export default function EntryPoint() {
                         loading: false
                     })
 
-                    dispatch({type : 'Notify' , payload : {
-                        open: true,
-                        message: data.data.message,
-                        variant: 'success',
-                    }})
                     dispatch({
-                        type: 'auth',
+                        type: Notify, payload: {
+                            open: true,
+                            message: data.data.message,
+                            variant: 'success',
+                        }
+                    })
+                    dispatch({
+                        type: Auth,
                         payload: {
                             isAuth: true,
                             username: data.data.name,
@@ -211,11 +219,13 @@ export default function EntryPoint() {
                         ...controller,
                         loading: false
                     })
-                    dispatch({type : 'Notify' , payload : {
-                        open: true,
-                        message: data.data.message,
-                        variant: 'error',
-                    }})
+                    dispatch({
+                        type: Notify, payload: {
+                            open: true,
+                            message: data.data.message,
+                            variant: 'error',
+                        }
+                    })
                 }
             })
             .catch((err) => {
@@ -224,11 +234,13 @@ export default function EntryPoint() {
                     ...controller,
                     loading: false
                 })
-                dispatch({type : 'Notify' , payload : {
-                    open: true,
-                    message: data.data.message,
-                    variant: 'error',
-                }})
+                dispatch({
+                    type: Notify, payload: {
+                        open: true,
+                        message: data.data.message,
+                        variant: 'error',
+                    }
+                })
 
             })
     }
@@ -239,7 +251,7 @@ export default function EntryPoint() {
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
-                open={LogBox.open}
+                open={state.LogBox.open}
                 onClose={handleClose}
                 closeAfterTransition
                 BackdropComponent={Backdrop}
@@ -247,9 +259,9 @@ export default function EntryPoint() {
                     timeout: 500,
                 }}
             >
-                <Fade in={LogBox.open}>
+                <Fade in={state.LogBox.open}>
                     <Box className='box' sx={{ boxShadow: 24 }}>
-                        {LogBox.type === 'logIn' &&
+                        {state.LogBox.type === 'logIn' &&
                             <Grid container className='login' >
                                 {/* // form  */}
                                 <Grid className='formBox' item xs={12} md={5} >
@@ -274,6 +286,7 @@ export default function EntryPoint() {
                                                 size={'small'}
                                             />
                                         </FormControl>
+                                        {console.log(state.Auth)}
                                         <FormControl sx={{ mt: 2, mb: 2 }} variant="outlined">
                                             <TextField
                                                 fullWidth
@@ -307,11 +320,13 @@ export default function EntryPoint() {
                                     <hr ></hr>
                                     <Button sx={{ m: 'auto', mt: 3, display: 'block' }}
                                         onClick={() => {
-                                            dispatch({type : 'LogBox',
-                                            payload : {
-                                                open: true,
-                                                type: 'signUp'
-                                            }})
+                                            dispatch({
+                                                type: LogBox,
+                                                payload: {
+                                                    open: true,
+                                                    type: 'signUp'
+                                                }
+                                            })
                                         }}
                                         variant='outlined'>Sign Up</Button>
 
@@ -325,7 +340,7 @@ export default function EntryPoint() {
                                 {/* end Side pic */}
                             </Grid>
                         }
-                        {LogBox.type === 'signUp' &&
+                        {state.LogBox.type === 'signUp' &&
                             <Grid container >
 
                                 {/* Side pic */}
@@ -438,11 +453,13 @@ export default function EntryPoint() {
                                     <hr ></hr>
                                     <Button sx={{ m: 'auto', mt: 2, display: 'block' }}
                                         onClick={() => {
-                                            dispatch({type : 'LogBox',
-                                            payload : {
-                                                open: true,
-                                                type: 'logIn'
-                                            }})
+                                            dispatch({
+                                                type: LogBox,
+                                                payload: {
+                                                    open: true,
+                                                    type: 'logIn'
+                                                }
+                                            })
                                         }}
                                         variant='outlined'>Log In</Button>
                                 </Grid>

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import Context from "./context/Context";
+import Context from "./store/Context";
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
@@ -9,7 +9,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Context>
-    <App />
+      <App />
     </Context>
   </React.StrictMode>
 );

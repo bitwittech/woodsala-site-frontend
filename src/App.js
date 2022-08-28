@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 
@@ -67,11 +67,11 @@ function App() {
     <>
       <ThemeProvider theme={light}>
         <CssBaseline enableColorScheme>
-              <BrowserRouter>
-                <Path />
-              </BrowserRouter>
-              <EntryPoint/>
-              <SnakBar/>
+          <BrowserRouter>
+            <Path />
+          </BrowserRouter>
+          <EntryPoint />
+          <SnakBar />
         </CssBaseline>
       </ThemeProvider>
     </>

@@ -41,13 +41,14 @@ import exclusive from "../../asset/images/hamburger/exclusive.png";
 // css
 import "../../asset/css/navbar.css";
 
-// context 
-import {Store} from '../../context/Context'
+// store  
+import { Store } from '../../store/Context'
+import { LogBox } from '../../store/Types'
 
 export default function Navbar(props) {
   const [Ham, setHam] = useState(false);
 
-  const {state: {Auth,LogBox},dispatch} = Store();
+  const { dispatch } = Store();
 
   const navBarComponent = ["/", "/checkout"];
 
@@ -55,15 +56,15 @@ export default function Navbar(props) {
     props.history(newVal);
   };
 
-  const handleLog = ()=>{
-    // console.log(auth.cred )
+  const handleLog = () => {
     dispatch(
       {
-        type : 'LogBox',
-        payload : {
-      open : true,
-      type : 'logIn'
-    }}
+        type: LogBox,
+        payload: {
+          open: true,
+          type: 'logIn'
+        }
+      }
     )
   }
 
@@ -117,16 +118,16 @@ export default function Navbar(props) {
         </Grid>
         {/* ends  Brown Middle bar  */}
 
-         {/* hamburger active of 800px  */}
-         <Grid item xs={12} className="hamburgerContainer">
+        {/* hamburger active of 800px  */}
+        <Grid item xs={12} className="hamburgerContainer">
           <Grid container>
-            <Grid sx= {{justifyContent : 'center', display: 'flex'}} item xs={12} className="hamburgerButton">
-              <IconButton  onClick={() => {
-                    setHam(true);
-                  }} color="primary"  size="large">
+            <Grid sx={{ justifyContent: 'center', display: 'flex' }} item xs={12} className="hamburgerButton">
+              <IconButton onClick={() => {
+                setHam(true);
+              }} color="primary" size="large">
                 < ExpandLessOutlinedIcon
                   sx={{ fontSize: 25 }}
-                 
+
                 />
               </IconButton>
               <Drawer
@@ -146,12 +147,12 @@ export default function Navbar(props) {
                 >
                   <ExpandMoreOutlinedIcon
                     sx={{ fontSize: 25 }}
-                   
+
                   />
                 </IconButton>
 
-                <Grid item xs={12} className = 'hamburgerPanel'>
-                  <Tabs 
+                <Grid item xs={12} className='hamburgerPanel'>
+                  <Tabs
                     orientation="vertical"
                     scrollButtons
                     allowScrollButtonsMobile
@@ -166,8 +167,8 @@ export default function Navbar(props) {
                     <Tab
                       wrapped
                       label="Home"
-                      icon={<img alt = 'home' src={home}/>} 
-                      iconPosition="start" 
+                      icon={<img alt='home' src={home} />}
+                      iconPosition="start"
                       component={Link}
                       value={navBarComponent[0]}
                       to={navBarComponent[0]}
@@ -176,16 +177,16 @@ export default function Navbar(props) {
                       wrapped
                       label="Furniture"
                       component={Link}
-                      icon={<img alt = 'home' src={furniture}/>} 
-                      iconPosition="start" 
+                      icon={<img alt='home' src={furniture} />}
+                      iconPosition="start"
                       value={navBarComponent[1]}
                       to={navBarComponent[1]}
                     />
                     <Tab
                       wrapped
                       label="Kitchen Items"
-                      icon={<img alt = 'home' src={kitchen}/>} 
-                      iconPosition="start" 
+                      icon={<img alt='home' src={kitchen} />}
+                      iconPosition="start"
                       component={Link}
                       value={navBarComponent[1]}
                       to={navBarComponent[1]}
@@ -193,16 +194,16 @@ export default function Navbar(props) {
                     <Tab
                       wrapped
                       label="Gifting"
-                      icon={<img alt = 'home' src={gift}/>} 
-                      iconPosition="start" 
+                      icon={<img alt='home' src={gift} />}
+                      iconPosition="start"
                       component={Link}
                       value={navBarComponent[1]}
                       to={navBarComponent[1]}
                     />
                     <Tab
                       wrapped
-                      icon={<img alt = 'home' src={exclusive}/>} 
-                      iconPosition="start" 
+                      icon={<img alt='home' src={exclusive} />}
+                      iconPosition="start"
                       label="Exclusive"
                       component={Link}
                       value={navBarComponent[1]}
@@ -211,16 +212,16 @@ export default function Navbar(props) {
                     <Tab
                       wrapped
                       label="Useful Products"
-                      icon={<img alt = 'home' src={useful}/>} 
-                      iconPosition="start" 
+                      icon={<img alt='home' src={useful} />}
+                      iconPosition="start"
                       component={Link}
                       value={navBarComponent[1]}
                       to={navBarComponent[1]}
                     />
                     <Tab
                       wrapped
-                      icon={<img alt = 'home' src={tranding}/>} 
-                      iconPosition="start" 
+                      icon={<img alt='home' src={tranding} />}
+                      iconPosition="start"
                       label="Traditional"
                       component={Link}
                       value={navBarComponent[1]}
@@ -228,7 +229,7 @@ export default function Navbar(props) {
                     />
                     <Tab
                       wrapped
-                      icon={<img alt = 'logo' src={company}/>} 
+                      icon={<img alt='logo' src={company} />}
                       iconPosition="start"
                       label="Company"
                       component={Link}
@@ -238,7 +239,7 @@ export default function Navbar(props) {
                     <Tab
                       wrapped
                       label="Browse All"
-                      icon={<img alt = 'logo' src={all}/>} 
+                      icon={<img alt='logo' src={all} />}
                       iconPosition="start"
                       component={Link}
                       value={navBarComponent[1]}
@@ -282,7 +283,7 @@ export default function Navbar(props) {
             </Grid>
             <Grid item xs={12} md={3} className="center">
               <IconButton color="primary">
-                <PersonOutlineOutlinedIcon onClick = {handleLog} />
+                <PersonOutlineOutlinedIcon onClick={handleLog} />
               </IconButton>
               <IconButton color="primary">
                 <FavoriteBorderOutlinedIcon />
@@ -303,7 +304,7 @@ export default function Navbar(props) {
           </Grid>
         </Grid>
         {/* ends main-1 Tab */}
-        
+
         {/* main-2 link container */}
         <Grid item xs={12} className="main-2">
           <Tabs
@@ -385,7 +386,7 @@ export default function Navbar(props) {
         </Grid>
         {/* ends main-2 link container */}
 
-        
+
       </Grid>
     </>
   );

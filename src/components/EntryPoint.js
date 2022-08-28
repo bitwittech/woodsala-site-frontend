@@ -18,11 +18,11 @@ import {
 // image 
 import sidePic from '../asset/images/logBox/sidePicLog.jpg'
 
-// context 
-import { LogBox, Notify, Auth } from '../App.js'
-
 // css 
 import '../asset/css/entrypoint.css'
+
+// context
+import { Store } from '../context/Context';
 
 // icon
 import Visibility from '@mui/icons-material/Visibility';
@@ -33,24 +33,12 @@ import { register, login } from '../service/service.js'
 
 
 export default function EntryPoint() {
- // context
- const modelState = useContext(LogBox);
- const notification = useContext(Notify);
- const auth = useContext(Auth);
+    // context
+    const { state : {Auth, LogBox, Notify}
+    ,dispatch } = Store();
 
 
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: modelState.type === 'signUp' ? 800 : 700,
-    bgcolor: 'background.paper',
-    boxShadow: 24,
 
-};
-
-   
     // controller state 
     const [controller, setController] = useState({
         visible: false,
@@ -76,9 +64,13 @@ const style = {
     })
 
     const handleClose = () => {
-        modelState.setLog({
-            open: false,
-            type: undefined
+       
+        dispatch({
+            type: 'LogBox',
+            payload: {
+                open: false,
+                type: undefined
+            }
         })
 
         setData({
@@ -154,11 +146,11 @@ const style = {
                     ...controller,
                     loading: false
                 })
-                notification.setNote({
+                dispatch({type : 'Notify', payload : {
                     open: true,
                     message: data.data.message,
-                    variant: 'success',
-                })
+                    variant: 'success',}
+                 })
                 handleClose();
             })
             .catch((err) => {
@@ -167,11 +159,11 @@ const style = {
                     ...controller,
                     loading: false
                 })
-                notification.setNote({
+                dispatch({type : 'Notify', payload : {
                     open: true,
-                    message: err.response.data.message,
-                    variant: 'error',
-                })
+                    message: data.data.message,
+                    variant: 'error',}
+                 })
 
             })
 
@@ -197,16 +189,20 @@ const style = {
                         loading: false
                     })
 
-                    notification.setNote({
+                    dispatch({type : 'Notify' , payload : {
                         open: true,
                         message: data.data.message,
                         variant: 'success',
-                    })
-                    auth.setCred({
-                        username : data.data.name,
-                        email : data.data.email,
-                        CID : data.data.CID,
-                        token : data.data.token
+                    }})
+                    dispatch({
+                        type: 'auth',
+                        payload: {
+                            isAuth: true,
+                            username: data.data.name,
+                            email: data.data.email,
+                            CID: data.data.CID,
+                            token: data.data.token
+                        }
                     })
                     handleClose();
                 }
@@ -215,11 +211,11 @@ const style = {
                         ...controller,
                         loading: false
                     })
-                    notification.setNote({
+                    dispatch({type : 'Notify' , payload : {
                         open: true,
                         message: data.data.message,
                         variant: 'error',
-                    })
+                    }})
                 }
             })
             .catch((err) => {
@@ -228,11 +224,11 @@ const style = {
                     ...controller,
                     loading: false
                 })
-                notification.setNote({
+                dispatch({type : 'Notify' , payload : {
                     open: true,
-                    message: err.response.data.message,
+                    message: data.data.message,
                     variant: 'error',
-                })
+                }})
 
             })
     }
@@ -243,7 +239,7 @@ const style = {
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
-                open={modelState.logState.open}
+                open={LogBox.open}
                 onClose={handleClose}
                 closeAfterTransition
                 BackdropComponent={Backdrop}
@@ -251,10 +247,10 @@ const style = {
                     timeout: 500,
                 }}
             >
-                <Fade in={modelState.logState.open}>
-                    <Box sx={style}>
-                        {modelState.logState.type === 'logIn' &&
-                            <Grid container className = 'login' >
+                <Fade in={LogBox.open}>
+                    <Box className='box' sx={{ boxShadow: 24 }}>
+                        {LogBox.type === 'logIn' &&
+                            <Grid container className='login' >
                                 {/* // form  */}
                                 <Grid className='formBox' item xs={12} md={5} >
                                     <form onSubmit={handleLogIn} className='form' action='' method='post'>
@@ -311,10 +307,11 @@ const style = {
                                     <hr ></hr>
                                     <Button sx={{ m: 'auto', mt: 3, display: 'block' }}
                                         onClick={() => {
-                                            modelState.setLog({
+                                            dispatch({type : 'LogBox',
+                                            payload : {
                                                 open: true,
                                                 type: 'signUp'
-                                            })
+                                            }})
                                         }}
                                         variant='outlined'>Sign Up</Button>
 
@@ -322,17 +319,17 @@ const style = {
                                 {/* // form end  */}
 
                                 {/* Side pic */}
-                                <Grid item className = 'sidePic' xs={12} md={7} >
+                                <Grid item className='sidePic' xs={12} md={7} >
                                     <img className='posterImage' alt='logPic' src={sidePic} />
                                 </Grid>
                                 {/* end Side pic */}
                             </Grid>
                         }
-                        {modelState.logState.type === 'signUp' &&
+                        {LogBox.type === 'signUp' &&
                             <Grid container >
 
                                 {/* Side pic */}
-                                <Grid item xs={12} md={7} >
+                                <Grid item className='sidePic' xs={12} md={7} >
                                     <img className='posterImage' alt='logPic' src={sidePic} />
                                 </Grid>
                                 {/* end Side pic */}
@@ -441,10 +438,11 @@ const style = {
                                     <hr ></hr>
                                     <Button sx={{ m: 'auto', mt: 2, display: 'block' }}
                                         onClick={() => {
-                                            modelState.setLog({
+                                            dispatch({type : 'LogBox',
+                                            payload : {
                                                 open: true,
                                                 type: 'logIn'
-                                            })
+                                            }})
                                         }}
                                         variant='outlined'>Log In</Button>
                                 </Grid>

@@ -6,9 +6,6 @@ import "./App.css";
 import { CssBaseline } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-// context
-import { Auth, LogBox, Notify } from './context/context'
-
 // utility 
 import Navbar from "./components/utility/Navbar"
 import Footer from "./components/utility/Footer"
@@ -46,23 +43,6 @@ const light = createTheme({
 
 function App() {
 
-  // context State
-  const [cred,setCred] = useState({
-    username : undefined,
-    email : undefined,
-    CID : undefined,
-    token : undefined
-  })
-  const [logState, setLog] = useState({
-    open : false,
-    type : undefined,
-  });
-  const [Note,setNote] = useState({
-    variant : null,
-    open : false,
-    message : null
-  })
-
   function Path() {
     const history = useNavigate();
 
@@ -87,17 +67,11 @@ function App() {
     <>
       <ThemeProvider theme={light}>
         <CssBaseline enableColorScheme>
-          <Auth.Provider value = {{cred , setCred}} >
-          <Notify.Provider value = {{Note, setNote}}>
-            <LogBox.Provider value={{ logState, setLog }} >
               <BrowserRouter>
                 <Path />
               </BrowserRouter>
               <EntryPoint/>
               <SnakBar/>
-            </LogBox.Provider>
-          </Notify.Provider>
-          </Auth.Provider>
         </CssBaseline>
       </ThemeProvider>
     </>
@@ -105,6 +79,3 @@ function App() {
 }
 
 export default App;
-
-// exporting the contexts
-export { LogBox, Auth, Notify }

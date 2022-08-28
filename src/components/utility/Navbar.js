@@ -42,14 +42,12 @@ import exclusive from "../../asset/images/hamburger/exclusive.png";
 import "../../asset/css/navbar.css";
 
 // context 
-import {LogBox, Auth} from '../../App.js'
+import {Store} from '../../context/Context'
 
 export default function Navbar(props) {
   const [Ham, setHam] = useState(false);
 
-  //context 
-  const modelBox = useContext(LogBox);
-  const auth = useContext(Auth);
+  const {state: {Auth,LogBox},dispatch} = Store();
 
   const navBarComponent = ["/", "/checkout"];
 
@@ -58,11 +56,15 @@ export default function Navbar(props) {
   };
 
   const handleLog = ()=>{
-    console.log(auth.cred )
-    modelBox.setLog({
+    // console.log(auth.cred )
+    dispatch(
+      {
+        type : 'LogBox',
+        payload : {
       open : true,
       type : 'logIn'
-    })
+    }}
+    )
   }
 
   return (
@@ -301,7 +303,7 @@ export default function Navbar(props) {
           </Grid>
         </Grid>
         {/* ends main-1 Tab */}
-
+        
         {/* main-2 link container */}
         <Grid item xs={12} className="main-2">
           <Tabs

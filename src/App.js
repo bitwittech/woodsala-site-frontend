@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 
@@ -11,6 +11,9 @@ import Navbar from "./components/utility/Navbar"
 import Footer from "./components/utility/Footer"
 import SnakBar from "./components/utility/SnakBar"
 
+// context
+import {Store} from './store/Context'
+import {Auth} from './store/Types'
 
 // components
 import Home from "./components/Home";
@@ -20,6 +23,7 @@ import ProductDetails from "./components/ProductDetails";
 import ContactUs from "./components/ContactUs";
 import Categories from "./components/Categories";
 import EntryPoint from "./components/EntryPoint"
+import Profile from "./components/Profile"
 
 // global theme
 const light = createTheme({
@@ -43,6 +47,20 @@ const light = createTheme({
 
 function App() {
 
+  const {dispatch} = Store(); 
+
+  // for data persistance
+  useEffect(()=>{
+   if (localStorage.getItem('payload') !== null)
+   {
+      dispatch({
+        type : Auth,
+        payload : JSON.parse(localStorage.getItem('payload'))
+      })
+   }
+  },[])
+
+
   function Path() {
     const history = useNavigate();
 
@@ -57,6 +75,7 @@ function App() {
           <Route path="/details" element={<ProductDetails />}></Route>
           <Route path="/contact" element={<ContactUs />}></Route>
           <Route path="/categories" element={<Categories />}></Route>
+          <Route path="/profile" element={<Profile />}></Route>
         </Routes>
         <Footer />
       </>

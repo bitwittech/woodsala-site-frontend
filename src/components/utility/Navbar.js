@@ -48,7 +48,7 @@ import { LogBox } from '../../store/Types'
 export default function Navbar(props) {
   const [Ham, setHam] = useState(false);
 
-  const { dispatch } = Store();
+  const { state, dispatch } = Store();
 
   const navBarComponent = ["/", "/checkout"];
 
@@ -57,16 +57,20 @@ export default function Navbar(props) {
   };
 
   const handleLog = () => {
-    dispatch(
-      {
-        type: LogBox,
-        payload: {
-          open: true,
-          type: 'logIn'
+    state.Auth.isAuth ?
+      props.history('/profile') :
+      dispatch(
+        {
+          type: LogBox,
+          payload: {
+            open: true,
+            type: 'logIn'
+          }
         }
-      }
-    )
+      )
+
   }
+
 
   return (
     <>

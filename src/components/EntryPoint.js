@@ -36,8 +36,7 @@ import { register, login } from '../service/service.js'
 
 export default function EntryPoint() {
     // context
-    const { state
-        , dispatch } = Store();
+    const { state, dispatch } = Store();
 
 
 
@@ -212,6 +211,16 @@ export default function EntryPoint() {
                             token: data.data.token
                         }
                     })
+                    // storing the data in localStorage for persistance
+                    localStorage.setItem('payload',JSON.stringify(
+                        {
+                            isAuth: true,
+                            username: data.data.name,
+                            email: data.data.email,
+                            CID: data.data.CID,
+                            token: data.data.token
+                        }
+                    ))
                     handleClose();
                 }
                 else {

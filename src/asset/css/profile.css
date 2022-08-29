@@ -1,0 +1,35 @@
+.profileTab {
+    font-size: 1.2rem !important;
+}
+
+
+/* CSS for UserProfile */
+
+.form {
+    padding: 2%;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.profilePic {
+    max-width: 25% !important;
+}
+
+.profilePic img {
+    width: 100%;
+}
+
+.profileName {
+    display: flex;
+    align-items: center;
+}
+
+.profileForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3%;
+}
+
+
+/* CSS for UserProfile ENDS */

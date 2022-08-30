@@ -221,6 +221,8 @@ export default function EntryPoint() {
                             token: data.data.token
                         }
                     ))
+                    // storing the token in localStorage for persistance
+                    localStorage.setItem('token',data.data.token)
                     handleClose();
                 }
                 else {

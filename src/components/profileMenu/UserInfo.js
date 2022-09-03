@@ -11,8 +11,8 @@ import { getCustomer, updateCustomer } from "../../service/service";
 // Store
 import { Store } from "../../store/Context";
 // types 
-import { Auth, Notify } from "../../store/Types"
-import { FileDownloadDone } from "@mui/icons-material";
+import { Auth, Notify } from "../../store/Types";
+
 const UserInfo = () => {
     // context
     const {
@@ -28,7 +28,6 @@ const UserInfo = () => {
         city: "",
         state: "",
         shipping: "",
-        pincode : 0,
     });
 
     // state for controls over the page 
@@ -83,15 +82,12 @@ const UserInfo = () => {
         const FD = new FormData();
 
         FD.append("CID", formVal.CID);
-        FD.append("name", formVal.name);
+        FD.append("username", formVal.username);
         FD.append("mobile", formVal.mobile);
         FD.append("email", formVal.email);
         FD.append("password", formVal.password);
         FD.append("city", formVal.city);
-        FD.append("pincode", formVal.pincode);
         FD.append("state", formVal.state);
-        FD.append("landmark", formVal.landmark);
-
         FD.append("shipping", formVal.shipping);
         FD.append("profile_image", formVal.profile_image);
 

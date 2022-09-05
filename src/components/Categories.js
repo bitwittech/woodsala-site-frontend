@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Carousel from "react-multi-carousel";
 
 //mui
@@ -18,12 +18,6 @@ import {
 import "../asset/css/categories.css";
 import "react-multi-carousel/lib/styles.css";
 
-//image
-import living from ".././asset/images/home/sofa_SBR.png";
-import wfh from ".././asset/images/home/table_SBR.png";
-import bedroom from ".././asset/images/home/bedroom_SBR.png";
-import dining from ".././asset/images/home/dining_SBR.png";
-
 // icon
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import AddShoppingCartOutlinedIcon from "@mui/icons-material/AddShoppingCartOutlined";
@@ -31,8 +25,50 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
 
+//image
+import living from ".././asset/images/home/sofa_SBR.png";
+import wfh from ".././asset/images/home/table_SBR.png";
+import bedroom from ".././asset/images/home/bedroom_SBR.png";
+import dining from ".././asset/images/home/dining_SBR.png";
+  
+
+// services 
+import {getProducts} from '../service/service'
+
 export default function Categories() {
-  const items = [
+
+  // responsive oject for Slider
+  const responsive = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 3,
+    },
+    tablet: {
+      breakpoint: { max: 800, min: 600 },
+      items: 2,
+    },
+    mobile: {
+      breakpoint: { max: 600, min: 0 },
+      items: 1,
+    },
+  };
+
+
+  // use Effect
+  useEffect(()=>{
+
+    getProducts()
+    .then((data)=>{
+      console.log(data)
+      return setItems(data.data)
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+
+  },[])
+
+  const categories = [
     {
       image: living,
       name: "Living",
@@ -95,27 +131,14 @@ export default function Categories() {
     },
   ];
 
-  const responsive = {
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 3,
-    },
-    tablet: {
-      breakpoint: { max: 800, min: 600 },
-      items: 2,
-    },
-    mobile: {
-      breakpoint: { max: 600, min: 0 },
-      items: 1,
-    },
-  };
-
+  const [items,setItems] = useState([])
+ 
   const [expanded, setExpanded] = useState("");
 
   // State
   const [filterShow, setFilter] = useState(false);
 
-  // handle accordians
+  // handle accordions
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
@@ -143,12 +166,13 @@ export default function Categories() {
         {/* carousal for sub cat */}
         <Grid item xs={12} className="subCatContainer">
           <Carousel keyBoardControl={true} ssr={true} responsive={responsive}>
-            {items.map((item, index) => {
+            {categories.map((item, index) => {
               return (
                 <Box key={index} sx={{
                   padding: "10%",
                 }} className="card ">
-                  <img src={item.image} alt={index}  />
+                  {console.log(item)}
+                  <img src={item.image } alt={index}  />
                   <Typography
                     sx={{
                       fontSize: "1.2rem",
@@ -158,7 +182,7 @@ export default function Categories() {
                     align="center"
                     variant="button"
                   >
-                    {item.name}
+                    {item.product_title}
                   </Typography>
                 </Box>
               );
@@ -433,7 +457,7 @@ export default function Categories() {
 
         {/* product container */}
         <Grid className="productContainer" item xs={12} md={10}>
-          <Grid container className = 'innerProductWrap' sx={{ gap: "15px" }}>
+          <Grid container className = 'innerProductWrap' >
             {items.map((item, index) => {
               return (
                 <Grid
@@ -441,19 +465,20 @@ export default function Categories() {
                   key = {index}
                   className="productCard"
                   xs={window.innerWidth <= '600' ? 10 : 5.8}
-                  sx={{ boxShadow: 2 }}
+                  sx={{ boxShadow: 2 , maxHeight : '100%'}}
                   md={3.87}
                 >
-                  <Box>
-                    <img src={item.image} alt="product_Images" />
                     <Grid container>
+                      <Grid item xs={12}>
+                      <img src={item.featured_image} alt="product_Images" />
+                      </Grid>
                       <Grid item xs={9}>
                         <Box className="productInfo">
-                          <Typography variant="h5">{item.name}</Typography>
+                          <Typography variant="h5">{item.product_title}</Typography>
                           <Typography variant="body2">
-                            Lorem ipsum dolor sit amet.
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Est harum natus error facilis similique officiis ea nisi architecto explicabo tenetur nulla possimus voluptas saepe nemo dolor, quae mollitia itaque voluptates sapiente consectetur repellendus optio. Aspernatur?
                           </Typography>
-                          <Typography variant="h6">Rs.{item.price}</Typography>
+                          <Typography variant="h6">Rs.{item.MRP}</Typography>
                         </Box>
                       </Grid>
                       <Grid item xs={3}>
@@ -467,7 +492,6 @@ export default function Categories() {
                         </Box>
                       </Grid>
                     </Grid>
-                  </Box>
                 </Grid>
               );
             })}

@@ -4,6 +4,8 @@ const axios = require('axios');
 let localApi = 'http://localhost:8000'
 let official = 'http://134.209.150.190'
 
+// token 
+const WDToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiU3VwZXIgQWRtaW4iLCJlbWFpbCI6InN1cGVyQHdvb2RzaGFsYS5jb20iLCJwYXNzd29yZCI6Indvb2RzYWxhMjAyMiIsImlhdCI6MTY2MTg3Mjc4M30.LT7rczBuoQpjIedvaOUgYPKy4oW7snvtq5BrIcqpaYk" 
 
 // ========================= CURD For user =================================
 
@@ -34,22 +36,26 @@ export const updateCustomer = async(data)=>{
     return await axios.patch(`http://157.245.102.136/api/updateCustomer`, data,
     {
               headers: {
-                Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiU3VwZXIgQWRtaW4iLCJlbWFpbCI6InN1cGVyQHdvb2RzaGFsYS5jb20iLCJwYXNzd29yZCI6Indvb2RzYWxhMjAyMiIsImlhdCI6MTY2MTg3Mjc4M30.LT7rczBuoQpjIedvaOUgYPKy4oW7snvtq5BrIcqpaYk`,
+                Authorization: `Bearer ${WDToken}`,
               },
             }
    
     );
 }
 
-
-// for  adding category to the list
-// export const addCategory = async (data) => {
-//     return await axios.post(`${official}/addCategory`, data, {
-//       headers: {
-//         Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
-//       },
-//     });
-//   };
-  
-
 // ========================= End CURD For user =================================
+
+// ======================== CURD from product =================================
+
+export const getProducts = async ()=>{
+  return await axios.get(`${localApi}/api/getProducts`,
+  {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
+  );
+}
+
+
+// ======================== END CURD from product =================================

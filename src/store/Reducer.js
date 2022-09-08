@@ -1,4 +1,8 @@
-import { Auth, LogBox, Notify } from './Types'
+import { Auth, LogBox, Notify,
+  AddCartItem,
+  RemoveItem,
+  AddQTY,
+  SubOTY, } from './Types'
 
 export const globalSwitch = (state, action) => {
   switch (action.type) {
@@ -9,7 +13,10 @@ export const globalSwitch = (state, action) => {
       return { ...state, LogBox: { ...action.payload } }
     case Notify:
       return { ...state, Notify: { ...action.payload } }
-    default:
+    case AddCartItem:
+      localStorage.setItem('cart',JSON.stringify(action.payload))
+      return {...state,AddCartItem : {...action.payload}}
+      default:
       return state;
   }
 }

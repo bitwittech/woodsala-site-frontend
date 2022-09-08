@@ -24,8 +24,23 @@ const Context = ({ children }) => {
             variant: null,
             open: false,
             message: null
+        },
+        AddCartItem : {
+            items  : []
+        },
+        RemoveItem: {
+           product_id : null   
+        },
+        AddQTY : {
+            product_id : null
+        },
+        SubOTY : {
+            product_id : null
         }
+
     });
+
+   
 
     return (
         <GlobalContext.Provider value={{ state, dispatch }}>

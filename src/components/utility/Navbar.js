@@ -22,8 +22,8 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import MenuOpenTwoToneIcon from "@mui/icons-material/MenuOpenTwoTone";
-import CloseIcon from "@mui/icons-material/Close";
+// import MenuOpenTwoToneIcon from "@mui/icons-material/MenuOpenTwoTone";
+// import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 // image
@@ -37,6 +37,9 @@ import useful from "../../asset/images/hamburger/useful.jpg";
 import company from "../../asset/images/hamburger/company.png";
 import kitchen from "../../asset/images/hamburger/kitchen.png";
 import exclusive from "../../asset/images/hamburger/exclusive.png";
+
+// persistdata
+import PersisteData from "./PersisteData";
 
 // css
 import "../../asset/css/navbar.css";
@@ -74,6 +77,7 @@ export default function Navbar(props) {
 
   return (
     <>
+          <PersisteData/>
       <Grid container className="nav">
         {/* Black Top bar */}
         <Grid item xs={12} className="topBox">

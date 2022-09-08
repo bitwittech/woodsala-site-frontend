@@ -24,12 +24,17 @@ import AddShoppingCartOutlinedIcon from "@mui/icons-material/AddShoppingCartOutl
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
-
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 //image
 import living from ".././asset/images/home/sofa_SBR.png";
 import wfh from ".././asset/images/home/table_SBR.png";
 import bedroom from ".././asset/images/home/bedroom_SBR.png";
 import dining from ".././asset/images/home/dining_SBR.png";
+
+// store 
+import {Store} from '../store/Context'
+// types 
+import { AddCartItem } from "../store/Types";
   
 
 // services 
@@ -53,17 +58,20 @@ export default function Categories() {
     },
   };
 
+  // store
+  const { state ,dispatch} = Store();
+
 
   // use Effect
   useEffect(()=>{
 
     getProducts()
     .then((data)=>{
-      console.log(data)
+      //console.log(data)
       return setItems(data.data)
     })
     .catch((err)=>{
-      console.log(err)
+      //console.log(err)
     })
 
   },[])
@@ -171,7 +179,6 @@ export default function Categories() {
                 <Box key={index} sx={{
                   padding: "10%",
                 }} className="card ">
-                  {console.log(item)}
                   <img src={item.image } alt={index}  />
                   <Typography
                     sx={{
@@ -457,6 +464,7 @@ export default function Categories() {
 
         {/* product container */}
         <Grid className="productContainer" item xs={12} md={10}>
+          {/* {console.log(state.AddCartItem)} */}
           <Grid container className = 'innerProductWrap' >
             {items.map((item, index) => {
               return (
@@ -476,15 +484,27 @@ export default function Categories() {
                         <Box className="productInfo">
                           <Typography variant="h5">{item.product_title}</Typography>
                           <Typography variant="body2">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Est harum natus error facilis similique officiis ea nisi architecto explicabo tenetur nulla possimus voluptas saepe nemo dolor, quae mollitia itaque voluptates sapiente consectetur repellendus optio. Aspernatur?
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Est harum natus error facilis similique officiis ea nisi architecto explicabo tenetur Aspernatur?
                           </Typography>
-                          <Typography variant="h6">Rs.{item.MRP}</Typography>
+                          <Typography variant="h5">{item.discount_limit}% Off</Typography>
+                          <Typography variant="h6"><s>Rs.{item.MRP}</s></Typography>
+                          <Typography variant="h5">Rs.{item.selling_price}</Typography>
                         </Box>
                       </Grid>
                       <Grid item xs={3}>
                         <Box className="buttonAction">
                           <IconButton>
-                            <AddShoppingCartOutlinedIcon></AddShoppingCartOutlinedIcon>
+                            <AddShoppingCartOutlinedIcon onClick = {()=> dispatch(
+                              {
+                                type : AddCartItem,
+                                payload : {items : [...state.AddCartItem.items,
+                                  {
+                                  CID : state.Auth.CID || 'Not Logged In',
+                                  product_id : item.SKU,
+                                  quantity : 1,
+                                }]}
+                              }
+                            )}></AddShoppingCartOutlinedIcon>
                           </IconButton>
                           <IconButton>
                             <FavoriteBorderOutlinedIcon></FavoriteBorderOutlinedIcon>

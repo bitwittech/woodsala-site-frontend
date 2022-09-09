@@ -290,8 +290,8 @@ export default function Navbar(props) {
               />
             </Grid>
             <Grid item xs={12} md={3} className="center">
-              <IconButton color="primary">
-                <PersonOutlineOutlinedIcon onClick={handleLog} />
+              <IconButton color="primary" onClick={handleLog}>
+                <PersonOutlineOutlinedIcon  />
               </IconButton>
               <IconButton color="primary">
                 <FavoriteBorderOutlinedIcon />

@@ -1,7 +1,7 @@
 // css
 import ".././asset/css/cart.css";
 // react
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   Typography,
@@ -12,8 +12,6 @@ import {
   InputAdornment,
 } from "@mui/material";
 
-// test image
-import testImage from "../asset/images/cart/cartHead.png";
 
 import {
   DataGrid,
@@ -28,6 +26,14 @@ import Pagination from "@mui/material/Pagination";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
 import OutlinedFlagSharpIcon from "@mui/icons-material/OutlinedFlagSharp";
+
+// APis services 
+import { getProductDetails, updateQuantity } from "../service/service"
+
+// state global
+import { Store } from '../store/Context'
+import { AddCartItem } from "../store/Types";
+
 
 const countries = [
   {
@@ -44,6 +50,7 @@ const countries = [
   },
 ];
 
+// pagination
 function CustomPagination() {
   const apiRef = useGridApiContext();
   const page = useGridSelector(apiRef, gridPageSelector);
@@ -60,14 +67,102 @@ function CustomPagination() {
 }
 
 const Cart = (props) => {
-  const [country, setcountry] = React.useState("EUR");
+
+  // global 
+  const { state, dispatch } = Store();
+
+// states 
+  const [row, setRow] = useState([])
+  const [country, setCountry] = useState("EUR");
 
   const handleChange = (event) => {
-    setcountry(event.target.value);
+    setCountry(event.target.value);
   };
 
+  // decrease quantity
+const handleDecrease = (e)=>{
+  const modifiedData = state.AddCartItem.items.map((data)=>{
+
+    if(e.product_id === data.product_id) 
+    {
+      return {
+        CID : data.CID,
+        product_id : data.product_id,
+        quantity : e.quantity -= 1
+      }
+    }
+    else return data
+
+  })
+
+  if(state.Auth.isAuth)
+  {
+    updateQuantity({CID : state.Auth.CID, product_id : e.product_id, quantity : e.quantity  })
+    .then((response)=>{
+      dispatch({
+        type : AddCartItem,
+        payload : {items : [
+          ...modifiedData,
+        ]}
+      })  
+    })
+
+  }
+  else {
+    dispatch({
+      type : AddCartItem,
+      payload : {items : [
+        ...modifiedData,
+      ]}
+    })
+
+  }
+}
+  // increase quantity
+const handleIncrease = (e)=>{
+  const modifiedData = state.AddCartItem.items.map((data)=>{
+
+    if(e.product_id === data.product_id) 
+    {
+      return {
+        CID : data.CID,
+        product_id : data.product_id,
+        quantity : e.quantity += 1
+      }
+    }
+    else return data
+
+  })
+
+  if(state.Auth.isAuth)
+  {
+    updateQuantity({CID : state.Auth.CID, product_id : e.product_id, quantity : e.quantity  })
+    .then((response)=>{
+      dispatch({
+        type : AddCartItem,
+        payload : {items : [
+          ...modifiedData,
+        ]}
+      })  
+    })
+
+  }
+  else {
+    dispatch({
+      type : AddCartItem,
+      payload : {items : [
+        ...modifiedData,
+      ]}
+    })
+
+  }
+
+}
+
+// columns section 
   const columns = [
     { field: "id", renderHeader: () => <strong>{"S.No"}</strong>, width: 50 },
+    { field: "SKU", renderHeader: () => <strong>{"SKU"}</strong>, width: 100 },
     {
       field: "product",
       align: "center",
@@ -76,7 +171,7 @@ const Cart = (props) => {
       renderCell: (params) => (
         <div>
           {params.formattedValue !== "undefined" ? (
-            <img className="productImage" src={testImage} alt="category" />
+            <img className="productImage" src={params.formattedValue} alt="category" />
           ) : (
             "Image Not Give"
           )}
@@ -102,15 +197,20 @@ const Cart = (props) => {
       renderCell: (params) => (
         <Grid container className="qtyButtons">
           <Grid item xs={12} md={3}>
-            <Button variant="outlined" size="small">
+            <Button
+            onClick = {()=> handleDecrease({product_id : params.row.SKU,quantity : params.row.qty})}
+            variant="outlined" size="small">
               -
             </Button>
           </Grid>
           <Grid item xs={12} md={2}>
-            <Typography variant="button">0</Typography>
+            <Typography variant="button">{params.formattedValue}</Typography>
           </Grid>
           <Grid item xs={12} md={3}>
-            <Button variant="outlined" size="small">
+            <Button 
+            onClick = {()=> handleIncrease({product_id : params.row.SKU,quantity : params.row.qty})}
+            
+            variant="outlined" size="small">
               +
             </Button>
           </Grid>
@@ -125,23 +225,34 @@ const Cart = (props) => {
     },
   ];
 
-  const rows = [
-    { id: 1, product_name: "Snow", price: 10000, qty: 0, total: 10000 },
-    { id: 2, product_name: "Lannister", price: 10000, qty: 0, total: 10000 },
-    { id: 3, product_name: "Lannister", price: 10000, qty: 0, total: 10000 },
-    { id: 4, product_name: "Stark", price: 10000, qty: 0, total: 10000 },
-    { id: 5, product_name: "Targaryen", price: 10000, qty: 0, total: 10000 },
-    { id: 6, product_name: "Melisandre", price: 10000, qty: 0, total: 100000 },
-    { id: 7, product_name: "Clifford", price: 10000, qty: 0, total: 10000 },
-    { id: 8, product_name: "Frances", price: 10000, qty: 0, total: 10000 },
-    { id: 9, product_name: "Roxie", price: 10000, qty: 0, total: 10000 },
-  ];
 
+  useEffect(() => {
+    console.log(state.AddCartItem.items)
+    getProductDetails(JSON.stringify(state.AddCartItem.items.map((item) => { return item.product_id })))
+      .then((response) => {
+        setRow(
+          response.data.map((dataSet,index)=>{
+            return {
+              id : index+1,
+              SKU : dataSet.SKU,
+              product : dataSet.featured_image,
+              product_name : dataSet.product_title,
+              price : state.AddCartItem.items.filter((data)=> { return data.product_id === dataSet.SKU   } )[0].quantity * dataSet.MRP,
+              qty : state.AddCartItem.items.filter((data)=> { return data.product_id === dataSet.SKU   } )[0].quantity,
+              total : state.AddCartItem.items.filter((data)=> { return data.product_id === dataSet.SKU   } )[0].quantity * dataSet.selling_price,
+            } 
+          })
+        )
+        // setRow(data.data)
+      })
+  },[state.AddCartItem])
+
+  // data grid view
   function DataGridView() {
     return (
       <div style={{ height: "400px", width: "100%" }}>
         <DataGrid
-          rows={rows}
+          rows={row}
           columns={columns}
           pageSize={3}
           getRowHeight={() => 100}
@@ -222,7 +333,7 @@ const Cart = (props) => {
                           InputProps={{
                             startAdornment: (
                               <InputAdornment position="start">
-                                <PublicOutlinedIcon small = "true" />
+                                <PublicOutlinedIcon small="true" />
                               </InputAdornment>
                             ),
                           }}
@@ -244,7 +355,7 @@ const Cart = (props) => {
                           InputProps={{
                             startAdornment: (
                               <InputAdornment position="start">
-                                <OutlinedFlagSharpIcon small = "true" />
+                                <OutlinedFlagSharpIcon small="true" />
                               </InputAdornment>
                             ),
                           }}
@@ -269,7 +380,7 @@ const Cart = (props) => {
                         />
                         <Button
                           sx={{ marginTop: "7%" }}
-                          small = "true"
+                          small="true"
                           variant="outlined"
                         >
                           Update
@@ -290,9 +401,9 @@ const Cart = (props) => {
                       <br></br>
                     </Grid>
                     <Grid item xs={12}>
-                      <Button onClick = {()=>{
+                      <Button onClick={() => {
                         props.history("/checkout")
-                      }}  sx = {{fontWeight : "500"}} variant="contained" fullWidth>
+                      }} sx={{ fontWeight: "500" }} variant="contained" fullWidth>
                         Proceed To CheckOut
                       </Button>
                     </Grid>

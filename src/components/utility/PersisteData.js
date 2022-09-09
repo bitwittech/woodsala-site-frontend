@@ -1,50 +1,49 @@
-import React, {useEffect} from 'react';
+import { SatelliteAltTwoTone } from '@mui/icons-material';
+import React, { useEffect } from 'react';
 
 // state 
-import {Store} from "../../store/Context" 
+import { Store } from "../../store/Context"
 
 // type
-import {Auth, AddCartItem} from "../../store/Types";
+import { Auth, AddCartItem } from "../../store/Types";
 
+// api server
+// import {getCartItem} from '../../service/service'
 
 const PersisteData = () => {
-    
-    const {state,dispatch} = Store()
 
-    // for data persistance
-    
-    useEffect(()=>{
-      if (localStorage.getItem('payload'))
-      {
-         dispatch({
-           type : Auth,
-           payload : JSON.parse(localStorage.getItem('payload'))
-         })
-      }
-      if (localStorage.getItem('cart')!== null)
-      {
-        JSON.parse(localStorage.getItem('cart')).items.map(async(item,index)=>{
-        console.log(index)
+  const { state, dispatch } = Store()
 
-            return await dispatch({
-                type : AddCartItem,
-                payload : {items : [...state.AddCartItem.items,
-                    {
-                    CID : state.Auth.CID || 'Not Logged In',
-                    product_id : item.product_id,
-                    quantity : item.quantity,
-                  }]}
-              })
-        })
-      }
-     },[])
-   
+  // for data persistance
 
-    return (
-        <div>
-            
-        </div>
-    );
+  useEffect(() => {
+
+    // For Auth persistance
+    if (localStorage.getItem('payload')) {
+      dispatch({
+        type: Auth,
+        payload: JSON.parse(localStorage.getItem('payload'))
+      })
+    }
+
+    // cart persistance 
+
+    if (localStorage.getItem('cart') !== null) {
+
+      dispatch({
+        type: AddCartItem,
+        payload: JSON.parse(localStorage.getItem('cart'))
+      })
+    }
+
+  }, [])
+
+
+  return (
+    <div>
+
+    </div>
+  );
 }
 
 export default PersisteData;

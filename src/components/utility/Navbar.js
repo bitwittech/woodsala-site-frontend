@@ -1,6 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
-  AppBar,
+  Menu,
+  MenuItem,
   Grid,
   Typography,
   IconButton,
@@ -11,6 +12,7 @@ import {
   Box,
   Link,
   Drawer,
+  ListItemIcon
 } from "@mui/material";
 
 // icon
@@ -22,6 +24,9 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import LogoutIcon from '@mui/icons-material/Logout';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
 // import MenuOpenTwoToneIcon from "@mui/icons-material/MenuOpenTwoTone";
 // import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
@@ -38,46 +43,121 @@ import company from "../../asset/images/hamburger/company.png";
 import kitchen from "../../asset/images/hamburger/kitchen.png";
 import exclusive from "../../asset/images/hamburger/exclusive.png";
 
-// persistdata
-import PersisteData from "./PersisteData";
+// persistData
+import PersistData from "./PersistData";
 
 // css
 import "../../asset/css/navbar.css";
 
 // store  
 import { Store } from '../../store/Context'
-import { LogBox } from '../../store/Types'
+import { LogBox, Auth, Notify } from '../../store/Types'
 
 export default function Navbar(props) {
+// store 
+  const { state, dispatch } = Store();
+
+  // stats for ham burgher icon 
   const [Ham, setHam] = useState(false);
 
-  const { state, dispatch } = Store();
+  const [anchor, setAnchorEl] = useState(null);
+
+
+  
+  const handleProfileIconClick = (event) => {
+   state.Auth.isAuth? setAnchorEl(event.currentTarget) : dispatch(
+    {
+      type: LogBox,
+      payload: {
+        open: true,
+        type: 'logIn'
+      }
+    }
+  ) ;
+  };
+
+  // close menu
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const navBarComponent = ["/", "/checkout"];
 
+  // for nav route
   const handleChange = (e, newVal) => {
     props.history(newVal);
   };
 
+
+  // for profile view
   const handleLog = () => {
-    state.Auth.isAuth ?
-      props.history('/profile') :
-      dispatch(
-        {
-          type: LogBox,
-          payload: {
-            open: true,
-            type: 'logIn'
-          }
-        }
-      )
+    state.Auth.isAuth &&
+      props.history('/profile') 
+   
+
+    return handleMenuClose();
 
   }
 
+  // for logout 
+  const handleLogOut = async () => {
+    localStorage.clear();
+
+    dispatch({
+      type: Notify,
+      payload: {
+        variant: 'success',
+        message: 'Logging Out !!!',
+        open: true
+      }
+    })
+
+    await dispatch({
+      type: Auth,
+      payload: {
+        isAuth: false,
+        CID: undefined,
+        email: undefined,
+        username: undefined,
+        token: undefined
+      }
+    })
+
+    handleMenuClose();
+
+    return props.history('/')
+
+  }
+
+  // menu box 
+  function MenuBox() {
+    return (
+      <Menu
+        id={"menu"}
+        anchorEl={anchor}
+        keepMounted
+        open={Boolean(anchor)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={handleLog}>
+          <ListItemIcon>
+            <AccountCircleIcon />
+          </ListItemIcon>
+          <ListItemIcon>Profile</ListItemIcon>
+        </MenuItem>
+        <MenuItem onClick={handleLogOut}>
+          <ListItemIcon>
+            <LogoutIcon />
+          </ListItemIcon>
+          <ListItemIcon>Logout</ListItemIcon>
+        </MenuItem>
+      </Menu>
+    );
+  }
 
   return (
     <>
-          <PersisteData/>
+      <PersistData />
       <Grid container className="nav">
         {/* Black Top bar */}
         <Grid item xs={12} className="topBox">
@@ -266,7 +346,7 @@ export default function Navbar(props) {
         <Grid item xs={12}>
           <Grid container spacing={1} className="main-1">
             <Grid item xs={12} md={3} className="center">
-              <img src={logo} alt="logo.png"></img>
+              <img src={logo} style = {{cursor : 'pointer'}} onClick= {()=>{props.history('/')}} alt="logo.png"></img>
             </Grid>
             <Grid item xs={10} md={6} className="center searchBar">
               <TextField
@@ -290,9 +370,10 @@ export default function Navbar(props) {
               />
             </Grid>
             <Grid item xs={12} md={3} className="center">
-              <IconButton color="primary" onClick={handleLog}>
-                <PersonOutlineOutlinedIcon  />
+              <IconButton color="primary" onClick={handleProfileIconClick }>
+                <PersonOutlineOutlinedIcon />
               </IconButton>
+              <MenuBox></MenuBox>
               <IconButton color="primary">
                 <FavoriteBorderOutlinedIcon />
               </IconButton>

@@ -49,7 +49,7 @@ import FJ1 from ".././asset/images/home/FJ_1.png";
 import FJ2 from ".././asset/images/home/FJ_2.png";
 import FJ3 from ".././asset/images/home/FJ_3.png";
 
-export default function Home() {
+export default function Home(props) {
   let instaPost = [
     post1,
     table,
@@ -205,7 +205,7 @@ export default function Home() {
             We bet you can't find an identical piece, <br></br> any where in the
             world
           </Typography>
-          <Button sx={{ margin: "5px" }} small={"true"} variant="outlined">
+          <Button onClick = {()=>{console.log(props); props.history('/categories')}} sx={{ margin: "5px" }} small={"true"} variant="outlined">
             Shop Now
           </Button>
         </Grid>

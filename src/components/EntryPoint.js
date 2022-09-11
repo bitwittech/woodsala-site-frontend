@@ -297,14 +297,14 @@ export default function EntryPoint() {
                                                 size={'small'}
                                             />
                                         </FormControl>
-                                        {console.log(state.Auth)}
+                                        {/* {console.log(state.Auth)} */}
                                         <FormControl sx={{ mt: 2, mb: 2 }} variant="outlined">
                                             <TextField
                                                 fullWidth
                                                 required
                                                 name='password'
                                                 id="outlined-adornment-password"
-                                                type={!controller.visible ? 'text' : 'password'}
+                                                type={controller.visible ? 'text' : 'password'}
                                                 size={'small'}
                                                 onChange={handleValue}
                                                 InputProps={{
@@ -417,7 +417,7 @@ export default function EntryPoint() {
                                                 required
                                                 onChange={handleValue}
                                                 id="outlined-adornment-password"
-                                                type={!controller.visible ? 'text' : 'password'}
+                                                type={controller.visible ? 'text' : 'password'}
                                                 size={'small'}
                                                 helperText={error.password ? 'Minimum eight characters, at least one letter, one number and one special character.' : 'Please choose a strong password !!!'}
                                                 InputProps={{

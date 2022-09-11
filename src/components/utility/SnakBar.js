@@ -15,8 +15,8 @@ export default function SnackBar() {
   return (
     <>
       {state.Notify.open === true &&
-        <Snackbar open={state.Notify.open} autoHideDuration={6000} onClose={() => dispatch({ type: Notify, payload: { open: false, variant: null, massage: null } })}>
-          <Alert onClose={() => dispatch({ type: Notify, payload: { open: false, variant: null, massage: null } })} severity={state.Notify.variant} sx={{ width: '100%' }}>
+        <Snackbar  open={state.Notify.open} autoHideDuration={6000} onClose={() => dispatch({ type: Notify, payload: { open: false, variant: null, massage: null } })}>
+          <Alert  onClose={() => dispatch({ type: Notify, payload: { open: false, variant: null, massage: null } })} severity={state.Notify.variant} sx={{ width: '100%', fontSize : '1.1rem',  }}>
             {state.Notify.message}
           </Alert>
         </Snackbar>

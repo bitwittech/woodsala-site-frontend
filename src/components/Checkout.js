@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState,useEffect} from "react";
 
 // mui
 import {
@@ -24,6 +24,14 @@ import "../asset/css/checkout.css";
 import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
 import OutlinedFlagSharpIcon from "@mui/icons-material/OutlinedFlagSharp";
 import bajot from "../asset/images/home/bajot_TC.png";
+
+// apis function 
+import {getCustomer} from '../service/service'
+
+// store
+import {Store} from '../store/Context';
+import {Notify} from '../store/Context';
+
 
 const orders = [
   {
@@ -59,10 +67,53 @@ const countries = [
 ];
 
 export default function Checkout() {
-  const [country, setcountry] = React.useState("EUR");
+
+  // global Store
+  const {state,dispatch} = Store();
+
+  // data form state
+  const [data,setData]= useState({
+    status : 'processing',
+    customer_name : '' , 
+    customer_email : '' , 
+    customer_mobile : '' , 
+    city : '' ,
+    state : '' ,
+    shipping : '' ,
+    quantity : [],
+    discoun : 0,
+    paid : 0 , 
+    total : 0 ,
+    note : '',
+  })
+
+  const handleData = ()=>{
+
+  }
+  useEffect(()=>{
+    if (state.Auth.CID)
+    {
+      getCustomer(state.Auth.CID)
+      .then((response)=>{
+        setData({
+          ...data,
+          customer_name : response.data.username,
+          customer_email : response.data.mobile,
+          customer_mobile : response.data.email,
+          city : response.data.city,
+          state : response.data.state,
+          shipping : response.data.shipping,
+        })
+        
+      })
+    }
+
+  },[state.Auth.CID])
+
+  const [country, setCountry] = React.useState("EUR");
 
   const handleChange = (event) => {
-    setcountry(event.target.value);
+    setCountry(event.target.value);
   };
 
   return (
@@ -111,6 +162,9 @@ export default function Checkout() {
                 <TextField
                   required
                   label="Name"
+                  name = 'customer_name'
+                  onChange = {handleData}
+                  value = {data.customer_name || ''}
                   fullWidth
                   id="outlined-start-adornment"
                   sx={{ marginTop: "2%" }}
@@ -118,6 +172,9 @@ export default function Checkout() {
                 />
                 <TextField
                   required
+                  name = 'customer_email'
+                  onChange = {handleData}
+                  value = {data.customer_email || ''}
                   label="Email"
                   fullWidth
                   id="outlined-start-adornment"
@@ -126,6 +183,9 @@ export default function Checkout() {
                 />
                 <TextField
                   required
+                  name = 'customer_mobile'
+                  onChange = {handleData}
+                  value = {data.customer_mobile || ''}
                   label="Phone Number"
                   fullWidth
                   id="outlined-start-adornment"
@@ -134,17 +194,23 @@ export default function Checkout() {
                 />
                 <TextField
                   required
+                  name = 'shipping'
+                  onChange = {handleData}
+                  value = {data.shipping || ''}
                   label="Address"
                   fullWidth
                   id="outlined-start-adornment"
                   sx={{ marginTop: "2%" }}
                   size="small"
                 />
-
+{/* 
                 <TextField
                   select
                   size="small"
                   sx={{ marginTop: "2%" }}
+                  name = 'country'
+                  onChange = {handleData}
+                  value = {data.country || ''}
                   label="Country"
                   value={country}
                   fullWidth
@@ -162,7 +228,7 @@ export default function Checkout() {
                       {option.value}
                     </MenuItem>
                   ))}
-                </TextField>
+                </TextField> */}
                 <TextField
                   select
                   sx={{ marginTop: "2%" }}

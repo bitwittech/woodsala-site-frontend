@@ -45,7 +45,7 @@ export const updateCustomer = async (data) => {
 
 // ========================= End CURD For user =================================
 
-// ======================== CURD from product =================================
+// ======================== CURD for product =================================
 
 export const getProducts = async () => {
   return await axios.get(`${localApi}/api/getProducts`,
@@ -57,8 +57,13 @@ export const getProducts = async () => {
   );
 }
 
+// get product details for display  
+export const getProductDetails = async (data) => {
+  return await axios.get(`${localApi}/api/getProductDetails?SKU=${data}`);
+}
 
-// ======================== END CURD from product =================================
+
+// ======================== END CURD  product =================================
 
 
 // ========================  CURD from Cart =================================
@@ -97,8 +102,8 @@ export const getCartItem = async (data) => {
 }
 
 
-export const getProductDetails = async (data) => {
-  return await axios.get(`${localApi}/api/getProductDetails?products=${data}`,
+export const getDetails = async (data) => {
+  return await axios.get(`${localApi}/api/getDetails?products=${data}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,

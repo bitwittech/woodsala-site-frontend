@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 import Carousel from "react-multi-carousel";
-
+import { useLocation } from "react-router-dom";
 // demo images
 import living from ".././asset/images/home/sofa_SBR.png";
 import wfh from ".././asset/images/home/table_SBR.png";
@@ -37,24 +37,51 @@ import {
 
 
 } from "@mui/material";
-// array of image
 
-const imageArr = [living, wfh, bedroom, dining, bed];
+// APis function 
+import { getProductDetails, addCartItem } from '../service/service'
+
+// global state 
+import {Store} from '../store/Context'
+import {AddCartItem,Notify} from '../store/Types'
+
 
 export default function ProductDetails() {
+
+  // store 
+  const {state,dispatch} = Store();
+
   // state
   const [imageIndex, setIndex] = useState(0); // use for updating the images
   const [ratting, setRatting] = useState(2);
   const [expanded, setExpanded] = useState("panel1");
   const [value, setValue] = useState(0);
 
+  // get query parameter for product 😀 
+  const search = useLocation().search;
+  const SKU = new URLSearchParams(search).get('SKU');
+
+  // state for data 
+  const [data, setData] = useState(null)
+
+  // for getting the product 
+  useEffect(() => {
+    getProductDetails(SKU)
+      .then((response) => {
+          setData(response.data)
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
+
+  }, []);
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
 
 
-  const handleChangeTab= (event, newValue) => {
+  const handleChangeTab = (event, newValue) => {
     setValue(newValue);
   };
 
@@ -114,7 +141,7 @@ export default function ProductDetails() {
 
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
-  
+
     return (
       <div
         role="tabpanel"
@@ -131,39 +158,124 @@ export default function ProductDetails() {
       </div>
     );
   }
-  
+
   TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.number.isRequired,
     value: PropTypes.number.isRequired,
   };
-  
+
   function a11yProps(index) {
     return {
       id: `simple-tab-${index}`,
       'aria-controls': `simple-tabpanel-${index}`,
     };
   }
+
+  // function for adding the product to cart 
+    const addToCart = async (item) => {
+      let flag = false;
+      const modifiedData = state.AddCartItem.items.map((set)=>{
+
+        if(item.SKU === set.product_id) 
+        {
+          flag = true;
+          return {
+            CID : state.Auth.CID || 'Not Logged In',
+            product_id : set.product_id,
+            quantity : data.quantity
+          }
+        }
+        else return set
+    
+      })
+
+      if (flag === false) modifiedData.push({
+            CID : state.Auth.CID || 'Not Logged In',
+            product_id : item.SKU,
+            quantity : data.quantity || 1
+      })
+
+      // server side 
+      if (state.Auth.isAuth) {
+        await addCartItem({
+          CID: state.Auth.CID,
+          product_id: item.SKU,
+          quantity: data.quantity || 1,
+        })
+          .then((response) => {
+            // for client side 
+            dispatch(
+              {
+                type: AddCartItem,
+                payload: {
+                  items: [...modifiedData]}
+              }
+            )
+            return dispatch({
+              type: Notify,
+              payload: {
+                variant: 'success',
+                message: response.data.message,
+                open: true
+              }
+            })
+          })
+          .catch((err) => {
+            return dispatch({
+              type: Notify,
+              payload: {
+                variant: 'error',
+                message: 'Something Went Wrong !!!',
+                open: true
+              }
+            })
+          })
+      }
+      else {
+        // for client side 
+        dispatch(
+          {
+            type: AddCartItem,
+            payload: {
+              items: [...modifiedData]}
+          }
+        )
+        return dispatch({
+          type: Notify,
+          payload: {
+            variant: 'success',
+            message: 'Item added to the cart !!!',
+            open: true
+          }
+        })
   
+      }
+    }
+
 
   return (
     <>
       <title>Product</title>
+      {data && <>
       {/* main section  */}
       <Grid container className="mainSec">
         {/* Image sec */}
         <Grid item className="imageSec" xs={12} md={6}>
           <Grid container>
-            <Grid item xs={12}>
+            <Grid item xs={12} sx = {{
+              maxWidth : '400px' ,
+              maxHeight : '450px'
+            }}>
               <img
                 className="showImage"
-                src={imageArr[imageIndex]}
+                src={data.product_image[imageIndex]}
                 alt="image2"
               />
             </Grid>
             <Grid item xs={12}>
               <Grid container className="preview" spacing={2}>
-                {imageArr.map((item, index) => {
+                {data.product_image.map((item, index) => {
                   return (
                     <Grid
                       item
@@ -188,7 +300,7 @@ export default function ProductDetails() {
             <Grid item xs={12}>
               <Typography sx={{ fontWeight: 350 }} variant="h4">
                 {/* product title */}
-                Waken Bed With Storage
+                {data.product_title}
               </Typography>
               <Typography sx={{ color: "#FD0606" }} variant="h6">
                 By Casa Craft
@@ -209,15 +321,15 @@ export default function ProductDetails() {
               <Box className="priceSec">
                 <Typography variant="h6">
                   {/* Price */}
-                  Rs.12000
+                  Rs.{data.selling_price}
                 </Typography>
-                <Typography variant="caption">
+                <Typography variant="body1">
                   {/* MRP */}
-                  MRP:: <del>Rs.15000</del>
+                  MRP : <del>{data.MRP}</del>
                 </Typography>
                 <Typography sx={{ color: "#FD0606" }} variant="h6">
                   {/* discount */}
-                  10% Off
+                  {data.discount_limit}% Off
                 </Typography>
               </Box>
             </Grid>
@@ -336,13 +448,15 @@ export default function ProductDetails() {
                   label="Quantity"
                   type="number"
                   variant="outlined"
+                  value = {data.quantity || 1}
+                  onChange = {(e)=>setData({...data, quantity : e.target.value})}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">QTY</InputAdornment>
                     ),
                   }}
                 />
-                <Button variant="outlined" small="true">
+                <Button variant="outlined" onClick = {()=>addToCart(data)} small="true">
                   Add To Cart
                 </Button>
                 <Button variant="contained" small="true">
@@ -355,29 +469,29 @@ export default function ProductDetails() {
                 Product Details
               </Typography>
               <Divider />
-              <Stack sx = {{paddingTop : "2%"}}>
+              <Stack sx={{ paddingTop: "2%" }}>
                 <Typography variant="caption">
                   SKU
-                  <Typography sx = {{float : "right"}} variant="caption">WSBED046WF9996</Typography>
+                  <Typography sx={{ float: "right" }} variant="caption">WSBED046WF9996</Typography>
                 </Typography>
                 <Typography variant="caption">
                   Storage
-                  <Typography  sx = {{float : "right"}} variant="caption">With storage</Typography>
+                  <Typography sx={{ float: "right" }} variant="caption">With storage</Typography>
                 </Typography>
                 <Typography variant="caption">
                   Material
-                  <Typography sx = {{float : "right"}} variant="caption">Sheesham wood</Typography>
+                  <Typography sx={{ float: "right" }} variant="caption">Sheesham wood</Typography>
                 </Typography>
                 <Typography variant="caption">
                   Size
-                  <Typography sx = {{float : "right"}} variant="caption">King size</Typography>
+                  <Typography sx={{ float: "right" }} variant="caption">King size</Typography>
                 </Typography>
                 <Typography variant="caption">
                   Dimensions (Inch)
-                  <Typography sx = {{float : "right"}} variant="caption">88 L x 75 W x 33 H</Typography>
+                  <Typography sx={{ float: "right" }} variant="caption">88 L x 75 W x 33 H</Typography>
                 </Typography>
                 <Typography variant="caption">
-                  Mattress<Typography sx = {{float : "right"}} variant="caption">78 L x 72 W</Typography>
+                  Mattress<Typography sx={{ float: "right" }} variant="caption">78 L x 72 W</Typography>
                 </Typography>
               </Stack>
             </Grid>
@@ -389,65 +503,65 @@ export default function ProductDetails() {
 
       {/* More Information */}
 
-<Grid container className = "moreInfo" >
-    <Grid item xs = {12}>
-        <Typography sx = {{fontWeight : 500}} variant = "h4">
-        MORE INFORMATION
-        </Typography>
-    </Grid>
-    <Grid item xs = {12}>
-        <Typography sx = {{fontWeight : 100, padding : "2% 0%"}} variant = "h5">
-        Walked Bed With Storage in Light Grey Color - CasaCraft By Right Furniture
-        </Typography>
-    </Grid>
+      <Grid container className="moreInfo" >
+        <Grid item xs={12}>
+          <Typography sx={{ fontWeight: 500 }} variant="h4">
+            MORE INFORMATION
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography sx={{ fontWeight: 100, padding: "2% 0%" }} variant="h5">
+            Walked Bed With Storage in Light Grey Color - CasaCraft By Right Furniture
+          </Typography>
+        </Grid>
 
-    <Grid item xs = {12}>
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
-          <Tab label="Overview" {...a11yProps(0)} />
-          <Tab label="Additional Info" {...a11yProps(1)} />
-          <Tab label="Merchant Details" {...a11yProps(2)} />
-          <Tab label="Warranty" {...a11yProps(3)} />
-          <Tab label="Terms & Conditions" {...a11yProps(4)} />
-        </Tabs>
-      </Box>
-      <TabPanel value={value} index={0}>
-        Item One
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        Item Two
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Item Three
-      </TabPanel>
-    </Box>
-    </Grid>
+        <Grid item xs={12}>
+          <Box sx={{ width: '100%' }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
+                <Tab label="Overview" {...a11yProps(0)} />
+                <Tab label="Additional Info" {...a11yProps(1)} />
+                <Tab label="Merchant Details" {...a11yProps(2)} />
+                <Tab label="Warranty" {...a11yProps(3)} />
+                <Tab label="Terms & Conditions" {...a11yProps(4)} />
+              </Tabs>
+            </Box>
+            <TabPanel value={value} index={0}>
+              Item One
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              Item Two
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+              Item Three
+            </TabPanel>
+          </Box>
+        </Grid>
 
-</Grid>
+      </Grid>
 
       {/* More Information ends */}
 
       {/* Related Products */}
 
-<Grid container className = "moreInfo">
-<Grid item xs = {12}>
-        <Typography sx = {{fontWeight : 500}} variant = "h4">
-        Related Products
-        </Typography>
-    </Grid>
-    <Grid item xs={12}>
+      <Grid container className="moreInfo">
+        <Grid item xs={12}>
+          <Typography sx={{ fontWeight: 500 }} variant="h4">
+            Related Products
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
           <Carousel
             dotListClass="custom-dot-list-style"
             keyBoardControl={true}
             autoPlaySpeed={1000}
             ssr={true}
-            className = "detailsCarsole"
+            className="detailsCarsole"
             responsive={responsive}
           >
             {customer.map((article, index) => {
               return (
-                <Card className="card" key = {index} sx={{ maxWidth: 300, boxShadow: 3 }}>
+                <Card className="card" key={index} sx={{ maxWidth: 300, boxShadow: 3 }}>
                   <CardActionArea>
                     <CardMedia
                       className="cardMedia"
@@ -469,11 +583,12 @@ export default function ProductDetails() {
               );
             })}
           </Carousel>
-          
+
         </Grid>
-</Grid>
+      </Grid>
 
       {/* Related Products Ends */}
+      </>}
     </>
   );
 }

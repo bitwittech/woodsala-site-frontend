@@ -10,6 +10,7 @@ import {
   Divider,
   MenuItem,
   InputAdornment,
+  IconButton
 } from "@mui/material";
 
 
@@ -26,13 +27,13 @@ import Pagination from "@mui/material/Pagination";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
 import OutlinedFlagSharpIcon from "@mui/icons-material/OutlinedFlagSharp";
-
+import DeleteIcon from '@mui/icons-material/Delete';
 // APis services 
-import { getProductDetails, updateQuantity } from "../service/service"
+import { getDetails, updateQuantity,removeCartItem } from "../service/service"
 
 // state global
 import { Store } from '../store/Context'
-import { AddCartItem } from "../store/Types";
+import { AddCartItem,Notify } from "../store/Types";
 
 
 const countries = [
@@ -74,6 +75,104 @@ const Cart = (props) => {
 // states 
   const [row, setRow] = useState([])
   const [country, setCountry] = useState("EUR");
+  const [data,setData] = useState(
+    {
+      total : 0,
+      subtotal : 0
+    }
+  );
+
+
+  // fetching the cart item
+  useEffect(() => {
+    console.log(state.AddCartItem.items)
+    getDetails(JSON.stringify(state.AddCartItem.items.map((item) => { return item.product_id })))
+      .then((response) => {
+        setRow(
+          response.data.map((dataSet,index)=>{
+            return {
+              id : index+1,
+              SKU : dataSet.SKU,
+              product : dataSet.featured_image,
+              product_name : dataSet.product_title,
+              price : state.AddCartItem.items.filter((data)=> { return data.product_id === dataSet.SKU   } )[0].quantity * dataSet.MRP,
+              qty : state.AddCartItem.items.filter((data)=> { return data.product_id === dataSet.SKU   } )[0].quantity,
+              total : state.AddCartItem.items.filter((data)=> { return data.product_id === dataSet.SKU   } )[0].quantity * dataSet.selling_price,
+              action : dataSet.SKU
+            } 
+          })
+        )
+        // setRow(data.data)
+      })
+  },[state.AddCartItem])
+
+  // for calculating total on value on runtime
+useEffect(()=>{
+
+    setData({total : row.reduce((partial,set)=> partial + parseInt(set.total),0)
+   })
+},[row])
+
+   // removeItemFromCart 
+   const removeItemFromCart = async (item) => {
+
+    // server side 
+    if (state.Auth.isAuth) {
+      await removeCartItem({
+        CID: state.Auth.CID,
+        product_id: item.SKU
+      })
+        .then((response) => {
+          // for client side
+          dispatch(
+            {
+              type: AddCartItem,
+              payload: {
+                items: state.AddCartItem.items.filter((row) => { return row.product_id !== item.SKU })
+              }
+            }
+          )
+          return dispatch({
+            type: Notify,
+            payload: {
+              variant: 'warning',
+              message: response.data.message,
+              open: true
+            }
+          })
+        })
+        .catch((err) => {
+          return dispatch({
+            type: Notify,
+            payload: {
+              variant: 'error',
+              message: 'Something Went Wrong !!!',
+              open: true
+            }
+          })
+        })
+    }
+    else {
+      // for client side
+      dispatch(
+        {
+          type: AddCartItem,
+          payload: {
+            items: state.AddCartItem.items.filter((row) => { return row.product_id !== item.SKU })
+          }
+        }
+      )
+      return dispatch({
+        type: Notify,
+        payload: {
+          variant: 'warning',
+          message: 'Item removed added to the cart !!!',
+          open: true
+        }
+      })
+
+    }
+  }
 
   const handleChange = (event) => {
     setCountry(event.target.value);
@@ -223,29 +322,31 @@ const handleIncrease = (e)=>{
       type: "number",
       width: 120,
     },
+    {
+      field: "action",
+      renderHeader: () => <strong>{"Remove"}</strong>,
+      headerName: "Actions",
+      width: 70,
+      renderCell: (params) => 
+      <div className="categoryImage" >
+        <IconButton onClick={() => { console.log(params.formattedValue); removeItemFromCart({SKU : params.formattedValue}).then((res)=>{
+           setRow(row.filter((set)=>{
+            return  set.action !== params.formattedValue  ;
+          }))
+         dispatch({type : Notify,payload : {
+            open : true,
+            variant : 'warning',
+            message : 'Item Removed !!!'
+          }})
+        }) }} aria-label="delete"  >
+          <DeleteIcon />
+        </IconButton>
+        
+      </div>,
+    }
+
   ];
 
-
-  useEffect(() => {
-    console.log(state.AddCartItem.items)
-    getProductDetails(JSON.stringify(state.AddCartItem.items.map((item) => { return item.product_id })))
-      .then((response) => {
-        setRow(
-          response.data.map((dataSet,index)=>{
-            return {
-              id : index+1,
-              SKU : dataSet.SKU,
-              product : dataSet.featured_image,
-              product_name : dataSet.product_title,
-              price : state.AddCartItem.items.filter((data)=> { return data.product_id === dataSet.SKU   } )[0].quantity * dataSet.MRP,
-              qty : state.AddCartItem.items.filter((data)=> { return data.product_id === dataSet.SKU   } )[0].quantity,
-              total : state.AddCartItem.items.filter((data)=> { return data.product_id === dataSet.SKU   } )[0].quantity * dataSet.selling_price,
-            } 
-          })
-        )
-        // setRow(data.data)
-      })
-  },[state.AddCartItem])
 
   // data grid view
   function DataGridView() {
@@ -266,6 +367,8 @@ const handleIncrease = (e)=>{
       </div>
     );
   }
+
+  
 
   return (
     <>
@@ -298,7 +401,7 @@ const handleIncrease = (e)=>{
                 </Grid>
                 <Grid item xs={12} className="subTotal">
                   <Typography variant="body2">Subtotal</Typography>
-                  <Typography variant="body2">100000</Typography>
+                  <Typography variant="body2">{data.total}</Typography>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider></Divider>
@@ -393,7 +496,7 @@ const handleIncrease = (e)=>{
                     </Grid>
                     <Grid item xs={12} className="Total">
                       <Typography variant="body1">Total</Typography>
-                      <Typography variant="body1">100000</Typography>
+                      <Typography variant="body1">{data.total}</Typography>
                     </Grid>
                     <Grid item xs={12}>
                       <br></br>

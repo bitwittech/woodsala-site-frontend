@@ -40,8 +40,10 @@ import { AddCartItem, Notify } from "../store/Types";
 // services 
 import { getProducts, addCartItem, removeCartItem, getCartItem } from '../service/service'
 
-export default function Categories() {
+export default function Categories(props) {
 
+  // history
+  const history = props.history;
   // responsive oject for Slider
   const responsive = {
     desktop: {
@@ -80,7 +82,7 @@ export default function Categories() {
           if (localStorage.getItem('cart') !== null)
             response.data.concat(JSON.parse(localStorage.getItem('cart')).items)
 
-          console.log(response.data)
+          // console.log(response.data)
           dispatch({
             type: AddCartItem,
             payload: { items: response.data }
@@ -628,12 +630,15 @@ export default function Categories() {
                   md={3.87}
                 >
                   <Grid container>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} 
+                  onClick = {() => history(`/details?SKU=${item.SKU}`)}
+                    
+                    >
                       <img src={item.featured_image} alt="product_Images" />
                     </Grid>
                     <Grid item xs={9}>
                       <Box className="productInfo">
-                        <Typography variant="h5">{item.product_title}</Typography>
+                        <Typography  variant="h5" >{item.product_title}</Typography>
                         <Typography variant="body2">
                           Lorem ipsum dolor sit amet consectetur adipisicing elit. Est harum natus error facilis similique officiis ea nisi architecto explicabo tenetur Aspernatur?
                         </Typography>

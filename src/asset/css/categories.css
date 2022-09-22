@@ -19,7 +19,7 @@
 
 .productContainer {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     padding: 0% 1%;
     margin-top: 2%;
@@ -27,11 +27,12 @@
 
 .innerProductWrap {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 
 .productCard {
+    cursor: pointer;
     padding: 1%;
 }
 

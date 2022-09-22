@@ -63,7 +63,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />}></Route>
           <Route path="/details" element={<ProductDetails />}></Route>
           <Route path="/contact" element={<ContactUs />}></Route>
-          <Route path="/categories" element={<Categories />}></Route>
+          <Route path="/categories" element={<Categories history={history} />}></Route>
           <Route path="/profile" element={<Profile />}></Route>
         </Routes>
         <Footer />

@@ -504,8 +504,8 @@ const handleIncrease = (e)=>{
                       <br></br>
                     </Grid>
                     <Grid item xs={12}>
-                      <Button onClick={() => {
-                        props.history("/checkout")
+                      <Button disabled = {row.length <= 0 ? true : false } onClick={() => {
+                        props.history( "/checkout", {state : {total : data.total,subtotal :data.total,quantity :row.map((set)=>{return {[set.SKU] : set.qty}}),product : row }})
                       }} sx={{ fontWeight: "500" }} variant="contained" fullWidth>
                         Proceed To CheckOut
                       </Button>

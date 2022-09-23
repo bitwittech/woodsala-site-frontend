@@ -1,8 +1,9 @@
+import config from '../config.json'
+
+const API = config.OfficialAPI;
+
 // ================= // This file holds all the backend services -======================
 const axios = require('axios');
-
-let localApi = 'http://localhost:8000'
-let official = 'http://134.209.150.190'
 
 // token 
 const WDToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiU3VwZXIgQWRtaW4iLCJlbWFpbCI6InN1cGVyQHdvb2RzaGFsYS5jb20iLCJwYXNzd29yZCI6Indvb2RzYWxhMjAyMiIsImlhdCI6MTY2MTg3Mjc4M30.LT7rczBuoQpjIedvaOUgYPKy4oW7snvtq5BrIcqpaYk"
@@ -11,17 +12,17 @@ const WDToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiU3VwZXIgQWRtaW
 
 // for register
 export const register = async (data) => {
-  return await axios.post(`${localApi}/api/register`, data);
+  return await axios.post(`${API}/register`, data);
 }
 
 // for login 
 export const login = async (data) => {
-  return await axios.post(`${localApi}/api/login`, data);
+  return await axios.post(`${API}/login`, data);
 }
 
 // for getting user details  
 export const getCustomer = async (CID) => {
-  return await axios.get(`${localApi}/api/getCustomer?CID=${CID}`,
+  return await axios.get(`${API}/getCustomer?CID=${CID}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -33,7 +34,7 @@ export const getCustomer = async (CID) => {
 
 // for update Customer  details  
 export const updateCustomer = async (data) => {
-  return await axios.patch(`http://157.245.102.136/api/updateCustomer`, data,
+  return await axios.patch(`https://woodshala.in/api/updateCustomer`, data,
     {
       headers: {
         Authorization: `Bearer ${WDToken}`,
@@ -48,7 +49,7 @@ export const updateCustomer = async (data) => {
 // ======================== CURD for product =================================
 
 export const getProducts = async () => {
-  return await axios.get(`${localApi}/api/getProducts`,
+  return await axios.get(`${API}/getProducts`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -59,7 +60,7 @@ export const getProducts = async () => {
 
 // get product details for display  
 export const getProductDetails = async (data) => {
-  return await axios.get(`${localApi}/api/getProductDetails?SKU=${data}`);
+  return await axios.get(`${API}/getProductDetails?SKU=${data}`);
 }
 
 
@@ -70,7 +71,7 @@ export const getProductDetails = async (data) => {
 
 // add item to cart
 export const addCartItem = async (data) => {
-  return await axios.post(`${localApi}/api/addCartItem`, data,
+  return await axios.post(`${API}/addCartItem`, data,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -81,7 +82,7 @@ export const addCartItem = async (data) => {
 
 // remove item from cart
 export const removeCartItem = async (data) => {
-  return await axios.get(`${localApi}/api/removeCartItem?CID=${data.CID}&product_id=${data.product_id}`,
+  return await axios.get(`${API}/removeCartItem?CID=${data.CID}&product_id=${data.product_id}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -92,7 +93,7 @@ export const removeCartItem = async (data) => {
 
 
 export const getCartItem = async (data) => {
-  return await axios.get(`${localApi}/api/getCartItem?CID=${data}`,
+  return await axios.get(`${API}/getCartItem?CID=${data}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -103,7 +104,7 @@ export const getCartItem = async (data) => {
 
 
 export const getDetails = async (data) => {
-  return await axios.get(`${localApi}/api/getDetails?products=${data}`,
+  return await axios.get(`${API}/getDetails?products=${data}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -114,7 +115,7 @@ export const getDetails = async (data) => {
 
 
 export const updateQuantity = async (data) => {
-  return await axios.patch(`${localApi}/api/updateQuantity`,data,
+  return await axios.patch(`${API}/updateQuantity`,data,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -125,3 +126,24 @@ export const updateQuantity = async (data) => {
 
 
 // ========================  END CURD from Cart =================================
+
+// ========================== order CURD =================
+
+// order ID at last
+export const getLastOrder = async () => {
+  return await axios.get(`https://woodshala.in/api/getLastOrder`,{
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
+    },
+  });
+};
+
+// for  adding order to the list
+
+export const addOrder = async (data) => {
+  return await axios.post(`https://woodshala.in/api/placeOrder`,data,{
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
+    },
+  });
+};

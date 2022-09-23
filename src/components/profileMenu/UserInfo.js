@@ -85,7 +85,6 @@ const UserInfo = () => {
         FD.append("username", formVal.username);
         FD.append("mobile", formVal.mobile);
         FD.append("email", formVal.email);
-        FD.append("password", formVal.password);
         FD.append("city", formVal.city);
         FD.append("state", formVal.state);
         FD.append("shipping", formVal.shipping);

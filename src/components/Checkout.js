@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from "react";
-
+import { useLocation } from "react-router-dom";
 // mui
 import {
   Grid,
@@ -26,11 +26,11 @@ import OutlinedFlagSharpIcon from "@mui/icons-material/OutlinedFlagSharp";
 import bajot from "../asset/images/home/bajot_TC.png";
 
 // apis function 
-import {getCustomer} from '../service/service'
+import {getCustomer,getLastOrder, addOrder} from '../service/service'
 
 // store
 import {Store} from '../store/Context';
-import {Notify} from '../store/Context';
+import {Notify} from '../store/Types';
 
 
 const orders = [
@@ -71,8 +71,16 @@ export default function Checkout() {
   // global Store
   const {state,dispatch} = Store();
 
+  // url parameter
+  const location = useLocation();
+  // console.log(location)
+  const {total,subtotal,product,quantity} = location.state;
+
+  const [OID,setOID] = useState();
   // data form state
   const [data,setData]= useState({
+    OID : '',
+    CID : state.Auth.CID || 'Not Logged In',
     status : 'processing',
     customer_name : '' , 
     customer_email : '' , 
@@ -80,17 +88,33 @@ export default function Checkout() {
     city : '' ,
     state : '' ,
     shipping : '' ,
-    quantity : [],
-    discoun : 0,
+    quantity : quantity,
+    discount : 0,
     paid : 0 , 
-    total : 0 ,
+    total : total ,
     note : '',
   })
 
-  const handleData = ()=>{
+  // function for generating product OID ID
 
-  }
-  useEffect(()=>{
+  const getOID = async() => {
+    return await getLastOrder()
+      .then((res) => {
+        if (res.data.length > 0) {
+          let index = parseInt(res.data[0].OID.split("-")[1]) + 1;
+
+          return setOID(`OID-0${index}`);
+        } else {
+          return setOID("OID-01001");
+        }
+      })
+      .catch((err) => {
+        //console.log(err);
+      });
+  };
+
+
+  useEffect(()=>{ 
     if (state.Auth.CID)
     {
       getCustomer(state.Auth.CID)
@@ -102,19 +126,87 @@ export default function Checkout() {
           customer_mobile : response.data.email,
           city : response.data.city,
           state : response.data.state,
-          shipping : response.data.shipping,
+          shipping : response.data.shipping[0],
         })
-        
       })
+      .catch((err)=>{console.log(err)})
+      getOID();
     }
+    else{
+       getOID();
+    }
+  },[state.Auth])
 
-  },[state.Auth.CID])
+  useEffect(()=>{
+    setData({...data,OID : OID})
+  },[OID])
 
   const [country, setCountry] = React.useState("EUR");
 
-  const handleChange = (event) => {
-    setCountry(event.target.value);
-  };
+  const handleData = (e)=>{
+    console.log(e.target.name)
+    setData({...data,[e.target.name] : e.target.value});
+  }
+
+  /// submit order
+  const handleSubmit = async (e) => {
+   
+    e.preventDefault();
+    const formVal = {...data,OID : OID};
+
+    console.log(formVal)
+
+    const res = addOrder(formVal)
+   
+    res
+      .then((response) => {
+        if (response.status !== 200) {
+          setData({ OID: '',
+          CUS: '',
+          CID: null,
+          customer_email: '',
+          customer_mobile: '',
+          customer_name: '',
+          shipping: '',
+          product_array: [],
+          quantity: [],
+          subTotal: 0,
+          discount: 0,
+          total: 0,
+          status: 'processing',
+          city: '',
+          state: '',
+          paid: 0,
+          note: ''})
+          dispatch({
+            type: Notify, payload: {
+              open: true,
+              variant: "error",
+              message: response.data.message || "Something Went Wrong !!!",
+            }
+          });
+        } else {
+         
+          dispatch({
+            type: Notify, payload: {
+              open: true,
+              variant: "success",
+              message: response.data.message,
+            }
+          });
+        }
+      })
+      .catch((err) => {
+        dispatch({
+          type: Notify, payload: {
+            open: true,
+            variant: "error",
+            message: "Something Went Wrong !!!",
+          }
+        });
+      });
+  }
+
 
   return (
     <>
@@ -128,6 +220,7 @@ export default function Checkout() {
       </Grid>
       {/* Banner Ends */}
       {/* Main Section */}
+      <form method = 'post' onSubmit = {handleSubmit} encType = 'multipart/form-data'>
       <Grid container className="mainSec">
         <Grid xs={12}>
           <Typography variant="h4">CheckOut</Typography>
@@ -158,7 +251,18 @@ export default function Checkout() {
 
           <Grid item xs={12}>
             <Grid container className="billingForm">
-              <form>
+                <TextField
+                  required
+                  label="OID"
+                  name = 'OID'
+                  disabled
+                  value = {OID || ''}
+                  onChange = {handleData}
+                  fullWidth
+                  id="outlined-start-adornment"
+                  sx={{ marginTop: "2%" }}
+                  size="small"
+                />
                 <TextField
                   required
                   label="Name"
@@ -229,7 +333,7 @@ export default function Checkout() {
                     </MenuItem>
                   ))}
                 </TextField> */}
-                <TextField
+                {/* <TextField
                   select
                   sx={{ marginTop: "2%" }}
                   size="small"
@@ -250,21 +354,34 @@ export default function Checkout() {
                       {option.value}
                     </MenuItem>
                   ))}
-                </TextField>
+                </TextField> */}
                 <TextField
-                  label="Town/City"
+                  label="State"
                   fullWidth
+                  value = {data.state || ''}
+                  name = 'state'
+                  onChange = {handleData}
                   id="outlined-start-adornment"
                   sx={{ marginTop: "2%" }}
                   size="small"
                 />
                 <TextField
+                  label="Town/City"
+                value = {data.city || ''}
+                  name = 'city'
+                  onChange = {handleData}
+                  fullWidth
+                  id="outlined-start-adornment"
+                  sx={{ marginTop: "2%" }}
+                  size="small"
+                />
+                {/* <TextField
                   label="Pin Code"
                   fullWidth
                   id="outlined-start-adornment"
                   sx={{ marginTop: "2%" }}
                   size="small"
-                />
+                /> */}
 
                 <Typography sx={{ marginTop: "3%" }} variant="h6">
                   Additional Information
@@ -273,14 +390,16 @@ export default function Checkout() {
                 <TextField
                   sx={{ marginTop: "2%" }}
                   id="standard-multiline-static"
-                  label="Order Notes"
-                  required
+                  label="Order Notes (Optional)"
+                  value = {data.note}
+                  name = 'note'
+                  onChange = {handleData}
+                  // required
                   fullWidth
                   multiline
                   rows={4}
                   variant="outlined"
                 />
-              </form>
             </Grid>
           </Grid>
         </Grid>
@@ -296,16 +415,16 @@ export default function Checkout() {
               <Grid container className="orderSummary">
                 <Grid item xs={12}>
                   <Stack>
-                    {orders.map((item, idex) => {
+                    {product.map((item, idex) => {
                       return (
                         <>
                           <Box className="productBox">
-                            <img src={item.image} alt="productImage" />
+                            <img src={item.product} alt="productImage" />
                             <Typography variant="body2">
-                              {item.title}
+                              {item.product_name}
                             </Typography>
                             <Typography variant="body2">
-                              Rs.{item.price}
+                              Rs.{item.total}
                             </Typography>
                           </Box>
                           <Divider />
@@ -317,7 +436,7 @@ export default function Checkout() {
                 <Grid item xs={12}>
                   <Box className="productBox text">
                     <Typography variant="body2">Subtotal</Typography>
-                    <Typography variant="body2">Rs.3000</Typography>
+                    <Typography variant="body2">{subtotal}</Typography>
                   </Box>
                   <Divider />
                 </Grid>
@@ -331,7 +450,7 @@ export default function Checkout() {
                 <Grid item xs={12}>
                   <Box className="productBox text">
                     <Typography variant="body2">Total</Typography>
-                    <Typography variant="body2">Rs.3300</Typography>
+                    <Typography variant="body2">{total}</Typography>
                   </Box>
                 </Grid>
               </Grid>
@@ -373,12 +492,13 @@ export default function Checkout() {
               </Grid>
             </Grid>
             <Grid item xs = {12} className = "orderButton" >
-                <Button sx = {{fontWeight : "500"}} fullWidth variant = 'contained'>Place Order</Button>
+                <Button type = 'submit' sx = {{fontWeight : "500"}}  fullWidth variant = 'contained'>Place Order</Button>
             </Grid>
           </Grid>
         </Grid>
         {/* Your Order ends */}
       </Grid>
+        </form>
       {/* Main Section Ends */}
     </>
   );

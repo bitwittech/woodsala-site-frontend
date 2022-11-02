@@ -81,7 +81,7 @@ export default function Navbar(props) {
     setAnchorEl(null);
   };
 
-  const navBarComponent = ["/", "/checkout"];
+  const navBarComponent = ["/", "/categories"];
 
   // for nav route
   const handleChange = (e, newVal) => {

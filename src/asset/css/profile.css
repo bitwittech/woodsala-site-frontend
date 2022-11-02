@@ -48,3 +48,30 @@
 
 
 /* CSS for UserProfile ENDS */
+
+
+/* CSS for Address */
+
+.addAddress {
+    display: flex;
+    cursor: pointer;
+    border: 1px dashed #91441f;
+    border-radius: 10px;
+    z-index: 1;
+    min-height: 220px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column !important;
+}
+
+.addressTile {
+    display: flex;
+    flex-direction: column !important;
+    cursor: pointer;
+    border: 1px solid #91441f;
+    border-radius: 10px;
+    min-height: 220px;
+}
+
+
+/* CSS for Address ENDS */

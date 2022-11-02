@@ -9,6 +9,7 @@ import {
 
 // My components 
 import UserInfo from './profileMenu/UserInfo';
+import Address from './profileMenu/Address';
 
 //css 
 import '../asset/css/profile.css'
@@ -78,7 +79,7 @@ const Profile = () => {
                         sx={{ borderRight: 1, borderColor: 'divider', height : '100%' }}
                     >
                         <Tab className='profileTab' label="User Info" {...a11yProps(0)} />
-                        <Tab className='profileTab' label="My Orders" {...a11yProps(1)} />
+                        <Tab className='profileTab' label="Your Address" {...a11yProps(1)} />
                         <Tab className='profileTab' label="Account Settings" {...a11yProps(2)} />
                     </Tabs>
 
@@ -88,7 +89,7 @@ const Profile = () => {
                         <UserInfo />
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        Item Two
+                        <Address/>
                     </TabPanel>
                     <TabPanel value={value} index={2}>
                         Item Three

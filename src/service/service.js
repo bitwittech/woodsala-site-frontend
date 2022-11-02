@@ -31,9 +31,21 @@ export const getCustomer = async (CID) => {
 
   );
 }
+// for getCustomerAddress details  
+export const getCustomerAddress = async (CID) => {
+  return await axios.get(`${API}/getCustomerAddress?CID=${CID}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }
+
+  );
+}
 
 // for update Customer  details  
 export const updateCustomer = async (data) => {
+  console.log(data)
   return await axios.patch(`https://woodshala.in/api/updateCustomer`, data,
     {
       headers: {

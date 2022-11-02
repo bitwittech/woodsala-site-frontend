@@ -35,38 +35,40 @@ const UserInfo = () => {
     const [controller, setController] = useState({
         visible: false,
         loading: false,
-        preview : undefined,
+        preview: undefined,
     });
 
 
     useEffect(() => {
-        getCustomer(state.Auth.CID)
+        if (state.Auth.isAuth) {
+            getCustomer(state.Auth.CID)
             .then((response) => {
+                console.log(response)
                 SetFormVal({ ...formVal, ...response.data });
             })
             .catch((err) => {
                 console.log(err);
             });
-    }, []);
+        }
+
+    }, [state.Auth.isAuth]);
 
     // handleUpdated values
     const handleVal = async (e) => {
-         console.log(e.target.name)
-        if(e.target.name !== 'profile_image')
-        {
+        console.log(e.target.name)
+        if (e.target.name !== 'profile_image') {
             SetFormVal({
                 ...formVal, [e.target.name]: e.target.value
             })
         }
-        else
-        {
+        else {
             setController({
-                ...controller,preview : URL.createObjectURL(e.target.files[0]) 
+                ...controller, preview: URL.createObjectURL(e.target.files[0])
             })
             SetFormVal({
-            ...formVal, profile_image: e.target.files[0]
-        })
-    }
+                ...formVal, profile_image: e.target.files[0]
+            })
+        }
     }
 
     // handleSubmit 
@@ -95,7 +97,7 @@ const UserInfo = () => {
         res
             .then((response) => {
                 console.log(response)
-             
+
                 dispatch({
                     type: Notify, payload: {
                         open: true,
@@ -115,7 +117,7 @@ const UserInfo = () => {
                 setController({
                     ...controller,
                     loading: false,
-                    preview : undefined
+                    preview: undefined
                 })
 
 
@@ -146,15 +148,15 @@ const UserInfo = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Grid className="profileName" spacing={4} container>
-                        <Grid sx = {{
-                             backgroundPosition: 'center',
-                             background: `url(${controller.preview || formVal.profile_image || avatar})`,
-                             backgroundSize: '100% 100%',
-                             backgroundRepeat: 'no-repeat',
-                        }} item md={3}  className="profilePicBox">
-                            <IconButton  size="large" className = 'editButton' color="primary" aria-label="upload picture" component="label">
-                                <input hidden name = 'profile_image' onChange = {handleVal} accept="image/*" type="file" />
-                                <EditIcon fontSize="inherit"/>
+                        <Grid sx={{
+                            backgroundPosition: 'center',
+                            background: `url(${controller.preview || formVal.profile_image || avatar})`,
+                            backgroundSize: '100% 100%',
+                            backgroundRepeat: 'no-repeat',
+                        }} item md={3} className="profilePicBox">
+                            <IconButton size="large" className='editButton' color="primary" aria-label="upload picture" component="label">
+                                <input hidden name='profile_image' onChange={handleVal} accept="image/*" type="file" />
+                                <EditIcon fontSize="inherit" />
                             </IconButton>
                         </Grid>
                         <Grid item xs={12} md={6}>

@@ -31,7 +31,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 // services 
-import { register, login } from '../service/service.js'
+import { sendVerificationLink, login } from '../service/service.js'
 
 
 export default function EntryPoint() {
@@ -133,7 +133,7 @@ export default function EntryPoint() {
         })
         if (!submit) return 0;
 
-        let response = register(data);
+        let response = sendVerificationLink(data);
 
         setController({
             ...controller,

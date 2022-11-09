@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import InfiniteScroll from 'react-infinite-scroll-component';
 import Carousel from "react-multi-carousel";
 
 //mui
@@ -12,6 +13,7 @@ import {
   Divider,
   IconButton,
   Drawer,
+  CircularProgress
 } from "@mui/material";
 
 //css
@@ -30,6 +32,7 @@ import living from ".././asset/images/home/sofa_SBR.png";
 import wfh from ".././asset/images/home/table_SBR.png";
 import bedroom from ".././asset/images/home/bedroom_SBR.png";
 import dining from ".././asset/images/home/dining_SBR.png";
+import defaultIMG from ".././asset/images/defaultProduct.svg";
 
 // store 
 import { Store } from '../store/Context'
@@ -64,18 +67,9 @@ export default function Categories(props) {
   const { state, dispatch } = Store();
 
 
+
   // use Effect
   useEffect(() => {
-
-    getProducts()
-      .then((data) => {
-        //console.log(data)
-        return setItems(data.data)
-      })
-      .catch((err) => {
-        //console.log(err)
-      })
-
     if (state.Auth.isAuth) {
       getCartItem(state.Auth.CID)
         .then((response) => {
@@ -155,12 +149,49 @@ export default function Categories(props) {
     },
   ];
 
-  const [items, setItems] = useState([])
 
+  // states
+  const [items, setItems] = useState([])
   const [expanded, setExpanded] = useState("");
+
+  // state of the everything
+  const [meta, setMeta] = useState({
+    hasMore: true,
+    page: 1,
+  });
+
 
   // State
   const [filterShow, setFilter] = useState(false);
+
+  // style 
+  const styleScroller = {
+    display: 'flex',
+    justifyContent: "center",
+    alignItem: 'center',
+    minWidth: '100%',
+    flexDirection: 'column',
+    overflow: 'hidden !important',
+    margin: 'auto'
+
+  }
+
+  // fetch more item
+  const fetchMoreData = async () => {
+    getProducts(meta.page)
+      .then((data) => {
+        if (data.data.length > 0) {
+          setMeta({ ...meta, page: meta.page + 1 })
+          return setItems([...new Set([...items.concat(data.data)])])
+        }
+        else {
+          setMeta({ ...meta, page: 1, hasMore: false })
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
   // handle accordions
   const handleChange = (panel) => (event, newExpanded) => {
@@ -618,55 +649,66 @@ export default function Categories(props) {
         {/* product container */}
         <Grid className="productContainer" item xs={12} md={10}>
           {/* {console.log(state.AddCartItem)} */}
-          <Grid container className='innerProductWrap' >
-            {items.map((item, index) => {
-              return (
-                <Grid
-                  item
-                  key={index}
-                  className="productCard"
-                  xs={window.innerWidth <= '600' ? 10 : 5.8}
-                  sx={{ boxShadow: 2, maxHeight: '100%' }}
-                  md={3.87}
-                >
-                  <Grid container>
-                    <Grid item xs={12} 
-                  onClick = {() => history(`/details?SKU=${item.SKU}`)}
-                    
-                    >
-                      <img src={item.featured_image} alt="product_Images" />
-                    </Grid>
-                    <Grid item xs={9}>
-                      <Box className="productInfo">
-                        <Typography  variant="h5" >{item.product_title}</Typography>
-                        <Typography variant="body2">
-                          Lorem ipsum dolor sit amet consectetur adipisicing elit. Est harum natus error facilis similique officiis ea nisi architecto explicabo tenetur Aspernatur?
-                        </Typography>
-                        <Typography variant="h5">{item.discount_limit}% Off</Typography>
-                        <Typography variant="h6"><s>Rs.{item.MRP}</s></Typography>
-                        <Typography variant="h5">Rs.{item.selling_price}</Typography>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={3}>
-                      <Box className="buttonAction">
-                        {
-                          state.AddCartItem.items.filter((row) => { return row.product_id === item.SKU }).length > 0 ?
-                            <IconButton onClick={() => removeItemFromCart(item)}><ShoppingCartIcon  /></IconButton> :
-                            <IconButton onClick={() => addToCart(item)}>
-                              <AddShoppingCartOutlinedIcon ></AddShoppingCartOutlinedIcon>
-                            </IconButton>
-                        }
 
-                        <IconButton>
-                          <FavoriteBorderOutlinedIcon></FavoriteBorderOutlinedIcon>
-                        </IconButton>
-                      </Box>
+          <InfiniteScroll
+            dataLength={items.length}
+            next={fetchMoreData}
+            hasMore={meta.hasMore}
+            style={styleScroller}
+            loader={<center style={{ padding: '10px' }}><CircularProgress /></center>}
+          >
+            <Grid container className='innerProductWrap' >
+              {items.map((item, index) => {
+                return (
+                  <Grid
+                    item
+                    key={index}
+                    className="productCard"
+                    xs={window.innerWidth <= '600' ? 10 : 5.8}
+                    sx={{ boxShadow: 2, maxHeight: '100%', mb : 3 }}
+                    md={3.87}
+
+                  >
+                    <Grid container>
+                      <Grid item xs={12}
+                        onClick={() => history(`/details?SKU=${item.SKU}`)}
+
+                      >
+                        <img src={item.featured_image || item.product_image[0] || defaultIMG} alt="product_Images" />
+                      </Grid>
+                      <Grid item xs={9}>
+                        <Box className="productInfo">
+                          <Typography variant="h5" >{item.product_title}</Typography>
+                          <Typography variant="body2">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Est harum natus error facilis similique officiis ea nisi architecto explicabo tenetur Aspernatur?
+                          </Typography>
+                          <Typography variant="h5">{item.discount_limit}% Off</Typography>
+                          <Typography variant="h6"><s>Rs.{item.MRP}</s></Typography>
+                          <Typography variant="h5">Rs.{item.selling_price}</Typography>
+                        </Box>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Box className="buttonAction">
+                          {
+                            state.AddCartItem.items.filter((row) => { return row.product_id === item.SKU }).length > 0 ?
+                              <IconButton onClick={() => removeItemFromCart(item)}><ShoppingCartIcon /></IconButton> :
+                              <IconButton onClick={() => addToCart(item)}>
+                                <AddShoppingCartOutlinedIcon ></AddShoppingCartOutlinedIcon>
+                              </IconButton>
+                          }
+
+                          <IconButton>
+                            <FavoriteBorderOutlinedIcon></FavoriteBorderOutlinedIcon>
+                          </IconButton>
+                        </Box>
+                      </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
-              );
-            })}
-          </Grid>
+                );
+              })}
+            </Grid>
+          </InfiniteScroll>
+
         </Grid>
       </Grid>
       {/* Main Container Ends */}

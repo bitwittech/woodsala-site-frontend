@@ -24,6 +24,7 @@ import ContactUs from "./components/ContactUs";
 import Categories from "./components/Categories";
 import EntryPoint from "./components/EntryPoint";
 import Profile from "./components/Profile";
+import Verify from "./components/Verify";
 
 
 // global theme
@@ -55,7 +56,7 @@ function App() {
 
     return (
       <>
-        <Navbar history={history} />
+        {window.location.pathname !== '/verify' && <Navbar history={history} />}
         <Routes>
           <Route path="/" element={<Home history={history}/>}></Route>
           <Route path="/home" element={<Home history={history} />}></Route>
@@ -65,8 +66,9 @@ function App() {
           <Route path="/contact" element={<ContactUs />}></Route>
           <Route path="/categories" element={<Categories history={history} />}></Route>
           <Route path="/profile" element={<Profile />}></Route>
+          <Route path="/verify" element={<Verify history = {history}/>}></Route>
         </Routes>
-        <Footer />
+        {window.location.pathname !== '/verify' && <Footer />}
       </>
     );
   }

@@ -6,8 +6,6 @@ import {
   Typography,
   TextField,
   Button,
-  InputAdornment,
-  MenuItem,
   Stack,
   Box,
   Divider,
@@ -21,8 +19,8 @@ import {
 import "../asset/css/checkout.css";
 
 // icon
-import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
-import OutlinedFlagSharpIcon from "@mui/icons-material/OutlinedFlagSharp";
+// import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
+// import OutlinedFlagSharpIcon from "@mui/icons-material/OutlinedFlagSharp";
 import bajot from "../asset/images/home/bajot_TC.png";
 
 // apis function 
@@ -79,7 +77,7 @@ export default function Checkout() {
   const [OID,setOID] = useState();
   // data form state
   const [data,setData]= useState({
-    OID : '',
+    O : '',
     CID : state.Auth.CID || 'Not Logged In',
     status : 'processing',
     customer_name : '' , 
@@ -101,15 +99,15 @@ export default function Checkout() {
     return await getLastOrder()
       .then((res) => {
         if (res.data.length > 0) {
-          let index = parseInt(res.data[0].OID.split("-")[1]) + 1;
+          let index = parseInt(res.data[0].O.split("-")[1]) + 1;
 
-          return setOID(`OID-0${index}`);
+          return setOID(`O-0${index}`);
         } else {
-          return setOID("OID-01001");
+          return setOID("O-01001");
         }
       })
       .catch((err) => {
-        //console.log(err);
+        console.log(err);
       });
   };
 
@@ -121,12 +119,13 @@ export default function Checkout() {
       .then((response)=>{
         setData({
           ...data,
+          CID : state.Auth.CID,
           customer_name : response.data.username,
           customer_email : response.data.mobile,
           customer_mobile : response.data.email,
           city : response.data.city,
           state : response.data.state,
-          shipping : response.data.shipping[0],
+          shipping : '',
         })
       })
       .catch((err)=>{console.log(err)})
@@ -141,7 +140,7 @@ export default function Checkout() {
     setData({...data,OID : OID})
   },[OID])
 
-  const [country, setCountry] = React.useState("EUR");
+  // const [country, setCountry] = React.useState("EUR");
 
   const handleData = (e)=>{
     console.log(e.target.name)
@@ -152,16 +151,16 @@ export default function Checkout() {
   const handleSubmit = async (e) => {
    
     e.preventDefault();
-    const formVal = {...data,OID : OID};
+    const formVal = {...data,O : OID};
 
     console.log(formVal)
-
+// return 'x'
     const res = addOrder(formVal)
    
     res
       .then((response) => {
         if (response.status !== 200) {
-          setData({ OID: '',
+          setData({ O: '',
           CUS: '',
           CID: null,
           customer_email: '',
@@ -222,13 +221,13 @@ export default function Checkout() {
       {/* Main Section */}
       <form method = 'post' onSubmit = {handleSubmit} encType = 'multipart/form-data'>
       <Grid container className="mainSec">
-        <Grid xs={12}>
+        <Grid item xs={12}>
           <Typography variant="h4">CheckOut</Typography>
         </Grid>
 
         {/* coupon section */}
 
-        <Grid xs={12} className="couponBox">
+        <Grid item xs={12} className="couponBox">
           <Typography variant="body1">
             Have Any Coupon Code? Apply here.
           </Typography>
@@ -244,7 +243,7 @@ export default function Checkout() {
 
         {/* Billing Section */}
 
-        <Grid xs={12} md={8.5} className="billingDetails">
+        <Grid item xs={12} md={8.5} className="billingDetails">
           <Grid item xs={12}>
             <Typography variant="h6">Billing Details</Typography>
           </Grid>
@@ -415,10 +414,10 @@ export default function Checkout() {
               <Grid container className="orderSummary">
                 <Grid item xs={12}>
                   <Stack>
-                    {product.map((item, idex) => {
+                    {product.map((item, index) => {
                       return (
-                        <>
-                          <Box className="productBox">
+                        <Box key = {index}>
+                          <Box  className="productBox">
                             <img src={item.product} alt="productImage" />
                             <Typography variant="body2">
                               {item.product_name}
@@ -428,7 +427,7 @@ export default function Checkout() {
                             </Typography>
                           </Box>
                           <Divider />
-                        </>
+                        </Box>
                       );
                     })}
                   </Stack>

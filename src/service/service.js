@@ -15,6 +15,16 @@ export const register = async (data) => {
   return await axios.post(`${API}/register`, data);
 }
 
+// for register
+export const sendVerificationLink = async (data) => {
+  return await axios.post(`${API}/sendVerificationLink`, data);
+}
+
+// for register
+export const verify = async (token) => {
+  return await axios.get(`${API}/verify?token=${token}`);
+}
+
 // for login 
 export const login = async (data) => {
   return await axios.post(`${API}/login`, data);
@@ -60,8 +70,8 @@ export const updateCustomer = async (data) => {
 
 // ======================== CURD for product =================================
 
-export const getProducts = async () => {
-  return await axios.get(`${API}/getProducts`,
+export const getProducts = async (data) => {
+  return await axios.get(`${API}/getProducts?pageNumber=${data}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,

@@ -71,7 +71,7 @@ export const updateCustomer = async (data) => {
 // ======================== CURD for product =================================
 
 export const getProducts = async (data) => {
-  return await axios.get(`${API}/getProducts?pageNumber=${data}`,
+  return await axios.get(`${API}/getProducts?pageNumber=${data.page}&filter=${data.filter}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,

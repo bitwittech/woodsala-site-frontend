@@ -1,3 +1,255 @@
+
+// export default function ProductDetails() {
+
+//   // store 
+//   const {state,dispatch} = Store();
+
+//   // state
+//   const [imageIndex, setIndex] = useState(0); // use for updating the images
+//   const [ratting, setRatting] = useState(2);
+//   const [expanded, setExpanded] = useState("panel1");
+//   const [value, setValue] = useState(0);
+
+//   // get query parameter for product 😀 
+//   const search = useLocation().search;
+//   const SKU = new URLSearchParams(search).get('SKU');
+
+//   // state for data 
+//   const [data, setData] = useState(null)
+
+// //   for getting the product 
+//   useEffect(() => {
+//     getProductDetails(SKU)
+//       .then((response) => {
+//           setData(response.data)
+//       })
+//       .catch((err)=>{
+//         console.log(err)
+//       })
+
+//   }, []);
+
+//   const handleChange = (panel) => (event, newExpanded) => {
+//     setExpanded(newExpanded ? panel : false);
+//   };
+
+
+//   const handleChangeTab = (event, newValue) => {
+//     setValue(newValue);
+//   };
+
+//   const sizeCart = [
+//     {
+//       name: "King Size",
+//       price: 44000,
+//     },
+//     {
+//       name: "Queen Size",
+//       price: 35000,
+//     },
+//     {
+//       name: "Kid Size",
+//       price: 20000,
+//     },
+//   ];
+
+
+//   function TabPanel(props) {
+//     const { children, value, index, ...other } = props;
+
+//     return (
+//       <div
+//         role="tabpanel"
+//         hidden={value !== index}
+//         id={`simple-tabpanel-${index}`}
+//         aria-labelledby={`simple-tab-${index}`}
+//         {...other}
+//       >
+//         {value === index && (
+//           <Box sx={{ p: 3 }}>
+//             <Typography>{children}</Typography>
+//           </Box>
+//         )}
+//       </div>
+//     );
+//   }
+
+//   TabPanel.propTypes = {
+//     children: PropTypes.node,
+//     index: PropTypes.number.isRequired,
+//     value: PropTypes.number.isRequired,
+//   };
+
+//   function a11yProps(index) {
+//     return {
+//       id: `simple-tab-${index}`,
+//       'aria-controls': `simple-tabpanel-${index}`,
+//     };
+//   }
+
+//   
+
+
+//   return (
+//     <>
+//       <title>Product</title>
+//       {data && <>
+//       {/* main section  */}
+//       <Grid container className="mainSec">
+//         {/* Image sec */}
+//         <Grid item xs={12} >
+//         <Typography component={'span'} sx={{ display: "block" , mb : 3}} variant="h5">
+//       Product Details
+//       </Typography>
+
+//           </Grid>
+
+//         <Grid item className="imageSec" xs={12} md={6}>
+//           <Grid container>
+//             <Grid item xs={12} sx = {{
+//               maxWidth : '400px' ,
+//               maxHeight : '450px'
+//             }}>
+//               <img
+//                 className="showImage"
+//                 src={data.product_image[imageIndex]}
+//                 alt="image2"
+//               />
+//             </Grid>
+//             <Grid item xs={12}>
+//               <Grid container className="preview" spacing={2}>
+//                 {data.product_image.map((item, index) => {
+//                   return (
+//                     <Grid
+//                       item
+//                       xs={3}
+//                       key={index}
+//                       onClick={() => {
+//                         setIndex(index);
+//                       }}
+//                     >
+//                       <img src={item} className="showImage" alt="images" />
+//                     </Grid>
+//                   );
+//                 })}
+//               </Grid>
+//             </Grid>
+//           </Grid>
+//         </Grid>
+//         {/* Image sec ends */}
+//         {/* details sec  */}
+//         <Grid item xs={12} className="contentSec" md={6}>
+//           <Grid container>
+//             <Grid item xs={12}>
+//               <Typography sx={{ fontWeight: 350 }} variant="h4">
+//                 {/* product title */}
+//                 {data.product_title}
+//               </Typography>
+//             </Grid>
+              
+//             </Grid>
+//             <Grid className="pd" item xs={12}>
+//               <Typography sx={{ fontWeight: 400 }} variant="body2">
+//                 Product Details
+//               </Typography>
+//               <Divider />
+//               <Stack sx={{ paddingTop: "2%" }}>
+//                 <Typography variant="caption">
+//                   SKU
+//                   <Typography sx={{ float: "right" }} variant="caption">{data.SKU}</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                   Category
+//                   <Typography sx={{ float: "right" }} variant="caption">{data.category_name}</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                   Sub Category
+//                   <Typography sx={{ float: "right" }} variant="caption">{data.sub_category_name}</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                   SEO Title
+//                   <Typography sx={{ float: "right" }} variant="caption">{data.seo_title}</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                   SEO Keyword
+//                   <Typography sx={{ float: "right" }} variant="caption">{data.seo_keyword}</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                   Matrial
+//                   <Typography sx={{ float: "right" }} variant="caption">{data.primary_material}</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                   Weight Capacity<Typography sx={{ float: "right" }} variant="caption">{data.weight_capacity}</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">                
+//                 Manufacturing Time<Typography sx={{ float: "right" }} variant="caption">{data.manufacturing_time}</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                 Polish Time<Typography sx={{ float: "right" }} variant="caption">{data.polish_time}</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                   Range<Typography sx={{ float: "right" }} variant="caption">{data.range}</Typography>
+//                 </Typography>
+//               </Stack>
+//               <Typography sx={{ fontWeight: 400, mt : 1 }} variant="body2">
+//                 Price Details
+//               </Typography>
+//               <Divider />
+//               <Stack sx={{ paddingTop: "2%" }}>
+//               <Typography variant="caption">
+//                   Selling Price
+//                   <Typography sx={{ float: "right" }} variant="caption">{data.selling_price}</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                   Showroom Price<Typography sx={{ float: "right" }} variant="caption">{data.showroom_price}</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                 Discount <Typography sx={{ float: "right" }} variant="caption">{data.discount_limit}%</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                 Tax <Typography sx={{ float: "right" }} variant="caption">{data.tax_rate}%</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                 MRP <Typography sx={{ float: "right" }} variant="caption">{(data.selling_price)-(data.selling_price/100*data.discount_limit)}</Typography>
+//                 </Typography>
+//               </Stack>
+//               <Typography sx={{ fontWeight: 400, mt : 1 }} variant="body2">
+//                 Dimesion Details
+//               </Typography>
+//               <Divider />
+//               <Stack sx={{ paddingTop: "2%" }}>
+//               <Typography variant="caption">
+//                   Dimensions (Inch)
+//                   <Typography sx={{ float: "right" }} variant="caption">{data.length_main} L x {data.height} H x {data.breadth} B</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                   Package Length (Inch)<Typography sx={{ float: "right" }} variant="caption">{data.package_length}</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                 Package Height (Inch)<Typography sx={{ float: "right" }} variant="caption">{data.package_height}</Typography>
+//                 </Typography>
+//                 <Typography variant="caption">
+//                 Package Breadth (Inch)<Typography sx={{ float: "right" }} variant="caption">{data.package_breadth}</Typography>
+//                 </Typography>
+//               </Stack>
+
+//             </Grid>
+//         </Grid>
+//         {/* details sec ends */}
+//       </Grid>
+//       {/* main section Ends */}
+
+
+//       </>}
+//     </>
+//   );
+// }
+
+
+
+
+// Old Page ==============
+
 import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 import Carousel from "react-multi-carousel";
@@ -253,6 +505,102 @@ export default function ProductDetails() {
       }
     }
 
+    const specification = [
+          'product_title',
+          'category_name',
+          'sub_category_name',
+          'primary_material',
+          'length_main',
+          'breadth',
+          'height',
+          'weight',
+          'polish_name',
+          'assembly_required',
+          'assembly_part',
+          'selling_price',
+          'showroom_price',
+          'discount_limit',
+          'show_on_mobile',
+          'range',
+        ]
+      
+        const image = [
+          'featured_image',
+          'mannequin_image',
+          'specification_image',
+        ]
+      
+        const feature = [
+          "rotating_seats",
+          "eatable_oil_polish",
+          "no_chemical",
+          "weaving",
+          "knife",
+          "not_suitable_for_Micro_Dish",
+          "tilt_top",
+          "inside_compartments",
+          "stackable",
+          "ceramic_drawers",
+          "ceramic_tiles",
+        ]
+      
+        const miscellanous = [
+          "weight_capacity",
+          "joints",
+          "drawer",
+          "drawer_count",
+          "back_style",
+        ]
+      
+        const inventory = [
+          'warehouse',
+          'bangalore_stock',
+          'jodhpur_stock',
+          'selling_points',
+          'polish_time',
+          'manufacturing_time',
+          'returnDays',
+          'COD',
+          'returnable',
+          'package_length',
+          'package_height',
+          'package_breadth',
+          'quantity',
+          'unit',
+        ]
+      
+        const seo = [
+          'product_description',
+          'seo_title',
+          'seo_description',
+          'seo_keyword',
+        ]
+        
+        const extra = [
+          'hinge_name',
+          'knob_name',
+          'textile_name',
+          'textile_type',
+          'door_name',
+          'fitting_name',
+          'top_size',
+          'dial_size',
+          'seating_size_width',
+          'seating_size_depth',
+          'seating_size_height',
+          'fabric',
+          'fabric_name',
+          'mirror',
+          'mirror_length',
+          'mirror_width',
+          'silver',
+          'silver_weight',
+          'wheel',
+          'trolley',
+          'trolley_material',
+          'tax_rate',
+          'legs'
+        ]
 
   return (
     <>
@@ -333,7 +681,7 @@ export default function ProductDetails() {
                 </Typography>
               </Box>
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Box className="coupon">
                 <Typography sx={{ color: "#ad0000" }} variant="body2">
                   To get this price,
@@ -350,8 +698,8 @@ export default function ProductDetails() {
                 </Typography>
                 <Divider />
               </Box>
-            </Grid>
-            <Grid className="offers" item xs={12}>
+            </Grid> */}
+            {/* <Grid className="offers" item xs={12}>
               <Box>
                 <Typography
                   sx={{ color: "#FD0606", fontWeight: 400 }}
@@ -420,8 +768,8 @@ export default function ProductDetails() {
                   </AccordionDetails>
                 </Accordion>
               </Box>
-            </Grid>
-            <Grid item xs={12}>
+            </Grid> */}
+            {/* <Grid item xs={12}>
               <Box>
                 <Typography sx={{ fontWeight: 400 }} variant="body2">
                   Size
@@ -463,55 +811,133 @@ export default function ProductDetails() {
                   Buy Now
                 </Button>
               </Box>
-            </Grid>
+            </Grid> */}
             <Grid className="pd" item xs={12}>
-              <Typography sx={{ fontWeight: 400 }} variant="body2">
-                Product Details
-              </Typography>
-              <Divider />
-              <Stack sx={{ paddingTop: "2%" }}>
-                <Typography variant="caption">
-                  SKU
-                  <Typography sx={{ float: "right" }} variant="caption">WSBED046WF9996</Typography>
-                </Typography>
-                <Typography variant="caption">
-                  Storage
-                  <Typography sx={{ float: "right" }} variant="caption">With storage</Typography>
-                </Typography>
-                <Typography variant="caption">
-                  Material
-                  <Typography sx={{ float: "right" }} variant="caption">Sheesham wood</Typography>
-                </Typography>
-                <Typography variant="caption">
-                  Size
-                  <Typography sx={{ float: "right" }} variant="caption">King size</Typography>
-                </Typography>
-                <Typography variant="caption">
-                  Dimensions (Inch)
-                  <Typography sx={{ float: "right" }} variant="caption">88 L x 75 W x 33 H</Typography>
-                </Typography>
-                <Typography variant="caption">
-                  Mattress<Typography sx={{ float: "right" }} variant="caption">78 L x 72 W</Typography>
-                </Typography>
-              </Stack>
-            </Grid>
-          </Grid>
-        </Grid>
-        {/* details sec ends */}
+               <Typography sx={{ fontWeight: 400 }} variant="body2">
+                 Product Details
+               </Typography>
+               <Divider />
+               <Stack sx={{ paddingTop: "2%" }}>
+                 <Typography variant="caption">
+                   SKU
+                   <Typography sx={{ float: "right" }} variant="caption">{data.SKU}</Typography>
+                 </Typography>
+                 <Typography variant="caption">
+                   Category
+                   <Typography sx={{ float: "right" }} variant="caption">{data.category_name}</Typography>
+                 </Typography>
+                 <Typography variant="caption">
+                   Sub Category
+                   <Typography sx={{ float: "right" }} variant="caption">{data.sub_category_name}</Typography>
+                 </Typography>
+                 {/* <Typography variant="caption">
+                   SEO Title
+                   <Typography sx={{ float: "right" }} variant="caption">{data.seo_title}</Typography>
+                 </Typography>
+                 <Typography variant="caption">
+                   SEO Keyword
+                   <Typography sx={{ float: "right" }} variant="caption">{data.seo_keyword}</Typography>
+                 </Typography> */}
+                 <Typography variant="caption">
+                   Matrial
+                   <Typography sx={{ float: "right" }} variant="caption">{data.primary_material}</Typography>
+                 </Typography>
+                 <Typography variant="caption">
+                   Weight Capacity<Typography sx={{ float: "right" }} variant="caption">{data.weight_capacity}</Typography>
+                 </Typography>
+                 <Typography variant="caption">                
+                 Manufacturing Time<Typography sx={{ float: "right" }} variant="caption">{data.manufacturing_time}</Typography>
+                 </Typography>
+                 <Typography variant="caption">
+                 Polish Time<Typography sx={{ float: "right" }} variant="caption">{data.polish_time}</Typography>
+                 </Typography>
+                 <Typography variant="caption">
+                   Range<Typography sx={{ float: "right" }} variant="caption">{data.range}</Typography>
+                 </Typography>
+               </Stack>
+               <Typography sx={{ fontWeight: 400, mt : 1 }} variant="body2">
+                 Price Details
+               </Typography>
+               <Divider />
+               <Stack sx={{ paddingTop: "2%" }}>
+               <Typography variant="caption">
+                   Selling Price
+                   <Typography sx={{ float: "right" }} variant="caption">{data.selling_price}</Typography>
+                 </Typography>
+                 <Typography variant="caption">
+                   Showroom Price<Typography sx={{ float: "right" }} variant="caption">{data.showroom_price}</Typography>
+                 </Typography>
+                 <Typography variant="caption">
+                 Discount <Typography sx={{ float: "right" }} variant="caption">{data.discount_limit}%</Typography>
+                 </Typography>
+                 <Typography variant="caption">
+                 Tax <Typography sx={{ float: "right" }} variant="caption">{data.tax_rate}%</Typography>
+                 </Typography>
+                 <Typography variant="caption">
+                 MRP <Typography sx={{ float: "right" }} variant="caption">{(data.selling_price)-(data.selling_price/100*data.discount_limit)}</Typography>
+                 </Typography>
+               </Stack>
+               <Typography sx={{ fontWeight: 400, mt : 1 }} variant="body2">
+                 Dimesion Details
+               </Typography>
+               <Divider />
+               <Stack sx={{ paddingTop: "2%" }}>
+               <Typography variant="caption">
+                   Dimensions (Inch)
+                   <Typography sx={{ float: "right" }} variant="caption">{data.length_main} L x {data.height} H x {data.breadth} B</Typography>
+                 </Typography>
+                 <Typography variant="caption">
+                   Package Length (Inch)<Typography sx={{ float: "right" }} variant="caption">{data.package_length}</Typography>
+                 </Typography>
+                 <Typography variant="caption">
+                 Package Height (Inch)<Typography sx={{ float: "right" }} variant="caption">{data.package_height}</Typography>
+                 </Typography>
+                 <Typography variant="caption">
+                 Package Breadth (Inch)<Typography sx={{ float: "right" }} variant="caption">{data.package_breadth}</Typography>
+                 </Typography>
+               </Stack>
+               <Box className="cartButtons">
+                <TextField
+                  size="small"
+                  sx={{ marginTop: "2%", width: "50%" }}
+                  id="standard-multiline-static"
+                  label="Quantity"
+                  type="number"
+                  variant="outlined"
+                  value = {data.quantity || 1}
+                  onChange = {(e)=>setData({...data, quantity : e.target.value})}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">QTY</InputAdornment>
+                    ),
+                  }}
+                />
+                <Button variant="outlined" onClick = {()=>addToCart(data)} small="true">
+                  Add To Cart
+                </Button>
+                <Button variant="contained" small="true">
+                  Buy Now
+                </Button>
+              </Box>
+             </Grid>
+         </Grid>
+         </Grid>
+         {/* details sec ends */}
       </Grid>
       {/* main section Ends */}
+
 
       {/* More Information */}
 
       <Grid container className="moreInfo" >
         <Grid item xs={12}>
-          <Typography sx={{ fontWeight: 500 }} variant="h4">
+          <Typography sx={{ fontWeight: 500 }} variant="h5">
             MORE INFORMATION
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <Typography sx={{ fontWeight: 100, padding: "2% 0%" }} variant="h5">
-            Walked Bed With Storage in Light Grey Color - CasaCraft By Right Furniture
+          <Typography sx={{ fontWeight: 100, padding: "1% 0%" }} component = 'span' variant="caption">
+            Explore full product details here !!!
           </Typography>
         </Grid>
 
@@ -519,21 +945,103 @@ export default function ProductDetails() {
           <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
-                <Tab label="Overview" {...a11yProps(0)} />
-                <Tab label="Additional Info" {...a11yProps(1)} />
-                <Tab label="Merchant Details" {...a11yProps(2)} />
-                <Tab label="Warranty" {...a11yProps(3)} />
-                <Tab label="Terms & Conditions" {...a11yProps(4)} />
+                <Tab label="Specification" {...a11yProps(0)} />
+                <Tab label="Image" {...a11yProps(1)} />
+                <Tab label="Features" {...a11yProps(2)} />
+                <Tab label="Miscellaneous" {...a11yProps(3)} />
+                <Tab label="Inventory & Shipping" {...a11yProps(4)} />
+                <Tab label="SEO" {...a11yProps(5)} />
+                <Tab label="Extra Details" {...a11yProps(6)} />
               </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-              Item One
+            <Stack sx={{ padding: "5%", paddingTop : '1%' }}>
+                {specification.map((item)=>{
+                  return <>
+                  <Typography variant="button">
+                   {item}<Typography sx={{ float: "right" }} variant="button">{data[item]}</Typography>
+                  </Typography>
+                <Divider /> 
+                </>
+                })}
+              </Stack>
             </TabPanel>
             <TabPanel value={value} index={1}>
-              Item Two
+            <Stack sx={{ padding: "5%", paddingTop : '1%' }}>
+                {image.map((item)=>{
+                  return <>
+                  <Typography variant="h6">
+                   {item.toUpperCase()}<img src = {data[item]} sx={{ float: "right" }} />
+                  </Typography>
+                <Divider sx = {{mb : 2}}/> 
+                </>
+                })}
+              </Stack>
             </TabPanel>
             <TabPanel value={value} index={2}>
-              Item Three
+            <Stack sx={{ padding: "5%", paddingTop : '1%' }}>
+            {feature.map((item)=>{
+                  return <>
+                  <Typography variant="button">
+                   {item}<Typography sx={{ float: "right",color : data[item]?'green':'red' }} 
+                   variant="button">{data[item]? 'true' : 'false'}</Typography>
+                  </Typography>
+                <Divider /> 
+                </>
+                })}
+              </Stack>
+            </TabPanel>
+            <TabPanel value={value} index={3}>
+            <Stack sx={{ padding: "5%", paddingTop : '1%' }}>
+            {miscellanous.map((item)=>{
+                  return <>
+                  <Typography variant="button">
+                   {item}<Typography sx={{ float: "right"}} 
+                   variant="button">{data[item]}</Typography>
+                  </Typography>
+                <Divider /> 
+                </>
+                })}
+              </Stack>
+            </TabPanel>
+            <TabPanel value={value} index={4}>
+            <Stack sx={{ padding: "5%", paddingTop : '1%' }}>
+            {inventory.map((item)=>{
+                  return <>
+                  <Typography variant="button">
+                   {item}<Typography sx={{ float: "right"}} 
+                   variant="button">{data[item]}</Typography>
+                  </Typography>
+                <Divider /> 
+                </>
+                })}
+              </Stack>
+            </TabPanel>
+            <TabPanel value={value} index={5}>
+            <Stack sx={{ padding: "5%", paddingTop : '1%' }}>
+            {seo.map((item)=>{
+                  return <>
+                  <Typography variant="button">
+                   {item}<Typography sx={{ float: "right"}} 
+                   variant="button">{data[item]}</Typography>
+                  </Typography>
+                <Divider /> 
+                </>
+                })}
+              </Stack>
+            </TabPanel>
+            <TabPanel value={value} index={6}>
+            <Stack sx={{ padding: "5%", paddingTop : '1%' }}>
+            {extra.map((item)=>{
+                  return <>
+                  <Typography variant="button">
+                   {item}<Typography sx={{ float: "right"}} 
+                   variant="button">{data[item]}</Typography>
+                  </Typography>
+                <Divider /> 
+                </>
+                })}
+              </Stack>
             </TabPanel>
           </Box>
         </Grid>

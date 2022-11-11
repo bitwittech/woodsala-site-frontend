@@ -37,7 +37,7 @@ import home from "../../asset/images/hamburger/home.png";
 import furniture from "../../asset/images/hamburger/furniture.png";
 import all from "../../asset/images/hamburger/all.png";
 import gift from "../../asset/images/hamburger/giffting.jpg";
-import tranding from "../../asset/images/hamburger/traditional.jpg";
+import trading from "../../asset/images/hamburger/traditional.jpg";
 import useful from "../../asset/images/hamburger/useful.jpg";
 import company from "../../asset/images/hamburger/company.png";
 import kitchen from "../../asset/images/hamburger/kitchen.png";
@@ -81,11 +81,44 @@ export default function Navbar(props) {
     setAnchorEl(null);
   };
 
-  const navBarComponent = ["/", "/categories"];
+  const navBarComponent = ["/", 
+  "/categories",
+  "/categories",
+  "/categories",
+  "/categories",
+  "/categories",
+  "/categories",
+  "/categories",
+  "/categories",
+  "/categories",
+];
+  const navBarImage = [
+    home,
+    furniture,
+    kitchen,
+    gift,
+    exclusive,
+    useful,
+    trading,
+    company,
+    all,
+  ];
+
+  const navBarLabel = [
+    'Home',
+    'Furniture',
+    'Kitchen Items',
+    'Gifting',
+    'Exclusive',
+    'Useful Products',
+    'Traditional',
+    'Company',
+    'Browse All',];
 
   // for nav route
   const handleChange = (e, newVal) => {
     props.history(newVal);
+
   };
 
 
@@ -251,88 +284,21 @@ export default function Navbar(props) {
                       window.location.pathname
                     }
                     color="primary"
+                    
                   >
-                    <Tab
+                    {
+                      navBarLabel.map((tag,index)=><Tab
                       wrapped
-                      label="Home"
-                      icon={<img alt='home' src={home} />}
+                      label={tag}
+                      icon={<img alt='home' src={navBarImage[index]} />}
                       iconPosition="start"
                       component={Link}
-                      value={navBarComponent[0]}
-                      to={navBarComponent[0]}
-                    />
-                    <Tab
-                      wrapped
-                      label="Furniture"
-                      component={Link}
-                      icon={<img alt='home' src={furniture} />}
-                      iconPosition="start"
-                      value={navBarComponent[1]}
-                      to={navBarComponent[1]}
-                    />
-                    <Tab
-                      wrapped
-                      label="Kitchen Items"
-                      icon={<img alt='home' src={kitchen} />}
-                      iconPosition="start"
-                      component={Link}
-                      value={navBarComponent[1]}
-                      to={navBarComponent[1]}
-                    />
-                    <Tab
-                      wrapped
-                      label="Gifting"
-                      icon={<img alt='home' src={gift} />}
-                      iconPosition="start"
-                      component={Link}
-                      value={navBarComponent[1]}
-                      to={navBarComponent[1]}
-                    />
-                    <Tab
-                      wrapped
-                      icon={<img alt='home' src={exclusive} />}
-                      iconPosition="start"
-                      label="Exclusive"
-                      component={Link}
-                      value={navBarComponent[1]}
-                      to={navBarComponent[1]}
-                    />
-                    <Tab
-                      wrapped
-                      label="Useful Products"
-                      icon={<img alt='home' src={useful} />}
-                      iconPosition="start"
-                      component={Link}
-                      value={navBarComponent[1]}
-                      to={navBarComponent[1]}
-                    />
-                    <Tab
-                      wrapped
-                      icon={<img alt='home' src={tranding} />}
-                      iconPosition="start"
-                      label="Traditional"
-                      component={Link}
-                      value={navBarComponent[1]}
-                      to={navBarComponent[1]}
-                    />
-                    <Tab
-                      wrapped
-                      icon={<img alt='logo' src={company} />}
-                      iconPosition="start"
-                      label="Company"
-                      component={Link}
-                      value={navBarComponent[1]}
-                      to={navBarComponent[1]}
-                    />
-                    <Tab
-                      wrapped
-                      label="Browse All"
-                      icon={<img alt='logo' src={all} />}
-                      iconPosition="start"
-                      component={Link}
-                      value={navBarComponent[1]}
-                      to={navBarComponent[1]}
-                    />
+                      value={navBarComponent[index]}
+                      to={navBarComponent[index]}
+                      onClick = {()=>{setHam(false)}}
+                    />)
+                    }
+                   
                   </Tabs>
                 </Grid>
               </Drawer>
@@ -408,69 +374,15 @@ export default function Navbar(props) {
             }
             color="primary"
           >
-            <Tab
+
+    {navBarLabel.map((tab,index)=><Tab
               wrapped
-              label="Home"
+              label={tab}
               component={Link}
-              value={navBarComponent[0]}
-              to={navBarComponent[0]}
-            />
-            <Tab
-              wrapped
-              label="Furniture"
-              component={Link}
-              value={navBarComponent[1]}
-              to={navBarComponent[1]}
-            />
-            <Tab
-              wrapped
-              label="Kitchen Items"
-              component={Link}
-              value={navBarComponent[1]}
-              to={navBarComponent[1]}
-            />
-            <Tab
-              wrapped
-              label="Gifting"
-              component={Link}
-              value={navBarComponent[1]}
-              to={navBarComponent[1]}
-            />
-            <Tab
-              wrapped
-              label="Exclusive"
-              component={Link}
-              value={navBarComponent[1]}
-              to={navBarComponent[1]}
-            />
-            <Tab
-              wrapped
-              label="Useful Products"
-              component={Link}
-              value={navBarComponent[1]}
-              to={navBarComponent[1]}
-            />
-            <Tab
-              wrapped
-              label="Traditional"
-              component={Link}
-              value={navBarComponent[1]}
-              to={navBarComponent[1]}
-            />
-            <Tab
-              wrapped
-              label="Company"
-              component={Link}
-              value={navBarComponent[1]}
-              to={navBarComponent[1]}
-            />
-            <Tab
-              wrapped
-              label="Browse All"
-              component={Link}
-              value={navBarComponent[1]}
-              to={navBarComponent[1]}
-            />
+              value={navBarComponent[index]}
+              to={navBarComponent[index]}
+            />)}
+            
           </Tabs>
         </Grid>
         {/* ends main-2 link container */}

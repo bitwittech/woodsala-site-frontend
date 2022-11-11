@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Carousel from "react-multi-carousel";
-
 //mui
 import {
   Grid,
@@ -47,6 +47,11 @@ export default function Categories(props) {
 
   // history
   const history = props.history;
+
+  // filer params
+  const search = useLocation().search;
+  const filter = new URLSearchParams(search).get('filter') || undefined;
+
   // responsive oject for Slider
   const responsive = {
     desktop: {
@@ -70,6 +75,7 @@ export default function Categories(props) {
 
   // use Effect
   useEffect(() => {
+    
     if (state.Auth.isAuth) {
       getCartItem(state.Auth.CID)
         .then((response) => {
@@ -83,6 +89,8 @@ export default function Categories(props) {
           })
         })
     }
+
+    fetchMoreData();
 
   }, [state.Auth.isAuth])
 
@@ -150,6 +158,7 @@ export default function Categories(props) {
   ];
 
 
+
   // states
   const [items, setItems] = useState([])
   const [expanded, setExpanded] = useState("");
@@ -158,6 +167,7 @@ export default function Categories(props) {
   const [meta, setMeta] = useState({
     hasMore: true,
     page: 1,
+    filter : filter
   });
 
 
@@ -178,10 +188,11 @@ export default function Categories(props) {
 
   // fetch more item
   const fetchMoreData = async () => {
-    getProducts(meta.page)
+
+    getProducts(meta)
       .then((data) => {
         if (data.data.length > 0) {
-          setMeta({ ...meta, page: meta.page + 1 })
+          setMeta({ ...meta, page: meta.page + 1 ,filter})
           return setItems([...new Set([...items.concat(data.data)])])
         }
         else {
@@ -338,7 +349,7 @@ export default function Categories(props) {
   return (
     <>
       <title>Categories</title>
-
+{console.log(meta)}
       {/* Main Container */}
       <Grid container sx={{ padding: "1%" }}>
         {/* sub categories details  */}

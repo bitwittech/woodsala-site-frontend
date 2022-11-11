@@ -16,6 +16,7 @@ import {
   Card,
   CardActionArea,
   CardActions,
+  Link
 } from "@mui/material";
 // Images
 import living from ".././asset/images/home/sofa_SBR.png";
@@ -24,7 +25,7 @@ import bedroom from ".././asset/images/home/bedroom_SBR.png";
 import dining from ".././asset/images/home/dining_SBR.png";
 import bed from ".././asset/images/home/bed_SBF.png";
 import cabinet from ".././asset/images/home/cabinet_SBF.png";
-import chire from ".././asset/images/home/chire_SBF.png";
+import chair from ".././asset/images/home/chire_SBF.png";
 import drawerChest from ".././asset/images/home/drawerChest_SBF.png";
 import dressingTable from ".././asset/images/home/dressingTable_SBF.png";
 import fruitCabinet from ".././asset/images/home/fruitCabinet_SBF.png";
@@ -42,6 +43,7 @@ import stool from ".././asset/images/home/stool_TC.png";
 import mirror from ".././asset/images/home/mirror_TC.png";
 import wallCabinet from ".././asset/images/home/wallCabinet_TC.png";
 import banner from ".././asset/images/home/banner1_BS.png";
+import box from ".././asset/images/home/Box.jpg";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import post1 from ".././asset/images/home/insta.png";
 import post2 from ".././asset/images/home/insta2.png";
@@ -148,6 +150,22 @@ export default function Home(props) {
     },
   ];
 
+  const SBF2 = [
+    {label : "Table" ,image : table, link : 'Table'},
+    {label : "Chair" ,image :chair, link : 'Chair' } ,
+    {label : "Furniture Means Wood" ,image :room, link : 'FruitCabinet' }
+  ]
+  const SBF = [
+    {label : "Dressing Table" ,image : dressingTable, link : 'Table'},
+    {label : "Cabinet" ,image :cabinet, link : 'Cabinet' } ,
+    {label : "Box" ,image : box , link : 'Box'},
+    {label : "Fruit & Vegetable Cabinet" ,image :fruitCabinet, link : 'FruitCabinet' },
+    {label : "Sofa" ,image : sofa , link : 'Sofa'},
+    {label : "Drawer's Cabinet" ,image :drawerChest, link : 'Drawer' },
+    {label : "Bed" ,image :bed , link : 'Bed'},
+    {label : "Swing (Jhula)" ,image :swing, link : 'Jhula' }
+  ]
+
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
@@ -205,7 +223,7 @@ export default function Home(props) {
             We bet you can't find an identical piece, <br></br> any where in the
             world
           </Typography>
-          <Button onClick = {()=>{console.log(props); props.history('/categories')}} sx={{ margin: "5px" }} small={"true"} variant="outlined">
+          <Button onClick = {()=>{props.history('/categories')}} sx={{ margin: "5px" }} small={"true"} variant="outlined">
             Shop Now
           </Button>
         </Grid>
@@ -259,74 +277,33 @@ export default function Home(props) {
             Shop By Furniture
           </Typography>
         </Grid>
-        <Grid item xs={12} className="image center-SBR" md={3.5}>
-          <img className="image" src={dressingTable} alt="living" />
+        {
+          SBF.map((row)=> <Grid item xs={12}  className="image center-SBR" md={3.5}>
+          <img className="image" src={row.image}
+          style = {{maxHeight : '400px'}}
+          onClick = {()=>props.history(`/categories?filter={"category_name": {"$regex" :  "${row.link}" ,  "$options" : "i" } }`)} alt="living" />
           <Typography className="sub-heading" variant="h5">
-            Dressing Table
+            {row.label}
           </Typography>
-        </Grid>
-        <Grid item xs={12} className="image center-SBR" md={3.5}>
-          <img className="image" src={cabinet} alt="WFH" />
-          <Typography className="sub-heading" variant="h5">
-            Cabinet
-          </Typography>
-        </Grid>
-        <Grid item xs={12} className="image center-SBR" md={3.5}>
-          <img className="image" src={dining2} alt="bedroom" />
-          <Typography className="sub-heading" variant="h5">
-            Dining Set
-          </Typography>
-        </Grid>
-        <Grid item xs={12} className="image center-SBR" md={3.5}>
-          <img className="image" src={fruitCabinet} alt="bedroom" />
-          <Typography className="sub-heading" variant="h5">
-            Fruit & Vegetable Cabinet
-          </Typography>
-        </Grid>
-        <Grid item xs={12} className="image center-SBR" md={3.5}>
-          <img className="image" src={sofa} alt="bedroom" />
-          <Typography className="sub-heading" variant="h5">
-            Sofa
-          </Typography>
-        </Grid>
-        <Grid item xs={12} className="image center-SBR" md={3.5}>
-          <img className="image" src={drawerChest} alt="bedroom" />
-          <Typography className="sub-heading" variant="h5">
-            Drawer's Cabinet
-          </Typography>
-        </Grid>
-        <Grid item xs={12} className="image center-SBR" md={3.5}>
-          <img className="image" src={bed} alt="bedroom" />
-          <Typography className="sub-heading" variant="h5">
-            Bed
-          </Typography>
-        </Grid>
-        <Grid item xs={12} className="image center-SBR" md={3.5}>
-          <img className="image" src={swing} alt="bedroom" />
-          <Typography className="sub-heading" variant="h5">
-            Swing (Jhula)
-          </Typography>
-        </Grid>
+        </Grid>)
+          
+        }
+       
         <Grid item xs={12} className="image center-SBR" md={3.5}>
           <Grid container className="SBF">
-            <Grid item xs={12} md={5} className="image center-SBR">
-              <img src={table} alt="bedroom" />
-              <Typography className="sub-heading" variant="h6">
-                Table
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={5} className="image center-SBR">
-              <img src={chire} alt="bedroom" />
-              <Typography className="sub-heading" variant="h6">
-                Chair
-              </Typography>
-            </Grid>
-            <Grid item xs={12} className="image center-SBR">
-              <img className="image" src={room} alt="bedroom" />
-              <Typography className="sub-heading" variant="h6">
-                Furniture Means Wood
-              </Typography>
-            </Grid>
+
+          {
+          SBF2.map((row,index)=>
+        <Grid item xs={12} md={index !== 2 && 5} className="image center-SBR">
+        <img src={row.image}  
+        onClick = {()=>props.history(`/categories?filter={"category_name": {"$regex" :  "${row.link}" ,  "$options" : "i" } }`)} alt="bedroom" />
+        <Typography className="sub-heading" variant="h6">
+          {row.label}
+        </Typography>
+      </Grid>)
+          
+        }
+            
           </Grid>
         </Grid>
       </Grid>

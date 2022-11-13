@@ -56,7 +56,7 @@ export const getCustomerAddress = async (CID) => {
 // for update Customer  details  
 export const updateCustomer = async (data) => {
   console.log(data)
-  return await axios.patch(`https://woodshala.in/api/updateCustomer`, data,
+  return await axios.patch(`https://admin.woodshala.in/api/updateCustomer`, data,
     {
       headers: {
         Authorization: `Bearer ${WDToken}`,
@@ -153,7 +153,7 @@ export const updateQuantity = async (data) => {
 
 // order ID at last
 export const getLastOrder = async () => {
-  return await axios.get(`https://woodshala.in/api/getLastOrder`,{
+  return await axios.get(`https://admin.woodshala.in/api/getLastOrder`,{
     headers: {
       Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
     },
@@ -163,7 +163,7 @@ export const getLastOrder = async () => {
 // for  adding order to the list
 
 export const addOrder = async (data) => {
-  return await axios.post(`https://woodshala.in/api/placeOrder`,data,{
+  return await axios.post(`https://admin.woodshala.in/api/placeOrder`,data,{
     headers: {
       Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
     },

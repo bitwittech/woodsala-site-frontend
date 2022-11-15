@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import React, {useEffect} from "react";
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "./App.css";
 
 // MUI
@@ -49,11 +49,19 @@ const light = createTheme({
 
 function App() {
 
-
-
+  
+ 
+  
+  
   function Path() {
     const history = useNavigate();
+    const { pathname } = useLocation();
 
+    useEffect(()=>{
+      window.scrollTo(0, 0);
+    },[pathname])
+    
+    
     return (
       <>
         {window.location.pathname !== '/verify' && <Navbar history={history} />}

@@ -71,7 +71,31 @@ export default function Categories(props) {
   // store
   const { state, dispatch } = Store();
 
+  // states
+  const [items, setItems] = useState([])
+  const [expanded, setExpanded] = useState("");
 
+  // state of the everything
+  const [meta, setMeta] = useState({
+    hasMore: true,
+    page: 1,
+    filter : filter
+  });
+
+  // State
+  const [filterShow, setFilter] = useState(false);
+
+  // style 
+  const styleScroller = {
+    display: 'flex',
+    justifyContent: "center",
+    alignItem: 'center',
+    minWidth: '100%',
+    flexDirection: 'column',
+    overflow: 'hidden !important',
+    margin: 'auto'
+
+  }
 
   // use Effect
   useEffect(() => {
@@ -90,9 +114,20 @@ export default function Categories(props) {
         })
     }
 
-    fetchMoreData();
+    fetchMoreData(false);
 
   }, [state.Auth.isAuth])
+
+  useEffect(()=>{
+    console.log(meta)
+    setItems([])
+    setMeta({
+      hasMore : true,
+      page : 1,
+      filter: filter
+    })
+    fetchMoreData(true);
+  },[filter])
 
   const categories = [
     {
@@ -157,42 +192,25 @@ export default function Categories(props) {
     },
   ];
 
-
-
-  // states
-  const [items, setItems] = useState([])
-  const [expanded, setExpanded] = useState("");
-
-  // state of the everything
-  const [meta, setMeta] = useState({
-    hasMore: true,
-    page: 1,
-    filter : filter
-  });
-
-
-  // State
-  const [filterShow, setFilter] = useState(false);
-
-  // style 
-  const styleScroller = {
-    display: 'flex',
-    justifyContent: "center",
-    alignItem: 'center',
-    minWidth: '100%',
-    flexDirection: 'column',
-    overflow: 'hidden !important',
-    margin: 'auto'
-
-  }
+  // useEffect(()=>{
+  //    setItems([]);
+  //    setMeta({
+  //     hasMore: true,
+  //     page: 1,
+  //     filter : filter
+  //   });
+  // },[filter])
 
   // fetch more item
-  const fetchMoreData = async () => {
+  const fetchMoreData = async (reset = false) => {
 
-    getProducts(meta)
+    getProducts({page : filter === meta.filter? meta.page : 1 , filter : filter || meta.filter })
       .then((data) => {
         if (data.data.length > 0) {
-          setMeta({ ...meta, page: meta.page + 1 ,filter})
+          setMeta({ ...meta,hasMore: true, page: meta.page + 1 ,filter})
+          if(reset)
+          setItems(data.data)
+          else
           return setItems([...new Set([...items.concat(data.data)])])
         }
         else {
@@ -349,7 +367,7 @@ export default function Categories(props) {
   return (
     <>
       <title>Categories</title>
-{console.log(meta)}
+{/* {console.log(meta)} */}
       {/* Main Container */}
       <Grid container sx={{ padding: "1%" }}>
         {/* sub categories details  */}
@@ -678,21 +696,19 @@ export default function Categories(props) {
                     xs={window.innerWidth <= '600' ? 10 : 5.8}
                     sx={{ boxShadow: 2, maxHeight: '100%', mb : 3 }}
                     md={3.87}
-
                   >
                     <Grid container>
                       <Grid item xs={12}
                         onClick={() => history(`/details?SKU=${item.SKU}`)}
-
                       >
                         <img src={item.featured_image || item.product_image[0] || defaultIMG} alt="product_Images" />
                       </Grid>
                       <Grid item xs={9}>
                         <Box className="productInfo">
-                          <Typography variant="h5" >{item.product_title}</Typography>
-                          <Typography variant="body2">
+                          <Typography variant="h5" className = 'title'>{item.product_title}</Typography>
+                          {/* <Typography variant="body2">
                             Lorem ipsum dolor sit amet consectetur adipisicing elit. Est harum natus error facilis similique officiis ea nisi architecto explicabo tenetur Aspernatur?
-                          </Typography>
+                          </Typography> */}
                           <Typography variant="h5">{item.discount_limit}% Off</Typography>
                           <Typography variant="h6"><s>Rs.{item.MRP}</s></Typography>
                           <Typography variant="h5">Rs.{item.selling_price}</Typography>

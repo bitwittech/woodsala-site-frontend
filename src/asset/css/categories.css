@@ -34,15 +34,23 @@
 .productCard {
     cursor: pointer;
     padding: 1%;
+    max-height : 400px;
+    min-height : 400px;
 }
 
 .productCard img {
     width: 100%;
-    height: 250px;
+    min-height: 250px;
+    max-height: 250px;
 }
 
 .hamFilterPanel {
     display: none;
+}
+
+.title{
+    min-height : 80px; 
+    max-height : 80px; 
 }
 
 @media screen and (max-width: 800px) {

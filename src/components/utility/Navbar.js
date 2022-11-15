@@ -81,16 +81,17 @@ export default function Navbar(props) {
     setAnchorEl(null);
   };
 
-  const navBarComponent = ["/", 
-  "/categories",
-  "/categories",
-  "/categories",
-  "/categories",
-  "/categories",
-  "/categories",
-  "/categories",
-  "/categories",
-  "/categories",
+  const navBarComponent = [
+  '/', 
+  '/categories?filter={"category_name": {"$regex" :  "Bajot" ,  "$options" : "i" } }&index=1',
+  '/categories?filter={"category_name": {"$regex" :  "Animal Figurine" ,  "$options" : "i" } }&index=2',
+  '/categories?filter={"category_name": {"$regex" :  "Coaster" ,  "$options" : "i" } }&index=3',
+  '/categories?filter={"category_name": {"$regex" :  "Wall Decor" ,  "$options" : "i" } }&index=4',
+  '/categories?filter={"category_name": {"$regex" :  "Chair" ,  "$options" : "i" } }&index=5',
+  '/categories?filter={"category_name": {"$regex" :  "Candle Holder" ,  "$options" : "i" } }&index=6',
+  '/categories?filter={"category_name": {"$regex" :  "Clock" ,  "$options" : "i" } }&index=7',
+  '/categories',
+  
 ];
   const navBarImage = [
     home,
@@ -106,19 +107,19 @@ export default function Navbar(props) {
 
   const navBarLabel = [
     'Home',
-    'Furniture',
-    'Kitchen Items',
-    'Gifting',
-    'Exclusive',
-    'Useful Products',
-    'Traditional',
-    'Company',
+    'Bajot',
+    'Animal Figurine',
+    'Coaster',
+    'Wall Decor',
+    'Chair',
+    'Candle Holder',
+    'Clock',
     'Browse All',];
 
   // for nav route
   const handleChange = (e, newVal) => {
     props.history(newVal);
-
+    // window.location.reload()
   };
 
 
@@ -190,6 +191,7 @@ export default function Navbar(props) {
 
   return (
     <>
+    {/* // this component cortarolll the dat persistance */}
       <PersistData />
       <Grid container className="nav">
         {/* Black Top bar */}
@@ -287,7 +289,7 @@ export default function Navbar(props) {
                     
                   >
                     {
-                      navBarLabel.map((tag,index)=><Tab
+                      navBarLabel.map((tag,index)=><Tab key = {index}
                       wrapped
                       label={tag}
                       icon={<img alt='home' src={navBarImage[index]} />}
@@ -369,13 +371,15 @@ export default function Navbar(props) {
             variant="scrollable"
             onChange={handleChange}
             value={
-              navBarComponent.includes(window.location.pathname) &&
-              window.location.pathname
+              window.location.search !== ''?navBarComponent[parseInt(window.location.search.split('index=')[1])]
+              : window.location.pathname
             }
             color="primary"
           >
+            {/* {console.log(parseInt(window.location.search.split('index=')[1]))} */}
 
     {navBarLabel.map((tab,index)=><Tab
+    key = {index}
               wrapped
               label={tab}
               component={Link}

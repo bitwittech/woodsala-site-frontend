@@ -294,7 +294,7 @@ export default function Home(props) {
 
           {
           SBF2.map((row,index)=>
-        <Grid item xs={12} md={index !== 2 && 5} className="image center-SBR">
+        <Grid item xs={12} key = {index} md={index !== 2 && 5} className="image center-SBR">
         <img src={row.image}  
         onClick = {()=>props.history(`/categories?filter={"category_name": {"$regex" :  "${row.link}" ,  "$options" : "i" } }`)} alt="bedroom" />
         <Typography className="sub-heading" variant="h6">

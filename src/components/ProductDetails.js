@@ -262,6 +262,7 @@ import dining from ".././asset/images/home/dining_SBR.png";
 import bed from ".././asset/images/home/bed_SBF.png";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import defaultIMG from ".././asset/images/defaultProduct.svg";
 
 // css
 import "../asset/css/productDetails.css";
@@ -291,14 +292,14 @@ import {
 } from "@mui/material";
 
 // APis function 
-import { getProductDetails, addCartItem } from '../service/service'
+import { getProductDetails, addCartItem, getRelatedProduct } from '../service/service'
 
 // global state 
 import {Store} from '../store/Context'
 import {AddCartItem,Notify} from '../store/Types'
 
 
-export default function ProductDetails() {
+export default function ProductDetails(props) {
 
   // store 
   const {state,dispatch} = Store();
@@ -311,22 +312,48 @@ export default function ProductDetails() {
 
   // get query parameter for product 😀 
   const search = useLocation().search;
-  const SKU = new URLSearchParams(search).get('SKU');
+  const urlObj = new URLSearchParams(search);
+
+  // filter obj 
+  const [filters,setFIlters] = useState({
+    SKU : urlObj.get('SKU'),
+    title : urlObj.get('title'),
+    category_name : urlObj.get('category_name')
+  })
 
   // state for data 
   const [data, setData] = useState(null)
+  const [relatedProducts, setRelatedProducts] = useState([])
+
+
+  // history
+  const history = props.history;
+
 
   // for getting the product 
   useEffect(() => {
-    getProductDetails(SKU)
-      .then((response) => {
-          setData(response.data)
-      })
-      .catch((err)=>{
-        console.log(err)
-      })
+    getData(filters)
+  }, [filters]);
 
-  }, []);
+
+  const getData = async(filters)=>{
+    await getProductDetails(filters.SKU)
+    .then((response) => {
+        setData(response.data)
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+  
+    await getRelatedProduct({product_title : filters.title,category_name : filters.category_name})
+    .then((response) => {
+        setRelatedProducts(response.data)
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+  }
+
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -353,11 +380,21 @@ export default function ProductDetails() {
   ];
 
 
-  let customer = [
+  let relatedProduct = [
     {
       image: living,
       review: "Great Product with minimal design.",
       name: "Yashwant Sahu",
+    },
+    {
+      image: living,
+      review: "Great Product with minimal design.",
+      name: "Yashwant Sahu",
+    },
+    {
+      image: wfh,
+      review: "Great Product with minimal design.",
+      name: "Nilesh Prajapati",
     },
     {
       image: wfh,
@@ -373,17 +410,22 @@ export default function ProductDetails() {
       image: bed,
       review: "Great Product with minimal design.",
       name: "Yashwant Sahu",
-    }
+    },
+    {
+      image: bed,
+      review: "Great Product with minimal design.",
+      name: "Yashwant Sahu",
+    },
   ];
 
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
-      items: 3,
+      items: 4,
     },
     tablet: {
       breakpoint: { max: 800, min: 600 },
-      items: 1,
+      items: 2,
     },
     mobile: {
       breakpoint: { max: 600, min: 0 },
@@ -1067,23 +1109,25 @@ export default function ProductDetails() {
             className="detailsCarsole"
             responsive={responsive}
           >
-            {customer.map((article, index) => {
+            {relatedProducts.map((article, index) => {
               return (
-                <Card className="card" key={index} sx={{ maxWidth: 300, boxShadow: 3 }}>
+                <Card 
+                onClick={() => { window.location.href = `/details?SKU=${article.SKU}&title=${article.product_title}&category_name=${article.category_name}`}}
+                className="card" key={index} sx={{ maxWidth: 280,minHeight: 300,maxHeight: 300, boxShadow: 2 }}>
                   <CardActionArea>
                     <CardMedia
                       className="cardMedia"
                       component="img"
-                      height="250"
-                      image={article.image}
-                      alt="green iguana"
+                      height="200"
+                      image={article.product_image[0] || defaultIMG}
+                      alt="Product_image"
                     />
                     <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {article.name}
+                      <Typography className = 'productTitle'   variant="h5" component="div">
+                        {article.product_title}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {article.review}
+                      <Typography variant="body" color="text.secondary">
+                        Rs.{article.selling_price || 0}
                       </Typography>
                     </CardContent>
                   </CardActionArea>

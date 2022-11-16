@@ -80,6 +80,16 @@ export const getProducts = async (data) => {
   );
 }
 
+export const getRelatedProduct = async (data) => {
+  return await axios.get(`${API}/getRelatedProduct?filter=${JSON.stringify(data)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }
+  );
+}
+
 // get product details for display  
 export const getProductDetails = async (data) => {
   return await axios.get(`${API}/getProductDetails?SKU=${data}`);

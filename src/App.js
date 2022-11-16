@@ -70,7 +70,7 @@ function App() {
           <Route path="/home" element={<Home history={history} />}></Route>
           <Route path="/cart" element={<Cart history={history} />}></Route>
           <Route path="/checkout" element={<Checkout />}></Route>
-          <Route path="/details" element={<ProductDetails />}></Route>
+          <Route path="/details" element={<ProductDetails history={history} />}></Route>
           <Route path="/contact" element={<ContactUs />}></Route>
           <Route path="/categories" element={<Categories history={history} />}></Route>
           <Route path="/profile" element={<Profile />}></Route>

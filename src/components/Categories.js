@@ -192,14 +192,6 @@ export default function Categories(props) {
     },
   ];
 
-  // useEffect(()=>{
-  //    setItems([]);
-  //    setMeta({
-  //     hasMore: true,
-  //     page: 1,
-  //     filter : filter
-  //   });
-  // },[filter])
 
   // fetch more item
   const fetchMoreData = async (reset = false) => {
@@ -699,7 +691,7 @@ export default function Categories(props) {
                   >
                     <Grid container>
                       <Grid item xs={12}
-                        onClick={() => history(`/details?SKU=${item.SKU}`)}
+                        onClick={() => history(`/details?SKU=${item.SKU}&title=${item.product_title}&category_name=${item.category_name}`)}
                       >
                         <img src={item.featured_image || item.product_image[0] || defaultIMG} alt="product_Images" />
                       </Grid>

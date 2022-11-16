@@ -111,3 +111,19 @@
 .detailsCarsole .react-multi-carousel-list {
     height: 400px !important;
 }
+
+.productTitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* number of lines to show */
+    line-clamp: 2;
+    min-height: 2.9em;
+    max-height: 2.9em;
+    -webkit-box-orient: vertical;
+}
+
+.cardMedia {
+    object-fit: fill !important;
+}

@@ -1,4 +1,4 @@
 {
-    "LocalAPI": "http://localhost:8000/api",
-    "OfficialAPI": "https://woodshala.in/api"
+    "OfficialAPI": "http://localhost:8000/api",
+    "LocalAPI": "https://woodshala.in/api"
 }

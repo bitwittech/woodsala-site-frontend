@@ -89,6 +89,15 @@ export const getRelatedProduct = async (data) => {
     }
   );
 }
+export const getSearchList = async (data) => {
+  return await axios.get(`${API}/getSearchList?filter=${data}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }
+  );
+}
 
 // get product details for display  
 export const getProductDetails = async (data) => {

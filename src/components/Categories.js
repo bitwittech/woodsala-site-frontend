@@ -129,71 +129,72 @@ export default function Categories(props) {
     fetchMoreData(true);
   },[filter])
 
-  const categories = [
-    {
-      image: living,
-      name: "Living",
-      price: 12000,
-    },
-    {
-      image: wfh,
-      name: "Work From Home",
-      price: 15000,
-    },
-    {
-      image: bedroom,
-      name: "Bedroom",
-      price: 20000,
-    },
-    {
-      image: dining,
-      name: "Dining",
-      price: 12000,
-    },
-    {
-      image: living,
-      name: "Living",
-      price: 12000,
-    },
-    {
-      image: wfh,
-      name: "Work From Home",
-      price: 15000,
-    },
-    {
-      image: bedroom,
-      name: "Bedroom",
-      price: 20000,
-    },
-    {
-      image: dining,
-      name: "Dining",
-      price: 12000,
-    },
-    {
-      image: living,
-      name: "Living",
-      price: 12000,
-    },
-    {
-      image: wfh,
-      name: "Work From Home",
-      price: 15000,
-    },
-    {
-      image: bedroom,
-      name: "Bedroom",
-      price: 20000,
-    },
-    {
-      image: dining,
-      name: "Dining",
-      price: 12000,
-    },
-  ];
+  // const categories = [
+  //   {
+  //     image: living,
+  //     name: "Living",
+  //     price: 12000,
+  //   },
+  //   {
+  //     image: wfh,
+  //     name: "Work From Home",
+  //     price: 15000,
+  //   },
+  //   {
+  //     image: bedroom,
+  //     name: "Bedroom",
+  //     price: 20000,
+  //   },
+  //   {
+  //     image: dining,
+  //     name: "Dining",
+  //     price: 12000,
+  //   },
+  //   {
+  //     image: living,
+  //     name: "Living",
+  //     price: 12000,
+  //   },
+  //   {
+  //     image: wfh,
+  //     name: "Work From Home",
+  //     price: 15000,
+  //   },
+  //   {
+  //     image: bedroom,
+  //     name: "Bedroom",
+  //     price: 20000,
+  //   },
+  //   {
+  //     image: dining,
+  //     name: "Dining",
+  //     price: 12000,
+  //   },
+  //   {
+  //     image: living,
+  //     name: "Living",
+  //     price: 12000,
+  //   },
+  //   {
+  //     image: wfh,
+  //     name: "Work From Home",
+  //     price: 15000,
+  //   },
+  //   {
+  //     image: bedroom,
+  //     name: "Bedroom",
+  //     price: 20000,
+  //   },
+  //   {
+  //     image: dining,
+  //     name: "Dining",
+  //     price: 12000,
+  //   },
+  // ];
 
 
   // fetch more item
+  
   const fetchMoreData = async (reset = false) => {
 
     getProducts({page : filter === meta.filter? meta.page : 1 , filter : filter || meta.filter })
@@ -362,8 +363,18 @@ export default function Categories(props) {
 {/* {console.log(meta)} */}
       {/* Main Container */}
       <Grid container sx={{ padding: "1%" }}>
+
+
+      {/* Banner */}
+      <Grid container className="productBanner">
+        <Grid item xs={12}>
+          <Typography variant="h1">Products</Typography>
+        </Grid>
+      </Grid>
+      {/* Banner Ends */}
+
         {/* sub categories details  */}
-        <Grid item xs={12} className="subInfo">
+        {/* <Grid item xs={12} className="subInfo">
           <Typography align="center" variant="h3">
             Furniture
             <Typography variant="body1">
@@ -372,12 +383,12 @@ export default function Categories(props) {
               neque consectetur.
             </Typography>
           </Typography>
-        </Grid>
+        </Grid> */}
 
         {/* sub categories details ends */}
 
         {/* carousal for sub cat */}
-        <Grid item xs={12} className="subCatContainer">
+        {/* <Grid item xs={12} className="subCatContainer">
           <Carousel keyBoardControl={true} ssr={true} responsive={responsive}>
             {categories.map((item, index) => {
               return (
@@ -400,7 +411,7 @@ export default function Categories(props) {
               );
             })}
           </Carousel>
-        </Grid>
+        </Grid> */}
         {/* carousal for sub cat ends */}
 
         {/* filter sec */}
@@ -675,10 +686,12 @@ export default function Categories(props) {
             dataLength={items.length}
             next={fetchMoreData}
             hasMore={meta.hasMore}
-            style={styleScroller}
+            // style={styleScroller}
             loader={<center style={{ padding: '10px' }}><CircularProgress /></center>}
           >
-            <Grid container className='innerProductWrap' >
+            <Grid container 
+            className='innerProductWrap' 
+            >
               {items.map((item, index) => {
                 return (
                   <Grid

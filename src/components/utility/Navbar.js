@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Menu,
   MenuItem,
@@ -6,7 +6,7 @@ import {
   Typography,
   IconButton,
   TextField,
-  InputAdornment,
+  Autocomplete,
   Tabs,
   Tab,
   Box,
@@ -53,15 +53,22 @@ import "../../asset/css/navbar.css";
 import { Store } from '../../store/Context'
 import { LogBox, Auth, Notify } from '../../store/Types'
 
+// services 
+import {getSearchList} from '../../service/service'
+
 export default function Navbar(props) {
 // store 
   const { state, dispatch } = Store();
 
   // stats for ham burgher icon 
   const [Ham, setHam] = useState(false);
-
   const [anchor, setAnchorEl] = useState(null);
 
+  // state for search
+  const [search,setSearch] = useState({
+    searchList : [],
+    searchParams : undefined
+})
 
   
   const handleProfileIconClick = (event) => {
@@ -187,6 +194,38 @@ export default function Navbar(props) {
         </MenuItem>
       </Menu>
     );
+  }
+
+  // load new searchList
+const handleSearch = async (e) => {
+  const delayDebounceFn = setTimeout(() => {
+    getSearchList(e.target.value)
+    .then((res)=>{
+      // console.log(res.data)
+      setSearch({
+        searchParams : e.target.value,
+        searchList : res.data || []
+      });
+    })
+    .catch((err)=>{
+      setSearch({
+        searchParams : undefined,
+        searchList : []
+      })
+      console.log('error for Navbar',err);
+    })
+  }, 3000)
+
+  return () => clearTimeout(delayDebounceFn)
+  }
+
+  // firing search 
+  const fireSearchQuery = (e)=>{
+if (e.key === 'Enter')
+   { return props.history(`/categories?filter={"$or": [{"category_name" : {"$regex" : "${e.target.value}", "$options" : "i" }},
+   {"product_title" : {"$regex" : "${e.target.value}", "$options" : "i" }}]}`)}
+
+  //  return props.history
   }
 
   return (
@@ -317,7 +356,24 @@ export default function Navbar(props) {
               <img src={logo} style = {{cursor : 'pointer'}} onClick= {()=>{props.history('/')}} alt="logo.png"></img>
             </Grid>
             <Grid item xs={10} md={6} className="center searchBar">
-              <TextField
+            <Autocomplete
+              disablePortal
+              size = 'small'
+              fullWidth
+              // autoComplete 
+              autoHighlight
+              onKeyPress = {fireSearchQuery}
+              clearOnEscape
+              id="combo-box-demo"
+              options={search.searchList.map((row)=>{return row.product_title})}
+              // sx={{ width: 300 }}
+              renderInput={(params) => <TextField onKeyUpCapture={handleSearch} 
+              // value = {search.searchParams || ''} 
+              // onChange = {} 
+              {...params} 
+              label="Search" />}
+            />
+              {/* <TextField
                 id="input-with-icon-textfield"
                 size="small"
                 variant="outlined"
@@ -335,7 +391,7 @@ export default function Navbar(props) {
                     </InputAdornment>
                   ),
                 }}
-              />
+              /> */}
             </Grid>
             <Grid item xs={12} md={3} className="center">
               <IconButton color="primary" onClick={handleProfileIconClick }>

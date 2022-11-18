@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import {Link,useParams } from "react-router-dom";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Carousel from "react-multi-carousel";
 //mui
@@ -48,25 +48,24 @@ export default function Categories(props) {
   // history
   const history = props.history;
 
-  // filer params
-  const search = useLocation().search;
-  const filter = new URLSearchParams(search).get('filter') || undefined;
+  // filter params
+  const filter = useParams();
 
-  // responsive oject for Slider
-  const responsive = {
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 3,
-    },
-    tablet: {
-      breakpoint: { max: 800, min: 600 },
-      items: 2,
-    },
-    mobile: {
-      breakpoint: { max: 600, min: 0 },
-      items: 1,
-    },
-  };
+  // // responsive oject for Slider
+  // const responsive = {
+  //   desktop: {
+  //     breakpoint: { max: 3000, min: 1024 },
+  //     items: 3,
+  //   },
+  //   tablet: {
+  //     breakpoint: { max: 800, min: 600 },
+  //     items: 2,
+  //   },
+  //   mobile: {
+  //     breakpoint: { max: 600, min: 0 },
+  //     items: 1,
+  //   },
+  // };
 
   // store
   const { state, dispatch } = Store();
@@ -85,17 +84,17 @@ export default function Categories(props) {
   // State
   const [filterShow, setFilter] = useState(false);
 
-  // style 
-  const styleScroller = {
-    display: 'flex',
-    justifyContent: "center",
-    alignItem: 'center',
-    minWidth: '100%',
-    flexDirection: 'column',
-    overflow: 'hidden !important',
-    margin: 'auto'
+  // // style 
+  // const styleScroller = {
+  //   display: 'flex',
+  //   justifyContent: "center",
+  //   alignItem: 'center',
+  //   minWidth: '100%',
+  //   flexDirection: 'column',
+  //   overflow: 'hidden !important',
+  //   margin: 'auto'
 
-  }
+  // }
 
   // use Effect
   useEffect(() => {
@@ -106,7 +105,7 @@ export default function Categories(props) {
           if (localStorage.getItem('cart') !== null)
             response.data.concat(JSON.parse(localStorage.getItem('cart')).items)
 
-          // console.log(response.data)
+          // (response.data)
           dispatch({
             type: AddCartItem,
             payload: { items: response.data }
@@ -114,20 +113,11 @@ export default function Categories(props) {
         })
     }
 
-    fetchMoreData(false);
+    fetchMoreData();
 
-  }, [state.Auth.isAuth])
+  }, [state.Auth.isAuth,filter])
 
-  useEffect(()=>{
-    console.log(meta)
-    setItems([])
-    setMeta({
-      hasMore : true,
-      page : 1,
-      filter: filter
-    })
-    fetchMoreData(true);
-  },[filter])
+  
 
   // const categories = [
   //   {
@@ -195,23 +185,29 @@ export default function Categories(props) {
 
   // fetch more item
   
-  const fetchMoreData = async (reset = false) => {
+  const fetchMoreData = async () => {
 
-    getProducts({page : filter === meta.filter? meta.page : 1 , filter : filter || meta.filter })
+    // (meta)
+    // (filter)
+
+    getProducts({page : filter ===  meta.filter ? meta.page  : 1, filter : filter})
       .then((data) => {
         if (data.data.length > 0) {
           setMeta({ ...meta,hasMore: true, page: meta.page + 1 ,filter})
-          if(reset)
-          setItems(data.data)
+          if(filter !== meta.filter)
+          {
+            setItems(data.data)
+            setMeta({ ...meta,hasMore: true, page: 2 ,filter})
+          }
           else
           return setItems([...new Set([...items.concat(data.data)])])
         }
         else {
-          setMeta({ ...meta, page: 1, hasMore: false })
+          setMeta({ ...meta, page: 1, hasMore: false, filter : '' })
         }
       })
       .catch((err) => {
-        console.log(err)
+        // (err)
       })
   }
 
@@ -360,7 +356,7 @@ export default function Categories(props) {
   return (
     <>
       <title>Categories</title>
-{/* {console.log(meta)} */}
+{/* {(meta)} */}
       {/* Main Container */}
       <Grid container sx={{ padding: "1%" }}>
 
@@ -680,7 +676,7 @@ export default function Categories(props) {
 
         {/* product container */}
         <Grid className="productContainer" item xs={12} md={10}>
-          {/* {console.log(state.AddCartItem)} */}
+          {/* {(state.AddCartItem)} */}
 
           <InfiniteScroll
             dataLength={items.length}
@@ -700,11 +696,11 @@ export default function Categories(props) {
                     className="productCard"
                     xs={window.innerWidth <= '600' ? 10 : 5.8}
                     sx={{ boxShadow: 2, maxHeight: '100%', mb : 3 }}
-                    md={3.87}
+                    md={2.9}
                   >
                     <Grid container>
                       <Grid item xs={12}
-                        onClick={() => history(`/details?SKU=${item.SKU}&title=${item.product_title}&category_name=${item.category_name}`)}
+                        onClick={() => history(`/details/${item.SKU}/${item.product_title}/${item.category_name}`)}
                       >
                         <img src={item.featured_image || item.product_image[0] || defaultIMG} alt="product_Images" />
                       </Grid>

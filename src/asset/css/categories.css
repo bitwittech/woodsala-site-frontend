@@ -35,7 +35,7 @@
 
 .productContainer {
     display: flex;
-    width : 100%;
+    width: 100%;
     justify-content: center;
     align-items: center;
     padding: 0% 1%;
@@ -77,8 +77,12 @@
     -webkit-box-orient: vertical;
 }
 
-.infinite-scroll-component__outerdiv{
-    width : 100% !important;
+.infinite-scroll-component__outerdiv {
+    width: 100% !important;
+}
+
+a {
+    text-decoration: none;
 }
 
 @media screen and (max-width: 800px) {

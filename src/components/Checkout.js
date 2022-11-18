@@ -71,7 +71,7 @@ export default function Checkout() {
 
   // url parameter
   const location = useLocation();
-  // console.log(location)
+  // (location)
   const {total,subtotal,product,quantity} = location.state;
 
   const [OID,setOID] = useState();
@@ -128,7 +128,9 @@ export default function Checkout() {
           shipping : '',
         })
       })
-      .catch((err)=>{console.log(err)})
+      .catch((err)=>{
+        console.log(err)
+      })
       getOID();
     }
     else{
@@ -143,7 +145,7 @@ export default function Checkout() {
   // const [country, setCountry] = React.useState("EUR");
 
   const handleData = (e)=>{
-    console.log(e.target.name)
+    // (e.target.name)
     setData({...data,[e.target.name] : e.target.value});
   }
 
@@ -153,7 +155,7 @@ export default function Checkout() {
     e.preventDefault();
     const formVal = {...data,O : OID};
 
-    console.log(formVal)
+    // (formVal)
 // return 'x'
     const res = addOrder(formVal)
    

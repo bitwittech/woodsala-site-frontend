@@ -85,7 +85,7 @@ const Cart = (props) => {
 
   // fetching the cart item
   useEffect(() => {
-    console.log(state.AddCartItem.items)
+    // (state.AddCartItem.items)
     getDetails(JSON.stringify(state.AddCartItem.items.map((item) => { return item.product_id })))
       .then((response) => {
         setRow(
@@ -329,7 +329,7 @@ const handleIncrease = (e)=>{
       width: 70,
       renderCell: (params) => 
       <div className="categoryImage" >
-        <IconButton onClick={() => { console.log(params.formattedValue); removeItemFromCart({SKU : params.formattedValue}).then((res)=>{
+        <IconButton onClick={() => {  removeItemFromCart({SKU : params.formattedValue}).then((res)=>{
            setRow(row.filter((set)=>{
             return  set.action !== params.formattedValue  ;
           }))

@@ -43,11 +43,11 @@ const UserInfo = () => {
         if (state.Auth.isAuth) {
             getCustomer(state.Auth.CID)
             .then((response) => {
-                console.log(response)
+                // (response)
                 SetFormVal({ ...formVal, ...response.data });
             })
             .catch((err) => {
-                console.log(err);
+                // (err);
             });
         }
 
@@ -55,7 +55,7 @@ const UserInfo = () => {
 
     // handleUpdated values
     const handleVal = async (e) => {
-        console.log(e.target.name)
+        // (e.target.name)
         if (e.target.name !== 'profile_image') {
             SetFormVal({
                 ...formVal, [e.target.name]: e.target.value
@@ -96,7 +96,7 @@ const UserInfo = () => {
 
         res
             .then((response) => {
-                console.log(response)
+                // (response)
 
                 dispatch({
                     type: Notify, payload: {
@@ -125,7 +125,7 @@ const UserInfo = () => {
 
             })
             .catch((err) => {
-                console.log(err)
+                // (err)
                 dispatch({
                     type: Notify,
                     payload:

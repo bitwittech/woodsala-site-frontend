@@ -7,7 +7,7 @@ import { Auth, LogBox, Notify,
 export const globalSwitch = (state, action) => {
   switch (action.type) {
     case Auth:
-      // console.log(action.payload)
+      // (action.payload)
       return { ...state, Auth: { ...action.payload } };
     case LogBox:
       return { ...state, LogBox: { ...action.payload } }

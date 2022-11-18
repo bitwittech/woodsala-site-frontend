@@ -87,7 +87,7 @@ export default function EntryPoint() {
     // validation
     const handleValue = (e) => {
 
-        console.log(e.target.name)
+        // (e.target.name)
 
         const phoneCheck = new RegExp(/^\d{10}$/);
         const passwordCheck = new RegExp(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/);
@@ -142,7 +142,7 @@ export default function EntryPoint() {
 
         response
             .then((data) => {
-                // console.log(data)
+                // (data)
                 setController({
                     ...controller,
                     loading: false
@@ -157,7 +157,7 @@ export default function EntryPoint() {
                 handleClose();
             })
             .catch((err) => {
-                // console.log(err)
+                // (err)
                 setController({
                     ...controller,
                     loading: false
@@ -187,7 +187,7 @@ export default function EntryPoint() {
 
         response
             .then((data) => {
-                // console.log(data)
+                // (data)
                 if (data.status === 200) {
                     setController({
                         ...controller,
@@ -240,7 +240,7 @@ export default function EntryPoint() {
                 }
             })
             .catch((err) => {
-                // console.log(err)
+                // (err)
                 setController({
                     ...controller,
                     loading: false
@@ -297,7 +297,7 @@ export default function EntryPoint() {
                                                 size={'small'}
                                             />
                                         </FormControl>
-                                        {/* {console.log(state.Auth)} */}
+                                        {/* {(state.Auth)} */}
                                         <FormControl sx={{ mt: 2, mb: 2 }} variant="outlined">
                                             <TextField
                                                 fullWidth

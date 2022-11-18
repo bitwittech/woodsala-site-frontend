@@ -26,13 +26,12 @@ export default function Verify(props) {
     // for login
     const handleLogIn = async (data) => {
 
-        console.log(">>>", data)
         const response = login(data)
 
 
         response
             .then((data) => {
-                console.log(data)
+                // (data)
                 if (data.status === 200) {
 
                     window.location.href = '/'

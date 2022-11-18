@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Menu,
   MenuItem,
@@ -10,10 +10,11 @@ import {
   Tabs,
   Tab,
   Box,
-  Link,
   Drawer,
   ListItemIcon
 } from "@mui/material";
+
+import {Link} from 'react-router-dom'
 
 // icon
 import FacebookOutlinedIcon from "../../asset/images/navbar/facebook.png";
@@ -90,14 +91,14 @@ export default function Navbar(props) {
 
   const navBarComponent = [
   '/', 
-  '/categories?filter={"category_name": {"$regex" :  "Bajot" ,  "$options" : "i" } }&index=1',
-  '/categories?filter={"category_name": {"$regex" :  "Animal Figurine" ,  "$options" : "i" } }&index=2',
-  '/categories?filter={"category_name": {"$regex" :  "Coaster" ,  "$options" : "i" } }&index=3',
-  '/categories?filter={"category_name": {"$regex" :  "Wall Decor" ,  "$options" : "i" } }&index=4',
-  '/categories?filter={"category_name": {"$regex" :  "Chair" ,  "$options" : "i" } }&index=5',
-  '/categories?filter={"category_name": {"$regex" :  "Candle Holder" ,  "$options" : "i" } }&index=6',
-  '/categories?filter={"category_name": {"$regex" :  "Clock" ,  "$options" : "i" } }&index=7',
-  '/categories',
+  '/product/Bajot',
+  '/product/Animal Figurine',
+  '/product/Coaster',
+  '/product/Wall Decor',
+  '/product/Chair',
+  '/product/Candle Holder',
+  '/product/Clock',
+  '/product',
   
 ];
   const navBarImage = [
@@ -201,7 +202,7 @@ const handleSearch = async (e) => {
   const delayDebounceFn = setTimeout(() => {
     getSearchList(e.target.value)
     .then((res)=>{
-      // console.log(res.data)
+      // (res.data)
       setSearch({
         searchParams : e.target.value,
         searchList : res.data || []
@@ -212,7 +213,7 @@ const handleSearch = async (e) => {
         searchParams : undefined,
         searchList : []
       })
-      console.log('error for Navbar',err);
+      ('error for Navbar',err);
     })
   }, 3000)
 
@@ -222,8 +223,7 @@ const handleSearch = async (e) => {
   // firing search 
   const fireSearchQuery = (e)=>{
 if (e.key === 'Enter')
-   { return props.history(`/categories?filter={"$or": [{"category_name" : {"$regex" : "${e.target.value}", "$options" : "i" }},
-   {"product_title" : {"$regex" : "${e.target.value}", "$options" : "i" }}]}`)}
+   { return props.history(`/product/${e.target.value}/${e.target.value}`)}
 
   //  return props.history
   }
@@ -349,7 +349,7 @@ if (e.key === 'Enter')
         {/* hamburger ends */}
 
 
-        {/* main-1 Tab */}
+        {/* main-1 search bar Tab */}
         <Grid item xs={12}>
           <Grid container spacing={1} className="main-1">
             <Grid item xs={12} md={3} className="center">
@@ -416,10 +416,11 @@ if (e.key === 'Enter')
             </Grid>
           </Grid>
         </Grid>
-        {/* ends main-1 Tab */}
+        {/* ends main-1 search bar Tab */}
 
         {/* main-2 link container */}
         <Grid item xs={12} className="main-2">
+          {/* {(window.location.pathname.replace('%20',''))} */}
           <Tabs
             scrollButtons
             allowScrollButtonsMobile
@@ -427,12 +428,10 @@ if (e.key === 'Enter')
             variant="scrollable"
             onChange={handleChange}
             value={
-              window.location.search !== ''?navBarComponent[parseInt(window.location.search.split('index=')[1])]
-              : window.location.pathname
+            navBarComponent.includes(window.location.pathname.replace('%20',' ').replace('%22',' ')) && window.location.pathname.replace('%20',' ').replace('%22',' ') 
             }
             color="primary"
           >
-            {/* {console.log(parseInt(window.location.search.split('index=')[1]))} */}
 
     {navBarLabel.map((tab,index)=><Tab
     key = {index}

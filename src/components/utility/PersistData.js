@@ -29,7 +29,7 @@ const PersisteData = () => {
     // cart persistance 
 
     if (localStorage.getItem('cart') !== null) {
-      // console.log(localStorage.getItem('cart'))
+      // (localStorage.getItem('cart'))
 
       dispatch({
         type: AddCartItem,

@@ -70,11 +70,16 @@ function App() {
           <Route path="/home" element={<Home history={history} />}></Route>
           <Route path="/cart" element={<Cart history={history} />}></Route>
           <Route path="/checkout" element={<Checkout />}></Route>
-          <Route path="/details" element={<ProductDetails history={history} />}></Route>
+          <Route path="/details/:SKU/:title/:category" element={<ProductDetails history={history} />}></Route>
           <Route path="/contact" element={<ContactUs />}></Route>
-          <Route path="/categories" element={<Categories history={history} />}></Route>
           <Route path="/profile" element={<Profile />}></Route>
           <Route path="/verify" element={<Verify history = {history}/>}></Route>
+
+          {/* // filter and Product page route */}
+          <Route path="/product/:category_name/:product_title/:selling_price" element={<Categories history={history} />}></Route>
+          <Route path="/product/:category_name/:product_title" element={<Categories history={history} />}></Route>
+          <Route path="/product/:category_name" element={<Categories history={history} />}></Route>
+          <Route path="/product" element={<Categories history={history} />}></Route>
         </Routes>
         {window.location.pathname !== '/verify' && <Footer />}
       </>

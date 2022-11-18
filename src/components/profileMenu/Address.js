@@ -46,11 +46,11 @@ const Address = () => {
         if (state.Auth.isAuth) {
             getCustomerAddress(state.Auth.CID)
                 .then((response) => {
-                    // console.log(response)
+                    // (response)
                     setAddressArray(response.data.address);
                 })
                 .catch((err) => {
-                    // console.log(err);
+                    // (err);
                 });
         }
 
@@ -63,7 +63,7 @@ const Address = () => {
 
         useEffect(()=>{
             if(controller.index !== undefined){
-                // console.log(addressArray[controller.index])
+                // (addressArray[controller.index])
                 setData({
                  ...addressArray[controller.index]   
                 })
@@ -94,14 +94,14 @@ const Address = () => {
         // add Address 
         const handleAddress = (e) => {
             e.preventDefault()
-            // // console.log(data); 
+            // // (data); 
             
             let newAddress = [...addressArray, data]
 
             if(controller.index !== undefined){
                 newAddress.splice(controller.index,1)
             }
-            // console.log(newAddress)
+            // (newAddress)
 
             const FD  = new FormData();
 
@@ -138,7 +138,7 @@ const Address = () => {
 
             })
             .catch((err)=>{
-                // console.log(err)
+                // (err)
                 dispatch({
                     type : Notify,
                     payload : {
@@ -296,7 +296,7 @@ const Address = () => {
         
         let data = addressArray
         data.splice(index,1)
-        // // console.log(data)
+        // // (data)
 // return 0;
         const FD  = new FormData();
         FD.append('address',JSON.stringify([...data]));
@@ -332,7 +332,7 @@ const Address = () => {
 
         })
         .catch((err)=>{
-            // console.log(err)
+            // (err)
             dispatch({
                 type : Notify,
                 payload : {

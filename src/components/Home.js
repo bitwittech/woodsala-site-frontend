@@ -281,7 +281,7 @@ export default function Home(props) {
           SBF.map((row)=> <Grid item xs={12}  className="image center-SBR" md={3.5}>
           <img className="image" src={row.image}
           style = {{maxHeight : '400px'}}
-          onClick = {()=>props.history(`/product?filter={"category_name": {"$regex" :  "${row.link}" ,  "$options" : "i" } }`)} alt="living" />
+          onClick = {()=>props.history(`/product/${row.link}`)} alt="living" />
           <Typography className="sub-heading" variant="h5">
             {row.label}
           </Typography>
@@ -296,7 +296,7 @@ export default function Home(props) {
           SBF2.map((row,index)=>
         <Grid item xs={12} key = {index} md={index !== 2 && 5} className="image center-SBR">
         <img src={row.image}  
-        onClick = {()=>props.history(`/product?filter={"category_name": {"$regex" :  "${row.link}" ,  "$options" : "i" } }`)} alt="bedroom" />
+        onClick = {()=>props.history(`/product/${row.link}`)} alt="bedroom" />
         <Typography className="sub-heading" variant="h6">
           {row.label}
         </Typography>

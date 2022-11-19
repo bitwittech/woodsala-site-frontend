@@ -704,7 +704,7 @@ export default function Categories(props) {
                       >
                         <img src={item.featured_image || item.product_image[0] || defaultIMG} alt="product_Images" />
                       </Grid>
-                      <Grid item xs={9}>
+                      <Grid item xs={8.8}>
                         <Box className="productInfo">
                           <Typography variant="h5" className = 'title'>{item.product_title}</Typography>
                           {/* <Typography variant="body2">
@@ -715,8 +715,8 @@ export default function Categories(props) {
                           <Typography variant="h5">Rs.{item.selling_price}</Typography>
                         </Box>
                       </Grid>
-                      <Grid item xs={3}>
-                        <Box className="buttonAction">
+                      <Grid item xs={3.2}>
+                        <Box className="buttonAction" sx = {{display : 'flex'}}>
                           {
                             state.AddCartItem.items.filter((row) => { return row.product_id === item.SKU }).length > 0 ?
                               <IconButton onClick={() => removeItemFromCart(item)}><ShoppingCartIcon /></IconButton> :

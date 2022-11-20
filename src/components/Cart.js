@@ -29,12 +29,17 @@ import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
 import OutlinedFlagSharpIcon from "@mui/icons-material/OutlinedFlagSharp";
 import DeleteIcon from '@mui/icons-material/Delete';
 // APis services 
-import { getDetails, updateQuantity,removeCartItem } from "../service/service"
+import { getDetails, updateQuantity, removeCartItem, getCartItem } from "../service/service"
 
 // state global
-import { Store } from '../store/Context'
-import { AddCartItem,Notify } from "../store/Types";
+// import { Store } from '../store/Context'
+// import { cart, Notify } from "../store/Types";
 
+// state Redux
+import { useDispatch, useSelector } from 'react-redux'
+
+// action 
+import {setCart,removeItem,setAlert,addQTY,subQTY} from '../Redux/action/action'
 
 const countries = [
   {
@@ -70,106 +75,103 @@ function CustomPagination() {
 const Cart = (props) => {
 
   // global 
-  const { state, dispatch } = Store();
+  // const { state, dispatch } = Store();
 
-// states 
+  // Redux 
+  const dispatch = useDispatch();
+  // state 
+  const state = useSelector(state => state);
+
+  // states 
   const [row, setRow] = useState([])
   const [country, setCountry] = useState("EUR");
-  const [data,setData] = useState(
+  const [data, setData] = useState(
     {
-      total : 0,
-      subtotal : 0
+      total: 0,
+      subtotal: 0
     }
   );
+
+  useEffect(()=>{
+    if(state.auth.isAuth)
+    {
+      getCartItem(state.auth.CID)
+      .then((response) => {
+        if(response.data.length > 0)
+          dispatch(setCart({ items: response.data }))
+      })  
+    }
+  },[state.auth.isAuth])
 
 
   // fetching the cart item
   useEffect(() => {
-    // (state.AddCartItem.items)
-    getDetails(JSON.stringify(state.AddCartItem.items.map((item) => { return item.product_id })))
+    // (state.cart.items)
+    getDetails(JSON.stringify(state.cart.items.map((item) => { return item.product_id })))
       .then((response) => {
+        console.log(state.cart.items)
         setRow(
-          response.data.map((dataSet,index)=>{
+          response.data.map((dataSet, index) => {
             return {
-              id : index+1,
-              SKU : dataSet.SKU,
-              product : dataSet.featured_image,
-              product_name : dataSet.product_title,
-              price : state.AddCartItem.items.filter((data)=> { return data.product_id === dataSet.SKU   } )[0].quantity * dataSet.MRP,
-              qty : state.AddCartItem.items.filter((data)=> { return data.product_id === dataSet.SKU   } )[0].quantity,
-              total : state.AddCartItem.items.filter((data)=> { return data.product_id === dataSet.SKU   } )[0].quantity * dataSet.selling_price,
-              action : dataSet.SKU
-            } 
+              id: index + 1,
+              SKU: dataSet.SKU,
+              product: dataSet.featured_image,
+              product_name: dataSet.product_title,
+              price: state.cart.items.filter((data) => { return data.product_id === dataSet.SKU })[0].quantity * dataSet.MRP,
+              qty: state.cart.items.filter((data) => { return data.product_id === dataSet.SKU })[0].quantity,
+              total: state.cart.items.filter((data) => { return data.product_id === dataSet.SKU })[0].quantity * dataSet.selling_price,
+              action: dataSet.SKU
+            }
           })
         )
         // setRow(data.data)
       })
-  },[state.AddCartItem])
+  }, [state.cart])
 
   // for calculating total on value on runtime
-useEffect(()=>{
+  useEffect(() => {
 
-    setData({total : row.reduce((partial,set)=> partial + parseInt(set.total),0)
-   })
-},[row])
+    setData({
+      total: row.reduce((partial, set) => partial + parseInt(set.total), 0)
+    })
+  }, [row])
 
-   // removeItemFromCart 
-   const removeItemFromCart = async (item) => {
+  // removeItemFromCart 
+  const removeItemFromCart = async (item) => {
 
     // server side 
-    if (state.Auth.isAuth) {
+    if (state.auth.isAuth) {
       await removeCartItem({
-        CID: state.Auth.CID,
+        CID: state.auth.CID,
         product_id: item.SKU
       })
         .then((response) => {
           // for client side
-          dispatch(
-            {
-              type: AddCartItem,
-              payload: {
-                items: state.AddCartItem.items.filter((row) => { return row.product_id !== item.SKU })
-              }
-            }
-          )
-          return dispatch({
-            type: Notify,
-            payload: {
+          dispatch(removeItem(item.SKU))
+
+          return dispatch(setAlert({
               variant: 'warning',
               message: response.data.message,
               open: true
-            }
-          })
+            }))
         })
         .catch((err) => {
-          return dispatch({
-            type: Notify,
-            payload: {
+          return dispatch(setAlert({
               variant: 'error',
               message: 'Something Went Wrong !!!',
               open: true
-            }
-          })
+            }))
         })
     }
     else {
       // for client side
-      dispatch(
-        {
-          type: AddCartItem,
-          payload: {
-            items: state.AddCartItem.items.filter((row) => { return row.product_id !== item.SKU })
-          }
-        }
-      )
-      return dispatch({
-        type: Notify,
-        payload: {
+      dispatch(removeItem(item.SKU))
+
+      return dispatch(setAlert({
           variant: 'warning',
           message: 'Item removed added to the cart !!!',
           open: true
-        }
-      })
+        }))
 
     }
   }
@@ -179,86 +181,27 @@ useEffect(()=>{
   };
 
   // decrease quantity
-const handleDecrease = (e)=>{
-  const modifiedData = state.AddCartItem.items.map((data)=>{
-
-    if(e.product_id === data.product_id) 
-    {
-      return {
-        CID : data.CID,
-        product_id : data.product_id,
-        quantity : e.quantity -= 1
-      }
+  const handleDecrease = (e) => {
+    if (state.auth.isAuth) {
+      updateQuantity({ CID: state.auth.CID, product_id: e.product_id, quantity: e.quantity-1 })
+        .then(() => {
+         dispatch(subQTY(e.product_id));
+        })
     }
-    else return data
-
-  })
-
-  if(state.Auth.isAuth)
-  {
-    updateQuantity({CID : state.Auth.CID, product_id : e.product_id, quantity : e.quantity  })
-    .then((response)=>{
-      dispatch({
-        type : AddCartItem,
-        payload : {items : [
-          ...modifiedData,
-        ]}
-      })  
-    })
-
+    else dispatch(subQTY(e.product_id));
   }
-  else {
-    dispatch({
-      type : AddCartItem,
-      payload : {items : [
-        ...modifiedData,
-      ]}
-    })
-
-  }
-}
   // increase quantity
-const handleIncrease = (e)=>{
-  const modifiedData = state.AddCartItem.items.map((data)=>{
-
-    if(e.product_id === data.product_id) 
-    {
-      return {
-        CID : data.CID,
-        product_id : data.product_id,
-        quantity : e.quantity += 1
-      }
+  const handleIncrease = (e) => {
+    if (state.auth.isAuth) {
+      updateQuantity({ CID: state.auth.CID, product_id: e.product_id, quantity: e.quantity+1 })
+        .then(() => {
+         dispatch(addQTY(e.product_id));
+        })
     }
-    else return data
-
-  })
-
-  if(state.Auth.isAuth)
-  {
-    updateQuantity({CID : state.Auth.CID, product_id : e.product_id, quantity : e.quantity  })
-    .then((response)=>{
-      dispatch({
-        type : AddCartItem,
-        payload : {items : [
-          ...modifiedData,
-        ]}
-      })  
-    })
-
-  }
-  else {
-    dispatch({
-      type : AddCartItem,
-      payload : {items : [
-        ...modifiedData,
-      ]}
-    })
-
+    else dispatch(addQTY(e.product_id));
   }
 
-}
-
-// columns section 
+  // columns section 
   const columns = [
     { field: "id", renderHeader: () => <strong>{"S.No"}</strong>, width: 50 },
     { field: "SKU", renderHeader: () => <strong>{"SKU"}</strong>, width: 100 },
@@ -297,8 +240,8 @@ const handleIncrease = (e)=>{
         <Grid container className="qtyButtons">
           <Grid item xs={12} md={3}>
             <Button
-            onClick = {()=> handleDecrease({product_id : params.row.SKU,quantity : params.row.qty})}
-            variant="outlined" size="small">
+              onClick={() => handleDecrease({ product_id: params.row.SKU, quantity: params.row.qty })}
+              variant="outlined" size="small">
               -
             </Button>
           </Grid>
@@ -306,10 +249,10 @@ const handleIncrease = (e)=>{
             <Typography variant="button">{params.formattedValue}</Typography>
           </Grid>
           <Grid item xs={12} md={3}>
-            <Button 
-            onClick = {()=> handleIncrease({product_id : params.row.SKU,quantity : params.row.qty})}
-            
-            variant="outlined" size="small">
+            <Button
+              onClick={() => handleIncrease({ product_id: params.row.SKU, quantity: params.row.qty })}
+
+              variant="outlined" size="small">
               +
             </Button>
           </Grid>
@@ -327,22 +270,24 @@ const handleIncrease = (e)=>{
       renderHeader: () => <strong>{"Remove"}</strong>,
       headerName: "Actions",
       width: 70,
-      renderCell: (params) => 
-      <div className="categoryImage" >
-        <IconButton onClick={() => {  removeItemFromCart({SKU : params.formattedValue}).then((res)=>{
-           setRow(row.filter((set)=>{
-            return  set.action !== params.formattedValue  ;
-          }))
-         dispatch({type : Notify,payload : {
-            open : true,
-            variant : 'warning',
-            message : 'Item Removed !!!'
-          }})
-        }) }} aria-label="delete"  >
-          <DeleteIcon />
-        </IconButton>
-        
-      </div>,
+      renderCell: (params) =>
+        <div className="categoryImage" >
+          <IconButton onClick={() => {
+            removeItemFromCart({ SKU: params.formattedValue }).then((res) => {
+              setRow(row.filter((set) => {
+                return set.action !== params.formattedValue;
+              }))
+              dispatch(setAlert( {
+                  open: true,
+                  variant: 'warning',
+                  message: 'Item Removed !!!'
+              }))
+            })
+          }} aria-label="delete"  >
+            <DeleteIcon />
+          </IconButton>
+
+        </div>,
     }
 
   ];
@@ -368,7 +313,7 @@ const handleIncrease = (e)=>{
     );
   }
 
-  
+
 
   return (
     <>
@@ -504,8 +449,8 @@ const handleIncrease = (e)=>{
                       <br></br>
                     </Grid>
                     <Grid item xs={12}>
-                      <Button disabled = {row.length <= 0 ? true : false } onClick={() => {
-                        props.history( "/checkout", {state : {total : data.total,subtotal :data.total,quantity :row.map((set)=>{return {[set.SKU] : set.qty}}),product : row }})
+                      <Button disabled={row.length <= 0 ? true : false} onClick={() => {
+                        props.history("/checkout", { state: { total: data.total, subtotal: data.total, quantity: row.map((set) => { return { [set.SKU]: set.qty } }), product: row } })
                       }} sx={{ fontWeight: "500" }} variant="contained" fullWidth>
                         Proceed To CheckOut
                       </Button>

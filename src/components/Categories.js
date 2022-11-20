@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {Link,useParams } from "react-router-dom";
+import {useParams } from "react-router-dom";
 import InfiniteScroll from 'react-infinite-scroll-component';
-import Carousel from "react-multi-carousel";
+// import Carousel from "react-multi-carousel";
 //mui
 import {
   Grid,
@@ -28,22 +28,34 @@ import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 //image
-import living from ".././asset/images/home/sofa_SBR.png";
-import wfh from ".././asset/images/home/table_SBR.png";
-import bedroom from ".././asset/images/home/bedroom_SBR.png";
-import dining from ".././asset/images/home/dining_SBR.png";
+// import living from ".././asset/images/home/sofa_SBR.png";
+// import wfh from ".././asset/images/home/table_SBR.png";
+// import bedroom from ".././asset/images/home/bedroom_SBR.png";
+// import dining from ".././asset/images/home/dining_SBR.png";
 import defaultIMG from ".././asset/images/defaultProduct.svg";
 
 // store 
-import { Store } from '../store/Context'
+// import { Store } from '../store/Context'
 // types 
-import { AddCartItem, Notify } from "../store/Types";
+// import { AddCartItem } from "../store/Types";
+
+// Action 
+import {setAlert,addItem,removeItem,setCart} from '../Redux/action/action'
+
+// Redux 
+import {useDispatch,useSelector} from 'react-redux'
 
 
 // services 
 import { getProducts, addCartItem, removeCartItem, getCartItem } from '../service/service'
 
 export default function Categories(props) {
+
+  // State
+  const state = useSelector(state=>state);
+
+  // Dispatch
+  const dispatch = useDispatch();
 
   // history
   const history = props.history;
@@ -68,7 +80,7 @@ export default function Categories(props) {
   // };
 
   // store
-  const { state, dispatch } = Store();
+  // const { state, dispatch } = Store();
 
   // states
   const [items, setItems] = useState([])
@@ -99,23 +111,34 @@ export default function Categories(props) {
   // use Effect
   useEffect(() => {
     
-    if (state.Auth.isAuth) {
-      getCartItem(state.Auth.CID)
-        .then((response) => {
-          if (localStorage.getItem('cart') !== null)
-            response.data.concat(JSON.parse(localStorage.getItem('cart')).items)
-
-          // (response.data)
-          dispatch({
-            type: AddCartItem,
-            payload: { items: response.data }
-          })
+    if (state.auth.isAuth) {
+      if(state.cart.items.length > 0)
+      { 
+        Promise.all(state.cart.items.map(async row=> await addCartItem({
+          CID: state.auth.CID,
+          product_id: row.product_id,
+          quantity: row.quantity,
+        })))
+        .then(()=>{
+          getCartItem(state.auth.CID)
+          .then((response) => {
+            if(response.data.length > 0)
+              dispatch(setCart({ items: response.data }))
+          })  
         })
+      }
+      else {
+        getCartItem(state.auth.CID)
+        .then((response) => {
+          if(response.data.length > 0)
+            dispatch(setCart({ items: response.data }))
+        })
+      }
     }
 
     fetchMoreData();
 
-  }, [state.Auth.isAuth,filter])
+  }, [state.auth.isAuth,filter])
 
   
 
@@ -221,71 +244,47 @@ export default function Categories(props) {
 
 
     // server side 
-    if (state.Auth.isAuth) {
+    if (state.auth.isAuth) {
       await addCartItem({
-        CID: state.Auth.CID,
+        CID: state.auth.CID,
         product_id: item.SKU,
         quantity: 1,
       })
         .then((response) => {
           // for client side 
           dispatch(
-            {
-              type: AddCartItem,
-              payload: {
-                items: [...state.AddCartItem.items,
-                {
-                  CID: state.Auth.CID || 'Not Logged In',
+            addItem( { CID: state.auth.CID || 'Not Logged In',
                   product_id: item.SKU,
-                  quantity: 1,
-                }]
-              }
-            }
+                  quantity: 1,})
           )
-          return dispatch({
-            type: Notify,
-            payload: {
+          return dispatch(setAlert({
               variant: 'success',
               message: response.data.message,
               open: true
-            }
-          })
+          }))
         })
         .catch((err) => {
-          return dispatch({
-            type: Notify,
-            payload: {
-              variant: 'error',
+          return dispatch(setAlert({
+            variant: 'error',
               message: 'Something Went Wrong !!!',
               open: true
-            }
-          })
+        }))
+
         })
     }
     else {
 
       // for client side 
       dispatch(
-        {
-          type: AddCartItem,
-          payload: {
-            items: [...state.AddCartItem.items,
-            {
-              CID: state.Auth.CID || 'Not Logged In',
+        addItem( { CID: state.auth.CID || 'Not Logged In',
               product_id: item.SKU,
-              quantity: 1,
-            }]
-          }
-        }
+              quantity: 1,})
       )
-      return dispatch({
-        type: Notify,
-        payload: {
+      return dispatch(setAlert({
           variant: 'success',
           message: 'Item added to the cart !!!',
           open: true
-        }
-      })
+      }))
 
     }
   }
@@ -294,59 +293,40 @@ export default function Categories(props) {
   const removeItemFromCart = async (item) => {
 
     // server side 
-    if (state.Auth.isAuth) {
+    if (state.auth.isAuth) {
       await removeCartItem({
-        CID: state.Auth.CID,
+        CID: state.auth.CID,
         product_id: item.SKU
       })
         .then((response) => {
           // for client side
-          dispatch(
-            {
-              type: AddCartItem,
-              payload: {
-                items: state.AddCartItem.items.filter((row) => { return row.product_id !== item.SKU })
-              }
-            }
-          )
-          return dispatch({
-            type: Notify,
-            payload: {
-              variant: 'warning',
-              message: response.data.message,
-              open: true
-            }
-          })
+          dispatch(removeItem(item.SKU))
+          
+          return dispatch(setAlert({
+            variant: 'warning',
+            message: response.data.message,
+            open: true
+        }))
+          
         })
         .catch((err) => {
-          return dispatch({
-            type: Notify,
-            payload: {
-              variant: 'error',
-              message: 'Something Went Wrong !!!',
-              open: true
-            }
-          })
+          return dispatch(setAlert({
+            variant: 'error',
+            message: 'Something Went Wrong !!!',
+            open: true
+        }))
+           
         })
     }
     else {
       // for client side
-      dispatch(
-        {
-          type: AddCartItem,
-          payload: {
-            items: state.AddCartItem.items.filter((row) => { return row.product_id !== item.SKU })
-          }
-        }
-      )
-      return dispatch({
-        type: Notify,
-        payload: {
+      dispatch(removeItem(item.SKU))
+
+      return dispatch(setAlert({
           variant: 'warning',
           message: 'Item removed added to the cart !!!',
           open: true
-        }
-      })
+      }))
 
     }
 
@@ -718,7 +698,7 @@ export default function Categories(props) {
                       <Grid item xs={3.2}>
                         <Box className="buttonAction" sx = {{display : 'flex'}}>
                           {
-                            state.AddCartItem.items.filter((row) => { return row.product_id === item.SKU }).length > 0 ?
+                            state.cart.items.filter((row) => { return row.product_id === item.SKU }).length > 0 ?
                               <IconButton onClick={() => removeItemFromCart(item)}><ShoppingCartIcon /></IconButton> :
                               <IconButton onClick={() => addToCart(item)}>
                                 <AddShoppingCartOutlinedIcon ></AddShoppingCartOutlinedIcon>

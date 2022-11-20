@@ -23,7 +23,7 @@ import InstagramIcon from "../../asset/images/navbar/instagram.png";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+// import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -45,21 +45,32 @@ import kitchen from "../../asset/images/hamburger/kitchen.png";
 import exclusive from "../../asset/images/hamburger/exclusive.png";
 
 // persistData
-import PersistData from "./PersistData";
+// import PersistData from "./PersistData";
 
 // css
 import "../../asset/css/navbar.css";
 
-// store  
-import { Store } from '../../store/Context'
-import { LogBox, Auth, Notify } from '../../store/Types'
+// // store  
+// import { Store } from '../../store/Context'
+// import { LogBox, Auth, Notify } from '../../store/Types'
 
 // services 
 import {getSearchList} from '../../service/service'
 
+// Redux
+import {useDispatch,useSelector} from 'react-redux';
+
+// Action
+import {setAlert,setAuth,setLoginModal,setCart} from '../../Redux/action/action'
+
 export default function Navbar(props) {
 // store 
-  const { state, dispatch } = Store();
+  // const { state, dispatch } = Store();
+
+  // redux dispatch
+  const dispatch = useDispatch();
+  // state 
+  const state = useSelector(state=>state);
 
   // stats for ham burgher icon 
   const [Ham, setHam] = useState(false);
@@ -73,15 +84,10 @@ export default function Navbar(props) {
 
   
   const handleProfileIconClick = (event) => {
-   state.Auth.isAuth? setAnchorEl(event.currentTarget) : dispatch(
-    {
-      type: LogBox,
-      payload: {
+   state.auth.isAuth? setAnchorEl(event.currentTarget) : dispatch(setLoginModal({
         open: true,
         type: 'logIn'
-      }
-    }
-  ) ;
+      }))
   };
 
   // close menu
@@ -133,7 +139,7 @@ export default function Navbar(props) {
 
   // for profile view
   const handleLog = () => {
-    state.Auth.isAuth &&
+    state.auth.isAuth &&
       props.history('/profile') 
    
 
@@ -145,29 +151,24 @@ export default function Navbar(props) {
   const handleLogOut = async () => {
     localStorage.clear();
 
-    dispatch({
-      type: Notify,
-      payload: {
+    dispatch(setAlert({
         variant: 'success',
         message: 'Logging Out !!!',
         open: true
-      }
-    })
+      }))
 
-    await dispatch({
-      type: Auth,
-      payload: {
+    await dispatch(setAuth({
         isAuth: false,
         CID: undefined,
         email: undefined,
         username: undefined,
         token: undefined
-      }
-    })
+    }))
+    await dispatch(setCart({items : []}))
 
     handleMenuClose();
 
-    return props.history('/')
+    return window.location.href = '/'
 
   }
 
@@ -230,8 +231,8 @@ if (e.key === 'Enter')
 
   return (
     <>
-    {/* // this component cortarolll the dat persistance */}
-      <PersistData />
+    {/* // this component controls the dat persistance */}
+      {/* <PersistData /> */}
       <Grid container className="nav">
         {/* Black Top bar */}
         <Grid item xs={12} className="topBox">

@@ -8,13 +8,19 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 // state 
 
-// Store
-import { Store } from '../store/Context';
-import { LogBox, Notify, Auth } from '../store/Types';
+
+// redux
+import {useDispatch} from 'react-redux'
+
+//action 
+import {setAlert,setAuth} from '../Redux/action/action'
 
 export default function Verify(props) {
     const [search] = useSearchParams()
-    const { state, dispatch } = Store()
+
+    // const { state, dispatch } = Store()
+
+    const dispatch = useDispatch();
 
     // user
     const [user, setUser] = useState({
@@ -36,46 +42,29 @@ export default function Verify(props) {
 
                     window.location.href = '/'
 
-                    dispatch({
-                        type: Notify, payload: {
+                    dispatch(setAlert({
                             open: true,
                             message: data.data.message,
                             variant: 'success',
-                        }
-                    })
-                    dispatch({
-                        type: Auth,
-                        payload: {
-                            isAuth: true,
-                            username: data.data.name,
-                            email: data.data.email,
-                            CID: data.data.CID,
-                            token: data.data.token
-                        }
-                    })
-                    // storing the data in localStorage for persistance
-                    localStorage.setItem('payload', JSON.stringify(
-                        {
-                            isAuth: true,
-                            username: data.data.name,
-                            email: data.data.email,
-                            CID: data.data.CID,
-                            token: data.data.token
-                        }
-                    ))
-                    // storing the token in localStorage for persistance
-                    localStorage.setItem('token', data.data.token)
+                    }))
 
+                    dispatch(setAuth({
+                            isAuth: true,
+                            username: data.data.name,
+                            email: data.data.email,
+                            CID: data.data.CID,
+                            token: data.data.token
+                        }))
+
+                   
                     return window.location.href = '/'
                 }
                 else {
-                    dispatch({
-                        type: Notify, payload: {
+                    dispatch(setAlert({
                             open: true,
                             message: data.data.message,
                             variant: 'error',
-                        }
-                    })
+                    }))
 
                 }
             })
@@ -83,13 +72,11 @@ export default function Verify(props) {
 
                 setUser({ ...user, verify: 'Not Done' })
 
-                dispatch({
-                    type: Notify, payload: {
+                dispatch(setAlert( {
                         open: true,
                         message: err.response.data.message || 'Sorry some technical issue happened !!!' ,
                         variant: 'error',
-                    }
-                })
+                }))
 
 
             })
@@ -111,13 +98,11 @@ export default function Verify(props) {
             })
             .catch((err) => {
                 setUser({ ...user, verify: 'Not Done' })
-                dispatch({
-                    type: Notify, payload: {
+                dispatch(setAlert({
                         open: true,
                         message: err.response.data.message || 'Sorry some technical issue happened !!!' ,
                         variant: 'error',
-                    }
-                })
+                }))
             })
     }
 

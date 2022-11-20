@@ -9,16 +9,25 @@ import EditIcon from '@mui/icons-material/Edit';
 //services
 import { getCustomer, updateCustomer } from "../../service/service";
 // Store
-import { Store } from "../../store/Context";
-// types 
-import { Auth, Notify } from "../../store/Types";
+// import { Store } from "../../store/Context";
+// // types 
+// import { Auth, Notify } from "../../store/Types";
+
+// Redux 
+import {useDispatch,useSelector} from 'react-redux'
+
+// action
+import {setAlert,setAuth} from '../../Redux/action/action'
 
 const UserInfo = () => {
     // context
-    const {
-        state,
-        dispatch,
-    } = Store();
+    // const {
+    //     state,
+    //     dispatch,
+    // } = Store();
+
+    const state = useSelector(state=>state)
+    const dispatch = useDispatch()
 
     // state for value 
     const [formVal, SetFormVal] = useState({
@@ -40,8 +49,8 @@ const UserInfo = () => {
 
 
     useEffect(() => {
-        if (state.Auth.isAuth) {
-            getCustomer(state.Auth.CID)
+        if (state.auth.isAuth) {
+            getCustomer(state.auth.CID)
             .then((response) => {
                 // (response)
                 SetFormVal({ ...formVal, ...response.data });
@@ -51,7 +60,7 @@ const UserInfo = () => {
             });
         }
 
-    }, [state.Auth.isAuth]);
+    }, [state.auth.isAuth]);
 
     // handleUpdated values
     const handleVal = async (e) => {
@@ -98,21 +107,19 @@ const UserInfo = () => {
             .then((response) => {
                 // (response)
 
-                dispatch({
-                    type: Notify, payload: {
+                dispatch(setAlert( {
                         open: true,
                         message: 'Changes Saved !!!',
                         variant: 'success',
-                    }
-                })
+                }))
 
-                dispatch({
-                    type: Auth,
-                    payload:
-                    {
-                        ...formVal
-                    }
-                })
+                dispatch(setAuth({
+                    isAuth: false,
+                    username: formVal.username,
+                    email: formVal.email,
+                    CID: formVal.CID,
+                    token: state.auth.token
+                }))
 
                 setController({
                     ...controller,
@@ -126,15 +133,12 @@ const UserInfo = () => {
             })
             .catch((err) => {
                 // (err)
-                dispatch({
-                    type: Notify,
-                    payload:
+                dispatch(setAlert(
                     {
                         open: true,
                         variant: 'error',
                         message: 'Something Went Wrong !!!',
-                    }
-                })
+                }))
 
                 setController({
                     ...controller,

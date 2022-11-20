@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 // mui
 import {
@@ -24,11 +24,15 @@ import "../asset/css/checkout.css";
 import bajot from "../asset/images/home/bajot_TC.png";
 
 // apis function 
-import {getCustomer,getLastOrder, addOrder} from '../service/service'
+import { getCustomer, getLastOrder, addOrder, removeCartItem } from '../service/service'
 
-// store
-import {Store} from '../store/Context';
-import {Notify} from '../store/Types';
+// // store
+// import {Store} from '../store/Context';
+// import {Notify} from '../store/Types';
+
+// redux 
+import { useDispatch, useSelector } from 'react-redux'
+import { setAlert, setCart } from '../Redux/action/action'
 
 
 const orders = [
@@ -67,35 +71,37 @@ const countries = [
 export default function Checkout() {
 
   // global Store
-  const {state,dispatch} = Store();
+  // const {state,dispatch} = Store();
+  const state = useSelector(state => state);
+  const dispatch = useDispatch();
 
   // url parameter
   const location = useLocation();
   // (location)
-  const {total,subtotal,product,quantity} = location.state;
+  const { total, subtotal, product, quantity } = location.state;
 
-  const [OID,setOID] = useState();
+  const [OID, setOID] = useState();
   // data form state
-  const [data,setData]= useState({
-    O : '',
-    CID : state.Auth.CID || 'Not Logged In',
-    status : 'processing',
-    customer_name : '' , 
-    customer_email : '' , 
-    customer_mobile : '' , 
-    city : '' ,
-    state : '' ,
-    shipping : '' ,
-    quantity : quantity,
-    discount : 0,
-    paid : 0 , 
-    total : total ,
-    note : '',
+  const [data, setData] = useState({
+    O: '',
+    CID: state.auth.CID || 'Not Logged In',
+    status: 'processing',
+    customer_name: '',
+    customer_email: '',
+    customer_mobile: '',
+    city: '',
+    state: '',
+    shipping: '',
+    quantity: quantity,
+    discount: 0,
+    paid: 0,
+    total: total,
+    note: '',
   })
 
   // function for generating product OID ID
 
-  const getOID = async() => {
+  const getOID = async () => {
     return await getLastOrder()
       .then((res) => {
         if (res.data.length > 0) {
@@ -112,100 +118,105 @@ export default function Checkout() {
   };
 
 
-  useEffect(()=>{ 
-    if (state.Auth.CID)
-    {
-      getCustomer(state.Auth.CID)
-      .then((response)=>{
-        setData({
-          ...data,
-          CID : state.Auth.CID,
-          customer_name : response.data.username,
-          customer_email : response.data.mobile,
-          customer_mobile : response.data.email,
-          city : response.data.city,
-          state : response.data.state,
-          shipping : '',
+  useEffect(() => {
+    if (state.auth.CID) {
+      getCustomer(state.auth.CID)
+        .then((response) => {
+          setData({
+            ...data,
+            CID: state.auth.CID,
+            customer_name: response.data.username,
+            customer_email: response.data.mobile,
+            customer_mobile: response.data.email,
+            city: response.data.city,
+            state: response.data.state,
+            shipping: '',
+          })
         })
-      })
-      .catch((err)=>{
-        console.log(err)
-      })
+        .catch((err) => {
+          console.log(err)
+        })
       getOID();
     }
-    else{
-       getOID();
+    else {
+      getOID();
     }
-  },[state.Auth])
+  }, [state.auth.isAuth])
 
-  useEffect(()=>{
-    setData({...data,OID : OID})
-  },[OID])
+  useEffect(() => {
+    setData({ ...data, OID: OID })
+  }, [OID])
 
   // const [country, setCountry] = React.useState("EUR");
 
-  const handleData = (e)=>{
+  const handleData = (e) => {
     // (e.target.name)
-    setData({...data,[e.target.name] : e.target.value});
+    setData({ ...data, [e.target.name]: e.target.value });
   }
 
   /// submit order
   const handleSubmit = async (e) => {
-   
+
     e.preventDefault();
-    const formVal = {...data,O : OID};
+    const formVal = { ...data, O: OID };
 
     // (formVal)
-// return 'x'
+    // return 'x'
     const res = addOrder(formVal)
-   
+
     res
       .then((response) => {
         if (response.status !== 200) {
-          setData({ O: '',
-          CUS: '',
-          CID: null,
-          customer_email: '',
-          customer_mobile: '',
-          customer_name: '',
-          shipping: '',
-          product_array: [],
-          quantity: [],
-          subTotal: 0,
-          discount: 0,
-          total: 0,
-          status: 'processing',
-          city: '',
-          state: '',
-          paid: 0,
-          note: ''})
-          dispatch({
-            type: Notify, payload: {
-              open: true,
-              variant: "error",
-              message: response.data.message || "Something Went Wrong !!!",
-            }
-          });
+          setData({
+            O: '',
+            CUS: '',
+            CID: null,
+            customer_email: '',
+            customer_mobile: '',
+            customer_name: '',
+            shipping: '',
+            product_array: [],
+            quantity: [],
+            subTotal: 0,
+            discount: 0,
+            total: 0,
+            status: 'processing',
+            city: '',
+            state: '',
+            paid: 0,
+            note: ''
+          })
+          dispatch(setAlert({
+            open: true,
+            variant: "error",
+            message: response.data.message || "Something Went Wrong !!!",
+
+          }));
 
         } else {
-         
-          dispatch({
-            type: Notify, payload: {
-              open: true,
-              variant: "success",
-              message: response.data.message,
-            }
-          });
+          // removing the item for the cart after order
+          Promise.all(state.cart.items.map(async row => await removeCartItem({
+            CID: state.auth.CID,
+            product_id: row.product_id,
+          })))
+            .then(() => {
+              dispatch(setCart({ items: [] }))
+            })
+
+          dispatch(setAlert({
+            open: true,
+            variant: "success",
+            message: response.data.message,
+          }));
         }
       })
       .catch((err) => {
-        dispatch({
-          type: Notify, payload: {
-            open: true,
-            variant: "error",
-            message: "Something Went Wrong !!!",
-          }
-        });
+        dispatch(setAlert({
+          open: true,
+          variant: "error",
+          message: "Something Went Wrong !!!",
+
+        }));
       });
   }
 
@@ -222,44 +233,44 @@ export default function Checkout() {
       </Grid>
       {/* Banner Ends */}
       {/* Main Section */}
-      <form method = 'post' onSubmit = {handleSubmit} encType = 'multipart/form-data'>
-      <Grid container className="mainSec">
-        <Grid item xs={12}>
-          <Typography variant="h4">CheckOut</Typography>
-        </Grid>
-
-        {/* coupon section */}
-
-        <Grid item xs={12} className="couponBox">
-          <Typography variant="body1">
-            Have Any Coupon Code? Apply here.
-          </Typography>
-          <br></br>
-          <div className="applyBox">
-            <TextField size="small" variant="outlined" label="Coupon Code" />
-            <Button  sx = {{fontWeight : "400"}} size="small" variant="contained">
-              Apply
-            </Button>
-          </div>
-        </Grid>
-        {/* coupon section ends */}
-
-        {/* Billing Section */}
-
-        <Grid item xs={12} md={8.5} className="billingDetails">
+      <form method='post' onSubmit={handleSubmit} encType='multipart/form-data'>
+        <Grid container className="mainSec">
           <Grid item xs={12}>
-            <Typography variant="h6">Billing Details</Typography>
+            <Typography variant="h4">CheckOut</Typography>
           </Grid>
 
-          <Grid item xs={12}>
-            <Grid container className="billingForm">
+          {/* coupon section */}
+
+          <Grid item xs={12} className="couponBox">
+            <Typography variant="body1">
+              Have Any Coupon Code? Apply here.
+            </Typography>
+            <br></br>
+            <div className="applyBox">
+              <TextField size="small" variant="outlined" label="Coupon Code" />
+              <Button sx={{ fontWeight: "400" }} size="small" variant="contained">
+                Apply
+              </Button>
+            </div>
+          </Grid>
+          {/* coupon section ends */}
+
+          {/* Billing Section */}
+
+          <Grid item xs={12} md={8.5} className="billingDetails">
+            <Grid item xs={12}>
+              <Typography variant="h6">Billing Details</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Grid container className="billingForm">
                 <TextField
                   required
                   label="OID"
-                  name = 'OID'
+                  name='OID'
                   disabled
-                  value = {OID || ''}
-                  onChange = {handleData}
+                  value={OID || ''}
+                  onChange={handleData}
                   fullWidth
                   id="outlined-start-adornment"
                   sx={{ marginTop: "2%" }}
@@ -268,9 +279,9 @@ export default function Checkout() {
                 <TextField
                   required
                   label="Name"
-                  name = 'customer_name'
-                  onChange = {handleData}
-                  value = {data.customer_name || ''}
+                  name='customer_name'
+                  onChange={handleData}
+                  value={data.customer_name || ''}
                   fullWidth
                   id="outlined-start-adornment"
                   sx={{ marginTop: "2%" }}
@@ -278,9 +289,9 @@ export default function Checkout() {
                 />
                 <TextField
                   required
-                  name = 'customer_email'
-                  onChange = {handleData}
-                  value = {data.customer_email || ''}
+                  name='customer_email'
+                  onChange={handleData}
+                  value={data.customer_email || ''}
                   label="Email"
                   fullWidth
                   id="outlined-start-adornment"
@@ -289,9 +300,9 @@ export default function Checkout() {
                 />
                 <TextField
                   required
-                  name = 'customer_mobile'
-                  onChange = {handleData}
-                  value = {data.customer_mobile || ''}
+                  name='customer_mobile'
+                  onChange={handleData}
+                  value={data.customer_mobile || ''}
                   label="Phone Number"
                   fullWidth
                   id="outlined-start-adornment"
@@ -300,16 +311,16 @@ export default function Checkout() {
                 />
                 <TextField
                   required
-                  name = 'shipping'
-                  onChange = {handleData}
-                  value = {data.shipping || ''}
+                  name='shipping'
+                  onChange={handleData}
+                  value={data.shipping || ''}
                   label="Address"
                   fullWidth
                   id="outlined-start-adornment"
                   sx={{ marginTop: "2%" }}
                   size="small"
                 />
-{/* 
+                {/* 
                 <TextField
                   select
                   size="small"
@@ -360,18 +371,18 @@ export default function Checkout() {
                 <TextField
                   label="State"
                   fullWidth
-                  value = {data.state || ''}
-                  name = 'state'
-                  onChange = {handleData}
+                  value={data.state || ''}
+                  name='state'
+                  onChange={handleData}
                   id="outlined-start-adornment"
                   sx={{ marginTop: "2%" }}
                   size="small"
                 />
                 <TextField
                   label="Town/City"
-                value = {data.city || ''}
-                  name = 'city'
-                  onChange = {handleData}
+                  value={data.city || ''}
+                  name='city'
+                  onChange={handleData}
                   fullWidth
                   id="outlined-start-adornment"
                   sx={{ marginTop: "2%" }}
@@ -393,114 +404,114 @@ export default function Checkout() {
                   sx={{ marginTop: "2%" }}
                   id="standard-multiline-static"
                   label="Order Notes (Optional)"
-                  value = {data.note}
-                  name = 'note'
-                  onChange = {handleData}
+                  value={data.note}
+                  name='note'
+                  onChange={handleData}
                   // required
                   fullWidth
                   multiline
                   rows={4}
                   variant="outlined"
                 />
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        {/* Billing Section */}
+          {/* Billing Section */}
 
-        {/* Your Order */}
-        <Grid xs={12} md={3.5} className="yourOrder">
-          <Grid container>
-            <Grid item xs={12}>
-              <Typography variant="h6">Your Order</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container className="orderSummary">
-                <Grid item xs={12}>
-                  <Stack>
-                    {product.map((item, index) => {
-                      return (
-                        <Box key = {index}>
-                          <Box  className="productBox">
-                            <img src={item.product} alt="productImage" />
-                            <Typography variant="body2">
-                              {item.product_name}
-                            </Typography>
-                            <Typography variant="body2">
-                              Rs.{item.total}
-                            </Typography>
+          {/* Your Order */}
+          <Grid xs={12} md={3.5} className="yourOrder">
+            <Grid container>
+              <Grid item xs={12}>
+                <Typography variant="h6">Your Order</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container className="orderSummary">
+                  <Grid item xs={12}>
+                    <Stack>
+                      {product.map((item, index) => {
+                        return (
+                          <Box key={index}>
+                            <Box className="productBox">
+                              <img src={item.product} alt="productImage" />
+                              <Typography variant="body2">
+                                {item.product_name}
+                              </Typography>
+                              <Typography variant="body2">
+                                Rs.{item.total}
+                              </Typography>
+                            </Box>
+                            <Divider />
                           </Box>
-                          <Divider />
-                        </Box>
-                      );
-                    })}
-                  </Stack>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box className="productBox text">
-                    <Typography variant="body2">Subtotal</Typography>
-                    <Typography variant="body2">{subtotal}</Typography>
-                  </Box>
-                  <Divider />
-                </Grid>
-                <Grid item xs={12}>
-                  <Box className="productBox text">
-                    <Typography variant="body2">Tax</Typography>
-                    <Typography variant="body2">18%</Typography>
-                  </Box>
-                  <Divider />
-                </Grid>
-                <Grid item xs={12}>
-                  <Box className="productBox text">
-                    <Typography variant="body2">Total</Typography>
-                    <Typography variant="body2">{total}</Typography>
-                  </Box>
+                        );
+                      })}
+                    </Stack>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Box className="productBox text">
+                      <Typography variant="body2">Subtotal</Typography>
+                      <Typography variant="body2">{subtotal}</Typography>
+                    </Box>
+                    <Divider />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Box className="productBox text">
+                      <Typography variant="body2">Tax</Typography>
+                      <Typography variant="body2">18%</Typography>
+                    </Box>
+                    <Divider />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Box className="productBox text">
+                      <Typography variant="body2">Total</Typography>
+                      <Typography variant="body2">{total}</Typography>
+                    </Box>
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container className="payMethod text">
-                <Grid item xs={12}>
-                  <Typography variant="body2" className="text">
-                    Select a payment method
-                  </Typography>
-                  <br></br>
-                  <FormControl>
-            
-                    <RadioGroup
-                      aria-labelledby="demo-radio-buttons-group-label"
-                      defaultValue="female"
-                      name="radio-buttons-group"
-                    >
+              <Grid item xs={12}>
+                <Grid container className="payMethod text">
+                  <Grid item xs={12}>
+                    <Typography variant="body2" className="text">
+                      Select a payment method
+                    </Typography>
+                    <br></br>
+                    <FormControl>
 
-                      <FormControlLabel
-                        value="COD"
-                      
-                        control={<Radio size="small" />}
-                        label="Cash on Delivery"
-                      />
-                      <FormControlLabel
-                        value="UPIe"
-                        control={<Radio size="small" />}
-                        label="UPI Method"
-                      />
-                      <FormControlLabel
-                        value="DC"
-                        control={<Radio size="small" />}
-                        label="Debit/Credit Card Method"
-                      />
-                    </RadioGroup>
-                  </FormControl>
+                      <RadioGroup
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        defaultValue="female"
+                        name="radio-buttons-group"
+                      >
+
+                        <FormControlLabel
+                          value="COD"
+
+                          control={<Radio size="small" />}
+                          label="Cash on Delivery"
+                        />
+                        <FormControlLabel
+                          value="UPIe"
+                          control={<Radio size="small" />}
+                          label="UPI Method"
+                        />
+                        <FormControlLabel
+                          value="DC"
+                          control={<Radio size="small" />}
+                          label="Debit/Credit Card Method"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-            <Grid item xs = {12} className = "orderButton" >
-                <Button type = 'submit' sx = {{fontWeight : "500"}}  fullWidth variant = 'contained'>Place Order</Button>
+              <Grid item xs={12} className="orderButton" >
+                <Button type='submit' sx={{ fontWeight: "500" }} fullWidth variant='contained'>Place Order</Button>
+              </Grid>
             </Grid>
           </Grid>
+          {/* Your Order ends */}
         </Grid>
-        {/* Your Order ends */}
-      </Grid>
-        </form>
+      </form>
       {/* Main Section Ends */}
     </>
   );

@@ -43,24 +43,28 @@ import {
 // APis function 
 import { getProductDetails, addCartItem, getRelatedProduct } from '../service/service'
 
-// global state 
-import { Store } from '../store/Context'
-import { AddCartItem, Notify } from '../store/Types'
 
+// redux 
+import {useDispatch,useSelector} from 'react-redux';
+// action
+import {addItem,removeItem,setAlert} from '../Redux/action/action'
 
 export default function ProductDetails(props) {
 
   // store 
-  const { state, dispatch } = Store();
+  // const { state, dispatch } = Store();
+
+  // state
+  const state = useSelector(state=>state);
+
+  //redux
+  const dispatch = useDispatch();
 
   // state
   const [imageIndex, setIndex] = useState(0); // use for updating the images
   const [ratting, setRatting] = useState(2);
   const [expanded, setExpanded] = useState("panel1");
   const [value, setValue] = useState(0);
-
-
-
 
   // useParams search parameters
   const { SKU, title, category } = useParams();
@@ -213,83 +217,75 @@ export default function ProductDetails(props) {
   }
 
   // function for adding the product to cart 
-  const addToCart = async (item) => {
-    let flag = false;
-    const modifiedData = state.AddCartItem.items.map((set) => {
+  const addToCart = async () => {
+    // let flag = false;
+    // const modifiedData = state.cart.items.map((set) => {
 
-      if (item.SKU === set.product_id) {
-        flag = true;
-        return {
-          CID: state.Auth.CID || 'Not Logged In',
-          product_id: set.product_id,
-          quantity: data.quantity
-        }
-      }
-      else return set
+    //   if (item.SKU === set.product_id) {
+    //     flag = true;
+    //     return {
+    //       CID: state.auth.CID || 'Not Logged In',
+    //       product_id: set.product_id,
+    //       quantity: data.quantity
+    //     }
+    //   }
+    //   else return set
 
-    })
+    // })
 
-    if (flag === false) modifiedData.push({
-      CID: state.Auth.CID || 'Not Logged In',
-      product_id: item.SKU,
-      quantity: data.quantity || 1
-    })
+    // if (flag === false) modifiedData.push({
+    //   CID: state.auth.CID || 'Not Logged In',
+    //   product_id: item.SKU,
+    //   quantity: data.quantity || 1
+    // })
 
     // server side 
-    if (state.Auth.isAuth) {
+    if (state.auth.isAuth) {
       await addCartItem({
-        CID: state.Auth.CID,
-        product_id: item.SKU,
+        CID: state.auth.CID,
+        product_id: data.SKU,
         quantity: data.quantity || 1,
       })
         .then((response) => {
           // for client side 
-          dispatch(
-            {
-              type: AddCartItem,
-              payload: {
-                items: [...modifiedData]
-              }
-            }
-          )
-          return dispatch({
-            type: Notify,
-            payload: {
+          dispatch(removeItem(data.SKU));
+
+          dispatch(addItem({
+            product_id : data.SKU,
+            quantity : data.quantity,
+            CID : state.auth.CID
+          }));
+
+          return dispatch(setAlert({
               variant: 'success',
               message: response.data.message,
               open: true
-            }
-          })
+            }))
         })
         .catch((err) => {
-          return dispatch({
-            type: Notify,
-            payload: {
+          return dispatch(setAlert({
               variant: 'error',
               message: 'Something Went Wrong !!!',
               open: true
-            }
-          })
+          }))
         })
     }
     else {
       // for client side 
-      dispatch(
-        {
-          type: AddCartItem,
-          payload: {
-            items: [...modifiedData]
-          }
-        }
-      )
-      return dispatch({
-        type: Notify,
-        payload: {
+      dispatch(removeItem(data.SKU));
+
+      dispatch(addItem({
+        product_id : data.SKU,
+        quantity : data.quantity,
+        CID : 'Not Logged In'
+      }));
+
+
+      return dispatch(setAlert({
           variant: 'success',
           message: 'Item added to the cart !!!',
           open: true
-        }
-      })
+      }))
 
     }
   }

@@ -290,7 +290,7 @@ export default function Categories(props) {
   }
 
   // removeItemFromCart 
-  const removeItemFromCart = async (item) => {
+  const removeItemFromCart = async (item) => { 
 
     // server side 
     if (state.auth.isAuth) {
@@ -686,13 +686,7 @@ export default function Categories(props) {
                       </Grid>
                       <Grid item xs={8.8}>
                         <Box className="productInfo">
-                          <Typography variant="h5" className = 'title'>{item.product_title}</Typography>
-                          {/* <Typography variant="body2">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Est harum natus error facilis similique officiis ea nisi architecto explicabo tenetur Aspernatur?
-                          </Typography> */}
-                          <Typography variant="h5">{item.discount_limit}% Off</Typography>
-                          <Typography variant="h6"><s>Rs.{item.MRP}</s></Typography>
-                          <Typography variant="h5">Rs.{item.selling_price}</Typography>
+                          <Typography variant="h5" sx = {{fontWeight : 'bolder'}}  className = 'title'>{item.product_title}</Typography>
                         </Box>
                       </Grid>
                       <Grid item xs={3.2}>
@@ -704,10 +698,19 @@ export default function Categories(props) {
                                 <AddShoppingCartOutlinedIcon ></AddShoppingCartOutlinedIcon>
                               </IconButton>
                           }
-
                           <IconButton>
                             <FavoriteBorderOutlinedIcon></FavoriteBorderOutlinedIcon>
                           </IconButton>
+                        </Box>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Box className="productInfo">
+                          <Typography className = 'title' variant="body1">
+                           {item.product_description}
+                           </Typography>
+                          <Typography variant="h6">({item.discount_limit}% Off)</Typography>
+                          <Typography variant="h6"><s>&#8377; {item.selling_price}</s></Typography>
+                          <Typography color="text.secondary" sx = {{fontWeight : 'bolder'}} variant="h5"> &#8377; {item.selling_price-((item.selling_price/100)*item.discount_limit)}</Typography>
                         </Box>
                       </Grid>
                     </Grid>

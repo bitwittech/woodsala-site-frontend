@@ -9,7 +9,7 @@ import facebook from "../../asset/images/footer/facebook.svg";
 import twitter from "../../asset/images/footer/twitter.svg";
 import insta from "../../asset/images/footer/insta.svg";
 
-import { Grid, Typography, Stack, Box } from "@mui/material";
+import { Grid, Typography, Stack } from "@mui/material";
 
 export default function Footer() {
   return (
@@ -85,9 +85,13 @@ export default function Footer() {
         {/* links Ends */}
         {/* bottom */}
         <Grid item xs={12} className="footerBottom">
-          <Typography variant="h6">
-            DESIGN BY Bitwit- © 2022 ALL RIGHTS RESERVED.
+            <Typography  variant="h6">
+           © Copyright 2022 Woodshala, All Right Reserved
           </Typography>
+          <Typography  variant="caption">
+           <a  rel="noreferrer" target = '_blank' style = {{textDecoration : 'none', color : 'white'}} href = 'https://www.bitwittech.com/'>Crafted By BITWIT</a>
+          </Typography>     
+
         </Grid>
         {/* bottom Ends*/}
       </Grid>

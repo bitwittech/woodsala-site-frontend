@@ -11,7 +11,8 @@ import {
   Tab,
   Box,
   Drawer,
-  ListItemIcon
+  ListItemIcon,
+  Badge
 } from "@mui/material";
 
 import {Link} from 'react-router-dom'
@@ -410,8 +411,10 @@ if (e.key === 'Enter')
               >
                 {window.location.pathname === "/cart" ? (
                   <ShoppingCartIcon />
-                ) : (
+                  ) : (
+                    <Badge  badgeContent={state.cart.items.length} color="primary">
                   <ShoppingCartOutlinedIcon />
+                    </Badge>
                 )}
               </IconButton>
             </Grid>

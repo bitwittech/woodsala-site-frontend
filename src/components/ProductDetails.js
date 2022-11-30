@@ -74,10 +74,6 @@ export default function ProductDetails(props) {
   const [relatedProducts, setRelatedProducts] = useState([])
 
 
-  // history
-  const history = props.history;
-
-
   // for getting the product 
   useEffect(() => {
     setData(null)
@@ -377,9 +373,8 @@ export default function ProductDetails(props) {
               {/* Image sec */}
               <Grid item className="imageSec" xs={12} md={6}>
                 <Grid container>
-                  <Grid item xs={12} sx={{
-                    maxWidth: '400px',
-                    maxHeight: '450px'
+                  <Grid item xs={8} sx={{
+                    margin: 'auto'
                   }}>
                     <img
                       className="showImage"
@@ -443,7 +438,7 @@ export default function ProductDetails(props) {
                       {/* </Typography> */}
                       <Typography sx={{ color: "#FD0606" }} variant="h6">
                         {/* discount */}
-                        {data.discount_limit}% Off
+                        {data.discount_limit > 0 && `${data.discount_limit}% Off`}
                       </Typography>
                     </Box>
                   </Grid>
@@ -681,7 +676,7 @@ export default function ProductDetails(props) {
                       <Button variant="outlined" onClick={() => addToCart(data)} small="true">
                         Add To Cart
                       </Button>
-                      <Button variant="contained" small="true">
+                      <Button variant="contained" onClick={() => {addToCart(data); window.location.href = '/cart' }} small="true">
                         Buy Now
                       </Button>
                     </Box>

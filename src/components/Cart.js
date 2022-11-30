@@ -115,11 +115,11 @@ const Cart = (props) => {
             return {
               id: index + 1,
               SKU: dataSet.SKU,
-              product: dataSet.featured_image,
+              product: dataSet.featured_image || dataSet.product_image[0],
               product_name: dataSet.product_title,
-              price: state.cart.items.filter((data) => { return data.product_id === dataSet.SKU })[0].quantity * dataSet.MRP,
+              price: state.cart.items.filter((data) => { return data.product_id === dataSet.SKU })[0].quantity * dataSet.selling_price,
               qty: state.cart.items.filter((data) => { return data.product_id === dataSet.SKU })[0].quantity,
-              total: state.cart.items.filter((data) => { return data.product_id === dataSet.SKU })[0].quantity * dataSet.selling_price,
+              total: state.cart.items.filter((data) => { return data.product_id === dataSet.SKU })[0].quantity * dataSet.selling_price - (state.cart.items.filter((data) => { return data.product_id === dataSet.SKU })[0].quantity * dataSet.selling_price)/100*dataSet.discount_limit,
               action: dataSet.SKU
             }
           })
@@ -132,7 +132,8 @@ const Cart = (props) => {
   useEffect(() => {
 
     setData({
-      total: row.reduce((partial, set) => partial + parseInt(set.total), 0)
+      total: row.reduce((partial, set) => partial + parseInt(set.total), 0),
+      subtotal: row.reduce((partial, set) => partial + parseInt(set.price), 0),
     })
   }, [row])
 
@@ -227,9 +228,10 @@ const Cart = (props) => {
     },
     {
       field: "price",
-      renderHeader: () => <strong>{"Price"}</strong>,
+      renderHeader: () => <strong>{"Price (Rupee)"}</strong>,
       type: "number",
       width: 120,
+      align : 'center'
     },
 
     {
@@ -246,12 +248,11 @@ const Cart = (props) => {
             </Button>
           </Grid>
           <Grid item xs={12} md={2}>
-            <Typography variant="button">{params.formattedValue}</Typography>
+            <Typography variant="body">{params.formattedValue}</Typography>
           </Grid>
           <Grid item xs={12} md={3}>
             <Button
               onClick={() => handleIncrease({ product_id: params.row.SKU, quantity: params.row.qty })}
-
               variant="outlined" size="small">
               +
             </Button>
@@ -263,7 +264,9 @@ const Cart = (props) => {
       field: "total",
       renderHeader: () => <strong>{"Total"}</strong>,
       type: "number",
-      width: 120,
+      width: 100,
+      align : 'center'
+
     },
     {
       field: "action",
@@ -296,11 +299,15 @@ const Cart = (props) => {
   // data grid view
   function DataGridView() {
     return (
-      <div style={{ height: "400px", width: "100%" }}>
+      <div style={{ height: "450px", width: "100%" }}>
         <DataGrid
+        sx = {{
+          fontWeight : 400,
+          fontSize : '1rem'
+        }}
           rows={row}
           columns={columns}
-          pageSize={3}
+          pageSize={5}
           getRowHeight={() => 100}
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
@@ -340,20 +347,9 @@ const Cart = (props) => {
             <Grid item xs={12}>
               <Typography variant="h5">Cart Total</Typography>
               <Grid container className="cartTotals">
-                <Grid item xs={12}>
-                  <br></br>
-                  <Divider></Divider>
-                </Grid>
-                <Grid item xs={12} className="subTotal">
-                  <Typography variant="body2">Subtotal</Typography>
-                  <Typography variant="body2">{data.total}</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Divider></Divider>
-                  <br></br>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="button">Shipping</Typography>
+           
+                {/* <Grid item xs={12}>
+                  <Typography variant="body1">Shipping</Typography>
                 </Grid>
                 <Grid item xs={12}>
                   <Typography variant="body2">Shipping Charges (0)</Typography>
@@ -362,8 +358,8 @@ const Cart = (props) => {
                   <Typography variant="body2">
                     Shipping To Jaipur 302001, Rajasthan
                   </Typography>
-                </Grid>
-                <Grid item xs={12} className="address">
+                </Grid> */}
+                {/* <Grid item xs={12} className="address">
                   <Grid container>
                     <Grid className="changeAddress" item xs={12}>
                       <LocationOnOutlinedIcon />
@@ -435,29 +431,57 @@ const Cart = (props) => {
                         </Button>
                       </form>
                     </Grid>
-                    <Grid item xs={12}>
+                  </Grid>
+                </Grid> */}
+                 {/* coupon section */}
+
+          <Grid item xs={12} className="couponBox">
+            <Typography variant="body1">
+              Have Any Coupon Code? Apply here.
+            </Typography>
+            <br></br>
+            <div className="applyBox">
+              <TextField size="small" variant="outlined" label="Coupon Code" />
+              <Button sx={{ fontWeight: "400" }} size="small" variant="contained">
+                Apply
+              </Button>
+            </div>
+          </Grid>
+          {/* coupon section ends */}
+          <Grid sx = {{mt:2, mb : 2}} item xs={12}>
                       <Divider></Divider>
-                      <br></br>
                     </Grid>
+          <Grid item xs={12} className="subTotal">
+                  <Typography variant="body">Number Items</Typography>
+                  <Typography variant="body">{state.cart.items.length} unit</Typography>
+                </Grid>
+              <Grid item xs={12} className="subTotal">
+                  <Typography variant="body">Discount</Typography>
+                  <Typography variant="body">-  `&#8377; {data.subtotal - data.total }</Typography>
+                </Grid>
+                <Grid item xs={12} className="subTotal">
+                  <Typography variant="body">Subtotal</Typography>
+                  <Typography variant="body">&#8377; {data.subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
+                </Grid>
+                <Grid sx = {{mt:2}} item xs={12}>
+                  <Divider></Divider>
+                  <br></br>
+                </Grid>
+                   
                     <Grid item xs={12} className="Total">
                       <Typography variant="body1">Total</Typography>
-                      <Typography variant="body1">{data.total}</Typography>
+                      <Typography variant="body1">&#8377; {data.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                      <br></br>
                       <Divider></Divider>
-                      <br></br>
                     </Grid>
                     <Grid item xs={12}>
                       <Button disabled={row.length <= 0 ? true : false} onClick={() => {
-                        props.history("/checkout", { state: { total: data.total, subtotal: data.total, quantity: row.map((set) => { return { [set.SKU]: set.qty } }), product: row } })
+                        props.history("/checkout", { state: { total: data.total, subtotal: data.subtotal, quantity: row.map((set) => { return { [set.SKU]: set.qty } }), product: row } })
                       }} sx={{ fontWeight: "500" }} variant="contained" fullWidth>
                         Proceed To CheckOut
                       </Button>
                     </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12}></Grid>
               </Grid>
             </Grid>
           </Grid>

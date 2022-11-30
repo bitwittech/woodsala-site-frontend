@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import InfiniteScroll from 'react-infinite-scroll-component';
 // import Carousel from "react-multi-carousel";
 //mui
@@ -40,10 +40,10 @@ import defaultIMG from ".././asset/images/defaultProduct.svg";
 // import { AddCartItem } from "../store/Types";
 
 // Action 
-import {setAlert,addItem,removeItem,setCart} from '../Redux/action/action'
+import { setAlert, addItem, removeItem, setCart } from '../Redux/action/action'
 
 // Redux 
-import {useDispatch,useSelector} from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 
 // services 
@@ -52,7 +52,7 @@ import { getProducts, addCartItem, removeCartItem, getCartItem } from '../servic
 export default function Categories(props) {
 
   // State
-  const state = useSelector(state=>state);
+  const state = useSelector(state => state);
 
   // Dispatch
   const dispatch = useDispatch();
@@ -90,7 +90,7 @@ export default function Categories(props) {
   const [meta, setMeta] = useState({
     hasMore: true,
     page: 1,
-    filter : filter
+    filter: filter
   });
 
   // State
@@ -110,37 +110,36 @@ export default function Categories(props) {
 
   // use Effect
   useEffect(() => {
-    
+
     if (state.auth.isAuth) {
-      if(state.cart.items.length > 0)
-      { 
-        Promise.all(state.cart.items.map(async row=> await addCartItem({
+      if (state.cart.items.length > 0) {
+        Promise.all(state.cart.items.map(async row => await addCartItem({
           CID: state.auth.CID,
           product_id: row.product_id,
           quantity: row.quantity,
         })))
-        .then(()=>{
-          getCartItem(state.auth.CID)
-          .then((response) => {
-            if(response.data.length > 0)
-              dispatch(setCart({ items: response.data }))
-          })  
-        })
+          .then(() => {
+            getCartItem(state.auth.CID)
+              .then((response) => {
+                if (response.data.length > 0)
+                  dispatch(setCart({ items: response.data }))
+              })
+          })
       }
       else {
         getCartItem(state.auth.CID)
-        .then((response) => {
-          if(response.data.length > 0)
-            dispatch(setCart({ items: response.data }))
-        })
+          .then((response) => {
+            if (response.data.length > 0)
+              dispatch(setCart({ items: response.data }))
+          })
       }
     }
 
     fetchMoreData();
 
-  }, [state.auth.isAuth,filter])
+  }, [state.auth.isAuth, filter])
 
-  
+
 
   // const categories = [
   //   {
@@ -207,26 +206,26 @@ export default function Categories(props) {
 
 
   // fetch more item
-  
+
   const fetchMoreData = async () => {
 
     // (meta)
     // (filter)
+    if (filter !== meta.filter) setItems([])
 
-    getProducts({page : filter ===  meta.filter ? meta.page  : 1, filter : filter})
+    getProducts({ page: filter === meta.filter ? meta.page : 1, filter: filter })
       .then((data) => {
         if (data.data.length > 0) {
-          setMeta({ ...meta,hasMore: true, page: meta.page + 1 ,filter})
-          if(filter !== meta.filter)
-          {
+          setMeta({ ...meta, hasMore: true, page: meta.page + 1, filter })
+          if (filter !== meta.filter) {
             setItems(data.data)
-            setMeta({ ...meta,hasMore: true, page: 2 ,filter})
+            setMeta({ ...meta, hasMore: true, page: 2, filter })
           }
           else
-          return setItems([...new Set([...items.concat(data.data)])])
+            return setItems([...new Set([...items.concat(data.data)])])
         }
         else {
-          setMeta({ ...meta, page: 1, hasMore: false, filter : '' })
+          setMeta({ ...meta, page: 1, hasMore: false, filter: '' })
         }
       })
       .catch((err) => {
@@ -253,22 +252,24 @@ export default function Categories(props) {
         .then((response) => {
           // for client side 
           dispatch(
-            addItem( { CID: state.auth.CID || 'Not Logged In',
-                  product_id: item.SKU,
-                  quantity: 1,})
+            addItem({
+              CID: state.auth.CID || 'Not Logged In',
+              product_id: item.SKU,
+              quantity: 1,
+            })
           )
           return dispatch(setAlert({
-              variant: 'success',
-              message: response.data.message,
-              open: true
+            variant: 'success',
+            message: response.data.message,
+            open: true
           }))
         })
         .catch((err) => {
           return dispatch(setAlert({
             variant: 'error',
-              message: 'Something Went Wrong !!!',
-              open: true
-        }))
+            message: 'Something Went Wrong !!!',
+            open: true
+          }))
 
         })
     }
@@ -276,21 +277,23 @@ export default function Categories(props) {
 
       // for client side 
       dispatch(
-        addItem( { CID: state.auth.CID || 'Not Logged In',
-              product_id: item.SKU,
-              quantity: 1,})
+        addItem({
+          CID: state.auth.CID || 'Not Logged In',
+          product_id: item.SKU,
+          quantity: 1,
+        })
       )
       return dispatch(setAlert({
-          variant: 'success',
-          message: 'Item added to the cart !!!',
-          open: true
+        variant: 'success',
+        message: 'Item added to the cart !!!',
+        open: true
       }))
 
     }
   }
 
   // removeItemFromCart 
-  const removeItemFromCart = async (item) => { 
+  const removeItemFromCart = async (item) => {
 
     // server side 
     if (state.auth.isAuth) {
@@ -301,21 +304,21 @@ export default function Categories(props) {
         .then((response) => {
           // for client side
           dispatch(removeItem(item.SKU))
-          
+
           return dispatch(setAlert({
             variant: 'warning',
             message: response.data.message,
             open: true
-        }))
-          
+          }))
+
         })
         .catch((err) => {
           return dispatch(setAlert({
             variant: 'error',
             message: 'Something Went Wrong !!!',
             open: true
-        }))
-           
+          }))
+
         })
     }
     else {
@@ -323,9 +326,9 @@ export default function Categories(props) {
       dispatch(removeItem(item.SKU))
 
       return dispatch(setAlert({
-          variant: 'warning',
-          message: 'Item removed added to the cart !!!',
-          open: true
+        variant: 'warning',
+        message: 'Item removed added to the cart !!!',
+        open: true
       }))
 
     }
@@ -336,18 +339,18 @@ export default function Categories(props) {
   return (
     <>
       <title>Categories</title>
-{/* {(meta)} */}
+      {/* {(meta)} */}
       {/* Main Container */}
       <Grid container sx={{ padding: "1%" }}>
 
 
-      {/* Banner */}
-      <Grid container className="productBanner">
-        <Grid item xs={12}>
-          <Typography variant="h1">Products</Typography>
+        {/* Banner */}
+        <Grid container className="productBanner">
+          <Grid item xs={12}>
+            <Typography variant="h1">Products</Typography>
+          </Grid>
         </Grid>
-      </Grid>
-      {/* Banner Ends */}
+        {/* Banner Ends */}
 
         {/* sub categories details  */}
         {/* <Grid item xs={12} className="subInfo">
@@ -665,8 +668,8 @@ export default function Categories(props) {
             // style={styleScroller}
             loader={<center style={{ padding: '10px' }}><CircularProgress /></center>}
           >
-            <Grid container 
-            className='innerProductWrap' 
+            <Grid container
+              className='innerProductWrap'
             >
               {items.map((item, index) => {
                 return (
@@ -675,10 +678,15 @@ export default function Categories(props) {
                     key={index}
                     className="productCard"
                     xs={window.innerWidth <= '600' ? 10 : 5.8}
-                    sx={{ boxShadow: 2, maxHeight: '100%', mb : 3 }}
+                    sx={{ boxShadow: 2, maxHeight: '100%', mb: 3 }}
                     md={2.9}
                   >
-                    <Grid container>
+                    <Grid container >
+                    {item.discount_limit > 0 && <Grid className="discount" item xs={12}>
+                        <Box >
+                              <Typography variant="body" sx = {{fontWeight: '400'}}>{item.discount_limit}% Off</Typography>                            
+                          </Box>
+                      </Grid>}
                       <Grid item xs={12}
                         onClick={() => history(`/details/${item.SKU}/${item.product_title}/${item.category_name}`)}
                       >
@@ -686,11 +694,11 @@ export default function Categories(props) {
                       </Grid>
                       <Grid item xs={8.8}>
                         <Box className="productInfo">
-                          <Typography variant="h5" sx = {{fontWeight : 'bolder'}}  className = 'title'>{item.product_title}</Typography>
+                          <Typography variant="h5" sx={{ fontWeight: 'bolder' }} className='title'>{item.product_title}</Typography>
                         </Box>
                       </Grid>
                       <Grid item xs={3.2}>
-                        <Box className="buttonAction" sx = {{display : 'flex'}}>
+                        <Box className="buttonAction" sx={{ display: 'flex' }}>
                           {
                             state.cart.items.filter((row) => { return row.product_id === item.SKU }).length > 0 ?
                               <IconButton onClick={() => removeItemFromCart(item)}><ShoppingCartIcon /></IconButton> :
@@ -705,14 +713,13 @@ export default function Categories(props) {
                       </Grid>
                       <Grid item xs={12}>
                         <Box className="productInfo">
-                          <Typography className = 'title' variant="body1">
-                           {item.product_description}
-                           </Typography>
-                          <Typography variant="h6">({item.discount_limit}% Off)</Typography>
-                          <Typography variant="h6"><s>&#8377; {item.selling_price}</s></Typography>
-                          <Typography color="text.secondary" sx = {{fontWeight : 'bolder'}} variant="h5"> &#8377; {item.selling_price-((item.selling_price/100)*item.discount_limit)}</Typography>
+                          <Typography sx={{ mt: 0.5 ,mb : 1 }} className='title' variant="body1">
+                            {item.product_description}
+                          </Typography>
+                          <Typography color="text.secondary" sx={{ fontWeight: 'bolder' }} variant="h5"> &#8377; {item.selling_price - ((item.selling_price / 100) * item.discount_limit)}</Typography>
                         </Box>
                       </Grid>
+                      
                     </Grid>
                   </Grid>
                 );

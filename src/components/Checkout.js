@@ -12,7 +12,8 @@ import {
   FormControl,
   RadioGroup,
   FormControlLabel,
-  Radio
+  Radio,
+  MenuItem
 } from "@mui/material";
 
 // css
@@ -21,7 +22,7 @@ import "../asset/css/checkout.css";
 // icon
 // import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
 // import OutlinedFlagSharpIcon from "@mui/icons-material/OutlinedFlagSharp";
-import bajot from "../asset/images/home/bajot_TC.png";
+// import bajot from "../asset/images/home/bajot_TC.png";
 
 // apis function 
 import { getCustomer, getLastOrder, addOrder, removeCartItem } from '../service/service'
@@ -35,38 +36,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setAlert, setCart } from '../Redux/action/action'
 
 
-const orders = [
-  {
-    image: bajot,
-    title: "Bajot",
-    price: 1000,
-  },
-  {
-    image: bajot,
-    title: "Table",
-    price: 1000,
-  },
-  {
-    image: bajot,
-    title: "Chair",
-    price: 1000,
-  },
-];
 
-const countries = [
-  {
-    value: "USD",
-  },
-  {
-    value: "EUR",
-  },
-  {
-    value: "BTC",
-  },
-  {
-    value: "JPY",
-  },
-];
 
 export default function Checkout() {
 
@@ -92,6 +62,7 @@ export default function Checkout() {
     city: '',
     state: '',
     shipping: '',
+    address: [],
     quantity: quantity,
     discount: 0,
     paid: 0,
@@ -130,7 +101,7 @@ export default function Checkout() {
             customer_mobile: response.data.email,
             city: response.data.city,
             state: response.data.state,
-            shipping: '',
+            address: response.data.address,
           })
         })
         .catch((err) => {
@@ -174,7 +145,7 @@ export default function Checkout() {
             customer_email: '',
             customer_mobile: '',
             customer_name: '',
-            shipping: '',
+            shipping: [],
             product_array: [],
             quantity: [],
             subTotal: 0,
@@ -208,6 +179,8 @@ export default function Checkout() {
             variant: "success",
             message: response.data.message,
           }));
+
+          window.location.href = '/'
         }
       })
       .catch((err) => {
@@ -234,13 +207,13 @@ export default function Checkout() {
       {/* Banner Ends */}
       {/* Main Section */}
       <form method='post' onSubmit={handleSubmit} encType='multipart/form-data'>
-        <Grid container className="mainSec">
-          <Grid item xs={12}>
+        <Grid container className="mainSec" >
+          <Grid sx = {{mb :2}} item xs={12}>
             <Typography variant="h4">CheckOut</Typography>
           </Grid>
 
           {/* coupon section */}
-
+          {/* 
           <Grid item xs={12} className="couponBox">
             <Typography variant="body1">
               Have Any Coupon Code? Apply here.
@@ -252,12 +225,12 @@ export default function Checkout() {
                 Apply
               </Button>
             </div>
-          </Grid>
+          </Grid> */}
           {/* coupon section ends */}
 
           {/* Billing Section */}
 
-          <Grid item xs={12} md={8.5} className="billingDetails">
+          <Grid item xs={12} md={8.5} sx={{ p: 2 }} className="billingDetails">
             <Grid item xs={12}>
               <Typography variant="h6">Billing Details</Typography>
             </Grid>
@@ -309,6 +282,31 @@ export default function Checkout() {
                   sx={{ marginTop: "2%" }}
                   size="small"
                 />
+
+               {state.auth.isAuth ? <TextField sx={{ mt: 2 }}
+                  size="small"
+                  fullWidth
+                  // required
+                  id="outlined-select"
+                  select
+                  required 
+                  name="shipping"
+                  label="Address"
+                  value={data.shipping || ''}
+                  multiple
+                  onChange={handleData}
+                  helperText="Please select your address"
+                >
+                  {data.address.map(
+                    (option) =>
+                      <MenuItem
+                        key={option.address}
+                        value={option.address}
+                      >
+                        {option.customer_name} : {option.address}
+                      </MenuItem>)}
+                </TextField> : 
+                <>
                 <TextField
                   required
                   name='shipping'
@@ -320,6 +318,27 @@ export default function Checkout() {
                   sx={{ marginTop: "2%" }}
                   size="small"
                 />
+                <TextField
+                label="State"
+                fullWidth
+                value={data.state || ''}
+                name='state'
+                onChange={handleData}
+                id="outlined-start-adornment"
+                sx={{ marginTop: "2%" }}
+                size="small"
+              />
+              <TextField
+                label="Town/City"
+                value={data.city || ''}
+                name='city'
+                onChange={handleData}
+                fullWidth
+                id="outlined-start-adornment"
+                sx={{ marginTop: "2%" }}
+                size="small"
+              /></>
+                }
                 {/* 
                 <TextField
                   select
@@ -368,26 +387,7 @@ export default function Checkout() {
                     </MenuItem>
                   ))}
                 </TextField> */}
-                <TextField
-                  label="State"
-                  fullWidth
-                  value={data.state || ''}
-                  name='state'
-                  onChange={handleData}
-                  id="outlined-start-adornment"
-                  sx={{ marginTop: "2%" }}
-                  size="small"
-                />
-                <TextField
-                  label="Town/City"
-                  value={data.city || ''}
-                  name='city'
-                  onChange={handleData}
-                  fullWidth
-                  id="outlined-start-adornment"
-                  sx={{ marginTop: "2%" }}
-                  size="small"
-                />
+          
                 {/* <TextField
                   label="Pin Code"
                   fullWidth
@@ -426,8 +426,8 @@ export default function Checkout() {
               </Grid>
               <Grid item xs={12}>
                 <Grid container className="orderSummary">
-                  <Grid item xs={12}>
-                    <Stack>
+                  <Grid item xs={12} sx={{ mb: 2 }}>
+                    <Stack className='productStack'>
                       {product.map((item, index) => {
                         return (
                           <Box key={index}>
@@ -447,23 +447,24 @@ export default function Checkout() {
                     </Stack>
                   </Grid>
                   <Grid item xs={12}>
+                    <Divider />
                     <Box className="productBox text">
-                      <Typography variant="body2">Subtotal</Typography>
-                      <Typography variant="body2">{subtotal}</Typography>
+                      <Typography variant="body">Subtotal</Typography>
+                      <Typography variant="body">&#8377; {subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
                     </Box>
                     <Divider />
                   </Grid>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <Box className="productBox text">
                       <Typography variant="body2">Tax</Typography>
                       <Typography variant="body2">18%</Typography>
                     </Box>
                     <Divider />
-                  </Grid>
+                  </Grid> */}
                   <Grid item xs={12}>
                     <Box className="productBox text">
-                      <Typography variant="body2">Total</Typography>
-                      <Typography variant="body2">{total}</Typography>
+                      <Typography variant="body">Total</Typography>
+                      <Typography variant="body">&#8377; {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
                     </Box>
                   </Grid>
                 </Grid>

@@ -37,6 +37,7 @@
     margin-top: 2%;
     border: 1px solid rgba(136, 136, 136, 0.329);
     padding: 1%;
+    height: min-content;
 }
 
 .yourOrder {
@@ -53,7 +54,8 @@
 }
 
 .productBox img {
-    width: 25%;
+    min-width: 25%;
+    max-width: 25%;
 }
 
 .text .css-1g4dizw-MuiTypography-root {
@@ -62,7 +64,7 @@
 
 .orderSummary {
     margin-top: 2%;
-    padding: 3% 5%;
+    padding: 3% 3%;
     border: 1px solid rgba(136, 136, 136, 0.329);
 }
 
@@ -76,6 +78,11 @@
     padding: 3% 2%;
 }
 
+.productStack{
+    max-height : 400px;
+    overflow-y : scroll;  
+    overflow-x : hidden;
+}
 
 /* // media query  */
 

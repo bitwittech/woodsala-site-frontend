@@ -17,6 +17,7 @@ import {
 
 // image 
 import sidePic from '../asset/images/logBox/sidePicLog.jpg'
+import sign from '../asset/images/logBox/sign.jpg'
 
 // css 
 import '../asset/css/entrypoint.css'
@@ -264,14 +265,14 @@ export default function EntryPoint() {
                                         <Typography sx={{ marginBottom: '5px' }} variant='h4'>
                                             Log-In
                                         </Typography>
-                                        <Typography variant='caption'>
-                                            Log-In with data that you have entered during the registration.
+                                        <Typography variant='body2'>
+                                            Log-In with valid credentials.
                                         </Typography>
 
                                         <FormControl sx={{ mt: 2 }} variant="outlined">
                                             {/* <InputLabel htmlFor="outlined-adornment-password">email</InputLabel> */}
                                             <TextField
-                                                fullWidth
+                                                sx = {{width :  "100%"}}
                                                 required
                                                 name='email'
                                                 onChange={handleValue}
@@ -284,7 +285,7 @@ export default function EntryPoint() {
                                         {/* {(state.Auth)} */}
                                         <FormControl sx={{ mt: 2, mb: 2 }} variant="outlined">
                                             <TextField
-                                                fullWidth
+                                                sx = {{width :  "100%"}}
                                                 required
                                                 name='password'
                                                 id="outlined-adornment-password"
@@ -306,7 +307,7 @@ export default function EntryPoint() {
                                                 label="Password"
                                             />
                                         </FormControl>
-                                        <Button fullWidth type='submit' disabled={controller.loading} variant='contained'>{controller.loading ? <CircularProgress size={'2rem'} /> : 'Log In'} </Button>
+                                        <Button sx = {{width :  "100%"}} type='submit' disabled={controller.loading} variant='contained'><Typography sx= {{fontWeight : 400, fontSize : '1rem'}} variant = 'button'>{controller.loading ? <CircularProgress size={'2rem'} /> : 'Log In'}</Typography></Button>
                                         <Typography sx={{ mt: 2, mb: 2, textAlign: 'center', width: '100%', display: 'block' }} color='primary' variant='body'>
                                             Forgot Password ?
                                         </Typography>
@@ -337,24 +338,24 @@ export default function EntryPoint() {
                             <Grid container >
 
                                 {/* Side pic */}
-                                <Grid item className='sidePic' xs={12} md={7} >
-                                    <img className='posterImage' alt='logPic' src={sidePic} />
+                                <Grid item className='sidePic' xs={12} md={6} >
+                                    <img className='posterImage' alt='logPic' src={sign} />
                                 </Grid>
                                 {/* end Side pic */}
 
                                 {/* // form  */}
-                                <Grid className='formBox' item xs={12} md={5} >
+                                <Grid className='formBox' item xs={12} md={6} >
                                     <form className='form' onSubmit={handleSubmit} action='' method='post'>
                                         <Typography sx={{ marginBottom: '5px' }} variant='h4'>
-                                            Sing-Up
+                                            Sign-Up
                                         </Typography>
-                                        <Typography variant='caption'>
+                                        <Typography variant='body2'>
                                             Hey, don't worry, your details are in safe hands.
                                         </Typography>
 
                                         <FormControl sx={{ mt: 2 }} variant="outlined">
                                             <TextField
-                                                fullWidth
+                                                sx = {{width :  "100%"}}
                                                 id="outlined-adornment-email"
                                                 type='text'
                                                 label="Username"
@@ -366,7 +367,7 @@ export default function EntryPoint() {
                                         </FormControl>
                                         <FormControl sx={{ mt: 2 }} variant="outlined">
                                             <TextField
-                                                fullWidth
+                                                sx = {{width :  "100%"}}
                                                 required
                                                 error={error.mobile}
                                                 id="outlined-adornment-email"
@@ -380,7 +381,7 @@ export default function EntryPoint() {
                                         </FormControl>
                                         <FormControl sx={{ mt: 2 }} variant="outlined">
                                             <TextField
-                                                fullWidth
+                                                sx = {{width :  "100%"}}
                                                 error={error.email}
                                                 id="outlined-adornment-email"
                                                 type='email'
@@ -394,7 +395,7 @@ export default function EntryPoint() {
 
                                         <FormControl sx={{ mt: 2, }} variant="outlined">
                                             <TextField
-                                                fullWidth
+                                                sx = {{width :  "100%"}}
                                                 error={error.password}
                                                 required
                                                 onChange={handleValue}
@@ -419,7 +420,7 @@ export default function EntryPoint() {
                                         </FormControl>
                                         <FormControl sx={{ mt: 2, mb: 2 }} variant="outlined">
                                             <TextField
-                                                fullWidth
+                                                sx = {{width :  "100%"}}
                                                 error={error.repassword}
                                                 onChange={handleValue}
                                                 id="outlined-adornment-password"
@@ -440,7 +441,7 @@ export default function EntryPoint() {
                                                 label="Retype Password"
                                             />
                                         </FormControl>
-                                        <Button fullWidth type='submit' disabled={controller.loading} variant='contained'>{controller.loading ? <CircularProgress size={'2rem'} /> : 'Sign Up'} </Button>
+                                        <Button sx = {{width :  "100%"}} type='submit' disabled={controller.loading} variant='contained'><Typography sx= {{fontWeight : 400, fontSize : '1rem'}} variant = 'button'>{controller.loading ? <CircularProgress size={'2rem'} /> : 'Sign Up'}</Typography></Button>
 
                                     </form>
                                     <hr ></hr>

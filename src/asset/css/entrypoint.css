@@ -3,8 +3,14 @@ hr {
     border-color: rgba(226, 226, 226, 0.356);
 }
 
+.form {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
 .formBox {
-    padding: 5%;
+    padding: 2%;
 }
 
 .posterImage {
@@ -27,12 +33,12 @@ hr {
     .modelContainer {
         display: flex;
         justify-content: center;
-        align-items: center;
+        /* align-items: center; */
     }
     .form {
         display: flex;
         justify-content: center;
-        align-items: center;
+        text-align: center;
         flex-direction: column;
     }
     .box {

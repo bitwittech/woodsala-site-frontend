@@ -51,8 +51,6 @@
 .productCard {
     cursor: pointer;
     padding: 1%;
-    max-height: 400px;
-    min-height: 400px;
 }
 
 .productCard img {
@@ -70,11 +68,18 @@
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    /* number of lines to show */
     line-clamp: 2;
-    min-height: 2.9em;
+    min-height: 2em;
     max-height: 2.9em;
     -webkit-box-orient: vertical;
+}
+
+.discount {
+    position: absolute;
+    text-align: center;
+    background-color: #88250e;
+    color: white;
+    padding: 0.2rem 1% 0.2rem 1%;
 }
 
 .infinite-scroll-component__outerdiv {

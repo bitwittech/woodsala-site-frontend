@@ -25,6 +25,7 @@ import Categories from "./components/Categories";
 import EntryPoint from "./components/EntryPoint";
 import Profile from "./components/Profile";
 import Verify from "./components/Verify";
+import Thanks from "./components/utility/Thanks";
 
 
 // global theme
@@ -90,6 +91,7 @@ function App() {
             <Path />
           </BrowserRouter>
           <EntryPoint />
+          <Thanks />
           <SnakBar />
         </CssBaseline>
       </ThemeProvider>

@@ -185,8 +185,17 @@ export const getLastOrder = async () => {
 
 // for  adding order to the list
 
-export const addOrder = async (data) => {
-  return await axios.post(`https://admin.woodshala.in/api/placeOrder`,data,{
+export const placeOrder = async (data) => {
+  return await axios.post(`${API}/placeOrder`,data,{
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
+    },
+  });
+};
+// for  verify check out
+
+export const verifyPayment = async (data) => {
+  return await axios.post(`${API}/verifyPayment`,data,{
     headers: {
       Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
     },

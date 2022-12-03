@@ -25,7 +25,7 @@ import "../asset/css/checkout.css";
 // import bajot from "../asset/images/home/bajot_TC.png";
 
 // apis function 
-import { getCustomer, getLastOrder, addOrder, removeCartItem } from '../service/service'
+import { getCustomer, getLastOrder, placeOrder, removeCartItem, verifyPayment } from '../service/service'
 
 // // store
 // import {Store} from '../store/Context';
@@ -33,7 +33,7 @@ import { getCustomer, getLastOrder, addOrder, removeCartItem } from '../service/
 
 // redux 
 import { useDispatch, useSelector } from 'react-redux'
-import { setAlert, setCart } from '../Redux/action/action'
+import { setAlert, setCart, thanks } from '../Redux/action/action'
 
 
 
@@ -70,25 +70,6 @@ export default function Checkout() {
     note: '',
   })
 
-  // function for generating product OID ID
-
-  const getOID = async () => {
-    return await getLastOrder()
-      .then((res) => {
-        if (res.data.length > 0) {
-          let index = parseInt(res.data[0].O.split("-")[1]) + 1;
-
-          return setOID(`O-0${index}`);
-        } else {
-          return setOID("O-01001");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-
   useEffect(() => {
     if (state.auth.CID) {
       getCustomer(state.auth.CID)
@@ -97,8 +78,8 @@ export default function Checkout() {
             ...data,
             CID: state.auth.CID,
             customer_name: response.data.username,
-            customer_email: response.data.mobile,
-            customer_mobile: response.data.email,
+            customer_email: response.data.email,
+            customer_mobile: response.data.mobile,
             city: response.data.city,
             state: response.data.state,
             address: response.data.address,
@@ -118,6 +99,159 @@ export default function Checkout() {
     setData({ ...data, OID: OID })
   }, [OID])
 
+  // verify Payment 
+  async function verifyPay (response,order_id) {
+          
+    const order = {...data,
+        O : OID,
+        orderCreationId: order_id,
+        razorpayPaymentId: response.razorpay_payment_id,
+        razorpayOrderId: response.razorpay_order_id,
+        razorpaySignature: response.razorpay_signature}
+
+        console.log(order)
+      
+        const res = verifyPayment(order);
+
+        res
+        .then(async(response) => {
+          if (response.status !== 200) {
+            setData({
+              O: '',
+              CUS: '',
+              CID: null,
+              customer_email: '',
+              customer_mobile: '',
+              customer_name: '',
+              shipping: '',
+              product_array: [],
+              quantity: [],
+              subTotal: 0,
+              discount: 0,
+              total: 0,
+              status: 'processing',
+              city: '',
+              state: '',
+              paid: 0,
+              note: ''
+            })
+            dispatch(setAlert({
+              open: true,
+              variant: "error",
+              message: response.data.message || "Something Went Wrong !!!",
+            }));
+  
+          } else {
+            // removing the item for the cart after order
+            Promise.all(state.cart.items.map(async row => await row.product_id && removeCartItem({
+              CID: state.auth.CID,
+              product_id: row.product_id,
+            })))
+              .then(() => {
+                dispatch(setCart({ items: [] }))
+                dispatch(setAlert({
+                  open: true,
+                  variant: "success",
+                  message: response.data.message,
+                }));
+                dispatch(thanks({
+                  open: true,
+                  payload : OID,
+                }));
+      
+              })
+            // window.location.href = '/'
+          }
+        })
+        .catch((err) => {
+          dispatch(setAlert({
+            open: true,
+            variant: "error",
+            message: "Something Went Wrong !!!",
+  
+          }));
+        });
+
+  }
+
+  // function for payment Gateway
+  function loadScript(src) {
+    return new Promise((resolve) => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.onload = () => {
+            resolve(true);
+        };
+        script.onerror = () => {
+            resolve(false);
+        };
+        document.body.appendChild(script);
+    });
+}
+
+// FOR Pay UI 
+async function displayRazorpay(e) {
+  e.preventDefault();
+
+  // UI response check
+    const res = await loadScript(
+        "https://checkout.razorpay.com/v1/checkout.js"
+    );
+
+    if (!res) {
+        alert("Razorpay SDK failed to load. Are you online?");
+        return;
+    }
+
+    const response  = await placeOrder(data) // local APIs for saving Order
+
+    if(response.status !== 200) return;
+
+    const order_id = response.data.id.toString() // Order Id from Payment Getaway
+
+    // Config for Payment Getaway 
+    const options = {
+        key: process.env.REACT_APP_PAY_KEY, // Enter the Key ID generated from the Dashboard
+        amount: (total * 100).toString(),
+        currency: 'INR',
+        name: "WoodShala",
+        description: "Product Order",
+        image: 'https://admin.woodshala.in/favicon.ico',
+        order_id: order_id,
+        handler: (response)=>{verifyPay(response,order_id)},
+        prefill: {
+            name: data.customer_name,
+            email: data.customer_email,
+            contact: data.customer_mobile,
+        },
+        notes: {
+            address: data.shipping,
+        },
+        theme: {
+            color: "#91441f",
+        },
+    };
+
+    const paymentObject = new window.Razorpay(options);
+    paymentObject.open();
+}
+  // function for generating product OID ID
+  const getOID = async () => {
+    return await getLastOrder()
+      .then((res) => {
+        if (res.data.length > 0) {
+          let index = parseInt(res.data[0].O.split("-")[1]) + 1;
+
+          return setOID(`O-0${index}`);
+        } else {
+          return setOID("O-01001");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   // const [country, setCountry] = React.useState("EUR");
 
   const handleData = (e) => {
@@ -126,78 +260,77 @@ export default function Checkout() {
   }
 
   /// submit order
-  const handleSubmit = async (e) => {
+  // const handleSubmit = async (e) => {
 
-    e.preventDefault();
-    const formVal = { ...data, O: OID };
+  //   e.preventDefault();
+  //   const formVal = { ...data, O: OID };
 
-    // (formVal)
-    // return 'x'
-    const res = addOrder(formVal)
+  //   // (formVal)
+  //   // return 'x'
+  //   const res = addOrder(formVal)
 
-    res
-      .then((response) => {
-        if (response.status !== 200) {
-          setData({
-            O: '',
-            CUS: '',
-            CID: null,
-            customer_email: '',
-            customer_mobile: '',
-            customer_name: '',
-            shipping: [],
-            product_array: [],
-            quantity: [],
-            subTotal: 0,
-            discount: 0,
-            total: 0,
-            status: 'processing',
-            city: '',
-            state: '',
-            paid: 0,
-            note: ''
-          })
-          dispatch(setAlert({
-            open: true,
-            variant: "error",
-            message: response.data.message || "Something Went Wrong !!!",
+  //   res
+  //     .then((response) => {
+  //       if (response.status !== 200) {
+  //         setData({
+  //           O: '',
+  //           CUS: '',
+  //           CID: null,
+  //           customer_email: '',
+  //           customer_mobile: '',
+  //           customer_name: '',
+  //           shipping: [],
+  //           product_array: [],
+  //           quantity: [],
+  //           subTotal: 0,
+  //           discount: 0,
+  //           total: 0,
+  //           status: 'processing',
+  //           city: '',
+  //           state: '',
+  //           paid: 0,
+  //           note: ''
+  //         })
+  //         dispatch(setAlert({
+  //           open: true,
+  //           variant: "error",
+  //           message: response.data.message || "Something Went Wrong !!!",
 
-          }));
+  //         }));
 
-        } else {
-          // removing the item for the cart after order
-          Promise.all(state.cart.items.map(async row => await removeCartItem({
-            CID: state.auth.CID,
-            product_id: row.product_id,
-          })))
-            .then(() => {
-              dispatch(setCart({ items: [] }))
-            })
+  //       } else {
+  //         // removing the item for the cart after order
+  //         Promise.all(state.cart.items.map(async row => await removeCartItem({
+  //           CID: state.auth.CID,
+  //           product_id: row.product_id,
+  //         })))
+  //           .then(() => {
+  //             dispatch(setCart({ items: [] }))
+  //           })
 
-          dispatch(setAlert({
-            open: true,
-            variant: "success",
-            message: response.data.message,
-          }));
+  //         dispatch(setAlert({
+  //           open: true,
+  //           variant: "success",
+  //           message: response.data.message,
+  //         }));
 
-          window.location.href = '/'
-        }
-      })
-      .catch((err) => {
-        dispatch(setAlert({
-          open: true,
-          variant: "error",
-          message: "Something Went Wrong !!!",
+  //         window.location.href = '/'
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       dispatch(setAlert({
+  //         open: true,
+  //         variant: "error",
+  //         message: "Something Went Wrong !!!",
 
-        }));
-      });
-  }
+  //       }));
+  //     });
+  // }
 
 
   return (
     <>
       <title>Checkout</title>
-
       {/* Banner */}
       <Grid container className="cartBanner">
         <Grid item xs={12}>
@@ -206,7 +339,7 @@ export default function Checkout() {
       </Grid>
       {/* Banner Ends */}
       {/* Main Section */}
-      <form method='post' onSubmit={handleSubmit} encType='multipart/form-data'>
+      <form method='post' onSubmit={displayRazorpay} encType='multipart/form-data'>
         <Grid container className="mainSec" >
           <Grid sx = {{mb :2}} item xs={12}>
             <Typography variant="h4">CheckOut</Typography>
@@ -506,7 +639,7 @@ export default function Checkout() {
                 </Grid>
               </Grid>
               <Grid item xs={12} className="orderButton" >
-                <Button type='submit' sx={{ fontWeight: "500" }} fullWidth variant='contained'>Place Order</Button>
+                <Button type='submit'  sx={{ fontWeight: "500" }} fullWidth variant='contained'>Place Order</Button>
               </Grid>
             </Grid>
           </Grid>

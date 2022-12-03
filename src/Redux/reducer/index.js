@@ -2,7 +2,7 @@
 import {combineReducers} from 'redux'
 
 // reducer import 
-import {alert, box} from './utilityReducers';
+import {alert, box,thanks} from './utilityReducers';
 import {auth} from './authReducer';
 import {cart} from './cartReducer';
 
@@ -10,7 +10,8 @@ const globalReducer = combineReducers({
     alert,
     auth,
     box,
-    cart
+    cart,
+    thanks
 })
 
 export default globalReducer;

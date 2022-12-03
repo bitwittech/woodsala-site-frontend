@@ -60,3 +60,10 @@ export const setCart =  (parameters)=>{
         payload : parameters
     }
 }
+// Action for for setting cart while customer logged in 
+export const thanks =  (parameters)=>{
+    return {
+        type : 'THANKS',
+        payload : parameters
+    }
+}

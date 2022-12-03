@@ -30,3 +30,11 @@ export const box = (state = boxState,action)=>{
             return state;
     }
 }
+export const thanks = (state = boxState,action)=>{
+    switch (action.type) {
+        case 'THANKS':
+            return state = action.payload;   
+        default:
+            return state;
+    }
+}

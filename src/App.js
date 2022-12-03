@@ -50,6 +50,7 @@ const light = createTheme({
 
 function App() {
 
+ 
   function Path() {
     const history = useNavigate();
     const { pathname } = useLocation();

@@ -33,15 +33,10 @@ export default function Thanks() {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={state.thanks.open}
-        onClose={()=>dispatch(thanks({
-            open : false,
-            payload : null
-        }))}
         // closeAfterTransition
+        disableBackdropClick
+        disableEscapeKeyDown
         BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
       >
         <Fade in={state.thanks.open}>
           <Box sx={style}>

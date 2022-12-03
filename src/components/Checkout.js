@@ -25,7 +25,7 @@ import "../asset/css/checkout.css";
 // import bajot from "../asset/images/home/bajot_TC.png";
 
 // apis function 
-import { getCustomer, getLastOrder, placeOrder, removeCartItem, verifyPayment } from '../service/service'
+import { getCustomer, getLastOrder, placeOrder, removeCartItem, verifyPayment, getCartItem } from '../service/service'
 
 // // store
 // import {Store} from '../store/Context';
@@ -70,6 +70,7 @@ export default function Checkout() {
     note: '',
   })
 
+
   useEffect(() => {
     if (state.auth.CID) {
       getCustomer(state.auth.CID)
@@ -88,6 +89,12 @@ export default function Checkout() {
         .catch((err) => {
           console.log(err)
         })
+
+        getCartItem(state.auth.CID)
+      .then((response) => {
+        if(response.data.length > 0)
+          dispatch(setCart({ items: response.data }))
+      })  
       getOID();
     }
     else {
@@ -143,23 +150,24 @@ export default function Checkout() {
   
           } else {
             // removing the item for the cart after order
-            Promise.all(state.cart.items.map(async row => await row.product_id && removeCartItem({
-              CID: state.auth.CID,
-              product_id: row.product_id,
-            })))
-              .then(() => {
-                dispatch(setCart({ items: [] }))
-                dispatch(setAlert({
-                  open: true,
-                  variant: "success",
-                  message: response.data.message,
-                }));
-                dispatch(thanks({
-                  open: true,
-                  payload : OID,
-                }));
-      
-              })
+            if(state.auth.isAuth)
+            {
+              Promise.all(state.cart.items.map(async row => await row.product_id && removeCartItem({
+                CID: state.auth.CID,
+                product_id: row.product_id,
+              })))  
+            }
+            dispatch(setCart({ items: [] }))
+                  dispatch(setAlert({
+                    open: true,
+                    variant: "success",
+                    message: response.data.message,
+                  }));
+                  dispatch(thanks({
+                    open: true,
+                    payload : OID,
+                  }));
+  
             // window.location.href = '/'
           }
         })

@@ -14,6 +14,7 @@ import bed from ".././asset/images/home/bed_SBF.png";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 // import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import defaultIMG from ".././asset/images/defaultProduct.svg";
+import Review from './Review'
 
 // css
 import "../asset/css/productDetails.css";
@@ -50,9 +51,6 @@ import {useDispatch,useSelector} from 'react-redux';
 import {addItem,removeItem,setAlert} from '../Redux/action/action'
 
 export default function ProductDetails(props) {
-
-  // store 
-  // const { state, dispatch } = Store();
 
   // state
   const state = useSelector(state=>state);
@@ -110,59 +108,6 @@ export default function ProductDetails(props) {
     setValue(newValue);
   };
 
-  const sizeCart = [
-    {
-      name: "King Size",
-      price: 44000,
-    },
-    {
-      name: "Queen Size",
-      price: 35000,
-    },
-    {
-      name: "Kid Size",
-      price: 20000,
-    },
-  ];
-
-
-  let relatedProduct = [
-    {
-      image: living,
-      review: "Great Product with minimal design.",
-      name: "Yashwant Sahu",
-    },
-    {
-      image: living,
-      review: "Great Product with minimal design.",
-      name: "Yashwant Sahu",
-    },
-    {
-      image: wfh,
-      review: "Great Product with minimal design.",
-      name: "Nilesh Prajapati",
-    },
-    {
-      image: wfh,
-      review: "Great Product with minimal design.",
-      name: "Nilesh Prajapati",
-    },
-    {
-      image: bedroom,
-      review: "Great Product with minimal design.",
-      name: "Rahul Raj",
-    },
-    {
-      image: bed,
-      review: "Great Product with minimal design.",
-      name: "Yashwant Sahu",
-    },
-    {
-      image: bed,
-      review: "Great Product with minimal design.",
-      name: "Yashwant Sahu",
-    },
-  ];
 
   const responsive = {
     desktop: {
@@ -870,6 +815,10 @@ export default function ProductDetails(props) {
             </Grid>
 
             {/* Related Products Ends */}
+
+            {/* Review Section */}
+            {SKU && <Review product_id = {SKU}/>}
+            {/* Review Section EnDs */}
           </>
           );
 }

@@ -1,0 +1,14 @@
+.orderWrapper {
+    gap: 10px;
+}
+
+.orderContainer {
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.topSec {
+    display: flex;
+    gap: 20px;
+    background-color: rgb(236, 235, 235);
+}

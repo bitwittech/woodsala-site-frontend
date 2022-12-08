@@ -1,0 +1,37 @@
+.reviewContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 2% 1% 2% 1%;
+}
+
+.review {
+    border-radius: 10px;
+    padding: 2%;
+    box-shadow: 0px 6px 5px 0px #91431f11;
+}
+
+.rating {
+    display: flex;
+    padding: 2% 0% 2% 2%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.customTextArea {
+    width: 100%;
+    background-color: rgba(184, 184, 184, 0.199);
+    resize: none;
+    font-weight: 300;
+    outline: none;
+}
+
+.cusDetails {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.cusDetails img {
+    width: 50px;
+    border-radius: 100%;
+}

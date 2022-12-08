@@ -103,10 +103,28 @@ export const getSearchList = async (data) => {
   );
 }
 
+// addReview
+export const addReview = async (data) => {
+  return await axios.post(`${API}/addReview`,data,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }
+  );
+}
+
+// get listReview for display  
+export const listReview = async (data) => {
+  return await axios.get(`${API}/listReview?product_id=${data}`);
+}
+
+
 // get product details for display  
 export const getProductDetails = async (data) => {
   return await axios.get(`${API}/getProductDetails?SKU=${data}`);
 }
+
 
 
 // ======================== END CURD  product =================================

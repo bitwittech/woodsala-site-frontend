@@ -112,15 +112,15 @@ export default function ProductDetails(props) {
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
-      items: 4,
+      items: 5,
     },
     tablet: {
       breakpoint: { max: 800, min: 600 },
-      items: 2,
+      items: 3,
     },
     mobile: {
       breakpoint: { max: 600, min: 0 },
-      items: 1,
+      items: 2,
     },
   };
 
@@ -361,6 +361,7 @@ export default function ProductDetails(props) {
                     </Typography>
                     <Box className="ratting">
                       <Rating
+                      readOnly
                         name="simple-controlled"
                         value={ratting}
                         onChange={(event, newValue) => {
@@ -375,7 +376,7 @@ export default function ProductDetails(props) {
                     <Box className="priceSec">
                       <Typography variant="h4" sx = {{fontWeight : 'bolder'}}>
                         {/* Price */}
-                        &#x20B9; {data.selling_price-(data.selling_price/100)*data.discount_limit}
+                        {(data.selling_price-(data.selling_price/100)*data.discount_limit).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}
                       </Typography>
                       {/* <Typography variant="body1"> */}
                         {/* MRP */}
@@ -568,10 +569,10 @@ export default function ProductDetails(props) {
                     <Stack sx={{ paddingTop: "2%" }}>
                       <Typography variant="body1">
                         Selling Price
-                        <Typography sx={{ float: "right" }} variant="body1">{data.selling_price}</Typography>
+                        <Typography sx={{ float: "right" }} variant="body1">{(data.selling_price).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</Typography>
                       </Typography>
                       <Typography variant="body1">
-                        Showroom Price<Typography sx={{ float: "right" }} variant="body1">{data.showroom_price}</Typography>
+                        Showroom Price<Typography sx={{ float: "right" }} variant="body1">{(data.showroom_price).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</Typography>
                       </Typography>
                       <Typography variant="body1">
                         Discount <Typography sx={{ float: "right" }} variant="body1">{data.discount_limit}%</Typography>
@@ -580,7 +581,7 @@ export default function ProductDetails(props) {
                         Tax <Typography sx={{ float: "right" }} variant="body1">{data.tax_rate}%</Typography>
                       </Typography>
                       <Typography variant="body1">
-                        MRP <Typography sx={{ float: "right" }} variant="body1">{(data.selling_price) - (data.selling_price / 100 * data.discount_limit)}</Typography>
+                        MRP <Typography sx={{ float: "right" }} variant="body1">{((data.selling_price) - (data.selling_price / 100 * data.discount_limit)).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</Typography>
                       </Typography>
                     </Stack>
                     <Typography sx={{ fontWeight: 400, mt: 1 }} variant="h6">
@@ -771,7 +772,7 @@ export default function ProductDetails(props) {
                   keyBoardControl={true}
                   autoPlaySpeed={1000}
                   ssr={true}
-                  className="detailsCarsole"
+                  className="detailsCarousel"
                   responsive={responsive}
                 >
                   {relatedProducts.map((article, index) => {
@@ -779,7 +780,7 @@ export default function ProductDetails(props) {
                       <Card
                         component={Link}
                         to={`/details/${article.SKU}/${article.product_title}/${article.category_name}`}
-                        className="card" key={index} sx={{ maxWidth: 280, minHeight: 400, maxHeight: 400, boxShadow: 2 }}>
+                        className="card" key={index} sx={{ maxWidth: 250, minHeight: 400, maxHeight: 400, boxShadow: 2 }}>
                         <CardActionArea>
                           <CardMedia
                             className="cardMedia"
@@ -799,10 +800,10 @@ export default function ProductDetails(props) {
                                ({article.discount_limit}% OFF)
                             </Typography>
                             <Typography variant="h6" color="text.secondary">
-                              <del>&#8377; {article.selling_price}</del>
+                              <del>{(article.selling_price).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</del>
                             </Typography>
                             <Typography variant="h6" sx = {{fontWeight : 'bolder'}} color="text.secondary">
-                            &#8377; {article.selling_price-(article.selling_price/100)*article.discount_limit}
+                            {(article.selling_price-(article.selling_price/100)*article.discount_limit).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}
                             </Typography>
                           </CardContent>
                         </CardActionArea>

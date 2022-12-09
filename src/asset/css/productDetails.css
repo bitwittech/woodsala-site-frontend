@@ -87,28 +87,32 @@
     padding: 5%;
 }
 
-.detailsCarsole .card {
+.detailsCarousel ul {
+    gap: 10px;
+}
+
+.detailsCarousel .card {
     display: flex !important;
     margin: auto !important;
     background: transparent !important;
     flex-direction: column !important;
 }
 
-.detailsCarsole .card button {
+.detailsCarousel .card button {
     display: block;
 }
 
-.detailsCarsole .card button img {
+.detailsCarousel .card button img {
     width: 100%;
     background-color: transparent !important;
     border: none !important;
 }
 
-.detailsCarsole .react-multiple-carousel__arrow {
+.detailsCarousel .react-multiple-carousel__arrow {
     background-color: #883c29a6;
 }
 
-.detailsCarsole .react-multi-carousel-list {
+.detailsCarousel .react-multi-carousel-list {
     height: 400px !important;
 }
 

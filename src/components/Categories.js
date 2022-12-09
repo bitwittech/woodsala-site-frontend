@@ -716,7 +716,7 @@ export default function Categories(props) {
                           <Typography sx={{ mt: 0.5 ,mb : 1 }} className='title' variant="body1">
                             {item.product_description}
                           </Typography>
-                          <Typography color="text.secondary" sx={{ fontWeight: 'bolder' }} variant="h5"> &#8377; {item.selling_price - ((item.selling_price / 100) * item.discount_limit)}</Typography>
+                          <Typography color="text.secondary" sx={{ fontWeight: 'bolder' }} variant="h5"> {(item.selling_price - ((item.selling_price / 100) * item.discount_limit)).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</Typography>
                         </Box>
                       </Grid>
                       

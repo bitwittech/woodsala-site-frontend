@@ -174,14 +174,14 @@ const Review = (props) => {
                             </Grid>
                             <Grid xs={12} item>
                                 <Typography sx={{ fontWeight: '400' }} variant='body1'>
-                                    2) Write your review below. (Min 50 Characters )
+                                    2) Write your review below.
                                 </Typography>
                                 <Box p={1}>
                                     <TextareaAutosize
                                         minRows={5}
                                         maxRows={5}
                                         required
-                                        minLength={50}
+                                        // minLength={50}
                                         onChange={(e) => setReviewData(old => ({ ...old, data: { ...old.data, review: e.target.value } }))}
                                         className='customTextArea'
                                         placeholder="Write something beautiful..."
@@ -220,6 +220,7 @@ const Review = (props) => {
                             <Rating
                                 value={row.rating}
                                 precision={0.5}
+                                readOnly
                                 size='large'
                                 emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
                             />

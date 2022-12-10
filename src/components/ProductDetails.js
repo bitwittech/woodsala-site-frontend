@@ -800,7 +800,7 @@ export default function ProductDetails(props) {
                                ({article.discount_limit}% OFF)
                             </Typography>
                             <Typography variant="h6" color="text.secondary">
-                              <del>{(article.selling_price).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</del>
+                              <del>{article.selling_price ? (article.selling_price).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' }) : '0'.toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</del>
                             </Typography>
                             <Typography variant="h6" sx = {{fontWeight : 'bolder'}} color="text.secondary">
                             {(article.selling_price-(article.selling_price/100)*article.discount_limit).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}

@@ -1,33 +1,36 @@
-import React, {useEffect} from "react";
+import React, {useEffect, lazy,Suspense} from "react";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "./App.css";
+import "../src/asset/css/home.css";
 
 // MUI
 import { CssBaseline } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import FallBack from "./components/utility/FallBack"
 
 // utility 
-import Navbar from "./components/utility/Navbar"
-import Footer from "./components/utility/Footer"
-import SnakBar from "./components/utility/SnakBar"
-import NotFound from "./components/utility/NotFound"
-import Thanks from "./components/utility/Thanks";
+const Navbar =  lazy(()=>import("./components/utility/Navbar"))
+const Footer =  lazy(()=>import("./components/utility/Footer"))
+const SnakBar =  lazy(()=>import("./components/utility/SnakBar"))
+const NotFound =  lazy(()=>import("./components/utility/NotFound"))
+const Thanks =  lazy(()=>import("./components/utility/Thanks"))
+
 
 // context
 // import {Store} from './store/Context'
 // import {Auth} from './store/Types'
 
 // components
-import Home from "./components/Home";
-import Cart from "./components/Cart";
-import Checkout from "./components/Checkout";
-import ProductDetails from "./components/ProductDetails";
-import ContactUs from "./components/ContactUs";
-import ProductList from "./components/ProductList";
-import EntryPoint from "./components/EntryPoint";
-import Profile from "./components/Profile";
-import Verify from "./components/Verify";
-import Catagories from "./components/Catagories";
+const Home = lazy(()=>import( "./components/Home"))
+const Cart = lazy(()=>import( "./components/Cart"))
+const Checkout = lazy(()=>import( "./components/Checkout"))
+const ProductDetails = lazy(()=>import( "./components/ProductDetails"))
+const ContactUs = lazy(()=>import( "./components/ContactUs"))
+const ProductList = lazy(()=>import( "./components/ProductList"))
+const EntryPoint = lazy(()=>import( "./components/EntryPoint"))
+const Profile = lazy(()=>import( "./components/Profile"))
+const Verify = lazy(()=>import( "./components/Verify"))
+const Catagories = lazy(()=>import( "./components/Catagories"))
 
 
 // global theme
@@ -96,6 +99,7 @@ function App() {
 
   return (
     <>
+    <Suspense fallback = {<FallBack/>}>
       <ThemeProvider theme={light}>
         <CssBaseline enableColorScheme>
           <BrowserRouter>
@@ -106,6 +110,7 @@ function App() {
           <SnakBar />
         </CssBaseline>
       </ThemeProvider>
+    </Suspense>
     </>
   );
 }

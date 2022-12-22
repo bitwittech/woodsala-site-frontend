@@ -48,6 +48,16 @@ html {
     font-family: 'Poppins', sans-serif;
 }
 
+.fallback {
+    display: flex;
+    width: 50%;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 20%;
+}
+
 @media screen and (max-width: 500px) {
     .alert {
         font-size: 1.5rem !important;

@@ -23,11 +23,9 @@ html {
 
 /* // utility alert */
 
-
-
 .alert {
     font-size: 1.2rem !important;
-    font-weight : 400 !important;
+    font-weight: 400 !important;
 }
 
 .snackbar div {
@@ -35,7 +33,22 @@ html {
     align-items: center !important;
 }
 
-@media  screen and (max-width: 500px) {
+.Banner {
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(rgba(250, 243, 230, 0.644), rgba(250, 243, 230, 0.678)), url('/src/asset/images//banner.png');
+    background-size: cover;
+    height: fit-content;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 7% 0% !important;
+    text-align: center;
+    font-weight: 500 !important;
+    color: #88250E;
+    font-family: 'Poppins', sans-serif;
+}
+
+@media screen and (max-width: 500px) {
     .alert {
         font-size: 1.5rem !important;
     }

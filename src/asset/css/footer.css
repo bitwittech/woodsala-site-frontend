@@ -28,6 +28,7 @@
 .socialIcons {
     padding: 2%;
     align-items: center;
+    gap: 10px;
 }
 
 .socialIcons img {

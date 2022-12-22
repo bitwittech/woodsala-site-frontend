@@ -1,5 +1,5 @@
 import React from "react";
-
+import {Link} from '@mui/material' 
 // css
 import "../../asset/css/footer.css";
 
@@ -8,6 +8,8 @@ import footerTop from "../../asset/images/footer/footerTop.png";
 import facebook from "../../asset/images/footer/facebook.svg";
 import twitter from "../../asset/images/footer/twitter.svg";
 import insta from "../../asset/images/footer/insta.svg";
+import linkedIn from "../../asset/images/footer/linkedIn.svg";
+import youtube from "../../asset/images/footer/youtube.svg";
 
 import { Grid, Typography, Stack } from "@mui/material";
 
@@ -69,14 +71,30 @@ export default function Footer() {
               <br></br>
 
               <Grid container className="socialIcons">
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} md={2}>
+                  <Link href = 'https://www.facebook.com/onlinewoodsala' target = '_black'>
                   <img src={facebook} alt="facebook.svg" />
+                  </Link>
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} md={2}>
+                  <Link href = 'https://twitter.com/onlinewoodsala' target = '_black'>
                   <img src={twitter} alt="twitter.svg" />
+                  </Link>
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} md={2}>
+                  <Link href = 'https://www.instagram.com/woodsala/' target = '_black'>
                   <img src={insta} alt="insta.svg" />
+                  </Link>
+                </Grid>
+                <Grid item xs={12} md={2}>
+                  <Link href = 'https://www.linkedin.com/company/woodsala' target = '_black'>
+                  <img src={linkedIn} alt="linkedIn.svg" />
+                  </Link>
+                </Grid>
+                <Grid item xs={12} md={2}>
+                  <Link href = 'https://www.youtube.com/channel/UCVHH1fClT0nK-TqwcC6TFjg' target = '_black'>
+                  <img src={youtube} alt="youtube.svg" />
+                  </Link>
                 </Grid>
               </Grid>
             </Grid>

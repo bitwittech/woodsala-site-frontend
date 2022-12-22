@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 
 //css
-import "../asset/css/categories.css";
+import "../asset/css/product.css";
 import "react-multi-carousel/lib/styles.css";
 
 // icon
@@ -338,14 +338,14 @@ export default function Categories(props) {
 
   return (
     <>
-      <title>Categories</title>
+      <title>Products</title>
       {/* {(meta)} */}
       {/* Main Container */}
       <Grid container sx={{ padding: "1%" }}>
 
 
         {/* Banner */}
-        <Grid container className="productBanner">
+        <Grid container className="Banner">
           <Grid item xs={12}>
             <Typography variant="h1">Products</Typography>
           </Grid>

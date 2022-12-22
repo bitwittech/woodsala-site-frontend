@@ -340,7 +340,7 @@ async function displayRazorpay(e) {
     <>
       <title>Checkout</title>
       {/* Banner */}
-      <Grid container className="cartBanner">
+      <Grid container className="Banner">
         <Grid item xs={12}>
           <Typography variant="h1">CheckOut</Typography>
         </Grid>

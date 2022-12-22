@@ -1,109 +1,48 @@
-.productBanner {
-    justify-content: center;
-    align-items: center;
-    background-image: linear-gradient(rgba(250, 243, 230, 0.644), rgba(250, 243, 230, 0.678)), url('../images/cart/cartHead.png');
-    background-size: cover;
-    height: fit-content;
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 7% 0% !important;
-    text-align: center;
-    font-weight: 500 !important;
-    color: #88250E;
-    font-family: 'Poppins', sans-serif;
-    margin-bottom: 2%;
-}
-
-.subInfo {
-    padding: 3% 10%;
-}
-
-.subCatContainer {
-    padding: 0% 20% 3% 20%;
-}
-
-.categories-carousal {
-    padding: 10% !important;
-}
-
-.filters {
-    display: flex;
-    flex-direction: column !important;
+.cardWrapper {
     padding: 1%;
-    margin-top: 2%;
-}
-
-.productContainer {
-    display: flex;
+    align-items: center;
+    gap: 20px;
     width: 100%;
-    justify-content: center;
-    align-items: center;
-    padding: 0% 1%;
-    margin-top: 2%;
 }
 
-.innerProductWrap {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.productCard {
+.catCard {
     cursor: pointer;
-    padding: 1%;
-}
-
-.productCard img {
-    width: 100%;
-    min-height: 250px;
-    max-height: 250px;
-}
-
-.hamFilterPanel {
-    display: none;
-}
-
-.title {
+    display: flex;
     overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    min-height: 2em;
-    max-height: 2.9em;
-    -webkit-box-orient: vertical;
-}
-
-.discount {
-    position: absolute;
+    justify-content: center;
+    position: relative;
     text-align: center;
-    background-color: #88250e;
-    color: white;
-    padding: 0.2rem 1% 0.2rem 1%;
+    height: 300px;
+    box-shadow: 0px 1px 8px 1px #00000014;
 }
 
-.infinite-scroll-component__outerdiv {
-    width: 100% !important;
+.catCard img:hover {
+    transform: scale(1.2);
 }
 
-a {
-    text-decoration: none;
+.catCard::before {
+    content: '';
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    opacity: 0.1;
+    height: 100%;
+    background-color: black;
+    transition: all 500ms;
 }
 
-@media screen and (max-width: 800px) {
-    .subCatContainer {
-        padding: 0% 10% 3% 10%;
-    }
-    .hamFilterPanel {
-        display: block;
-    }
-    .showFilters {
-        display: none;
-    }
+.catCard:hover::before {
+    opacity: 0.4;
 }
 
-@media screen and (max-width: 500px) {
-    .innerProductWrap {
-        justify-content: center !important;
-    }
+.catCard img {
+    width: 100%;
+}
+
+.cardTitle {
+    position: absolute;
+    top: 50%;
+    color: rgb(255, 255, 255);
+    font-weight: 500 !important;
 }

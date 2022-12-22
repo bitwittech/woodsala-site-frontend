@@ -1,21 +1,6 @@
-.contactBanner {
-    justify-content: center;
-    align-items: center;
-    background-image: linear-gradient(rgba(250, 243, 230, 0.644), rgba(250, 243, 230, 0.678)), url('../images/cart/cartHead.png');
-    background-size: cover;
-    height: fit-content;
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 7% 0% !important;
-    text-align: center;
-    font-weight: 500 !important;
-    color: #88250E;
-    font-family: 'Poppins', sans-serif;
-}
-
 .formContainer {
     margin: 5% auto;
-    padding: 3% 4%;
+    padding: 2%;
     gap: 30px;
     width: 90% !important;
 }
@@ -39,6 +24,18 @@ button {
 
 .sideBox h6 {
     font-weight: 500;
+}
+
+.messageBox {
+    width: 100%;
+    resize: none;
+}
+
+.contactForm {
+    padding: 1.5%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 @media screen and (max-width:800px) {

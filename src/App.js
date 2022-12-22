@@ -10,6 +10,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Navbar from "./components/utility/Navbar"
 import Footer from "./components/utility/Footer"
 import SnakBar from "./components/utility/SnakBar"
+import NotFound from "./components/utility/NotFound"
+import Thanks from "./components/utility/Thanks";
 
 // context
 // import {Store} from './store/Context'
@@ -21,11 +23,11 @@ import Cart from "./components/Cart";
 import Checkout from "./components/Checkout";
 import ProductDetails from "./components/ProductDetails";
 import ContactUs from "./components/ContactUs";
-import Categories from "./components/Categories";
+import ProductList from "./components/ProductList";
 import EntryPoint from "./components/EntryPoint";
 import Profile from "./components/Profile";
 import Verify from "./components/Verify";
-import Thanks from "./components/utility/Thanks";
+import Catagories from "./components/Catagories";
 
 
 // global theme
@@ -64,20 +66,28 @@ function App() {
       <>
         {window.location.pathname !== '/verify' && <Navbar history={history} />}
         <Routes>
+
+          {/* Not found  */}
+          <Route path="*" element={<NotFound/>}/>
+
+          {/* // main routes  */}
           <Route path="/" element={<Home history={history}/>}></Route>
+          <Route path="/verify" element={<Verify history = {history}/>}></Route>
+          <Route path="/categories" element={<Catagories history = {history}/>}></Route>
+
+          {/* // page routes  */}
           <Route path="/home" element={<Home history={history} />}></Route>
           <Route path="/cart" element={<Cart history={history} />}></Route>
           <Route path="/checkout" element={<Checkout />}></Route>
           <Route path="/details/:SKU/:title/:category" element={<ProductDetails history={history} />}></Route>
           <Route path="/contact" element={<ContactUs />}></Route>
           <Route path="/profile" element={<Profile />}></Route>
-          <Route path="/verify" element={<Verify history = {history}/>}></Route>
 
           {/* // filter and Product page route */}
-          <Route path="/product/:category_name/:product_title/:selling_price" element={<Categories history={history} />}></Route>
-          <Route path="/product/:category_name/:product_title" element={<Categories history={history} />}></Route>
-          <Route path="/product/:category_name" element={<Categories history={history} />}></Route>
-          <Route path="/product" element={<Categories history={history} />}></Route>
+          <Route path="/product/:category_name/:product_title/:selling_price" element={<ProductList history={history} />}></Route>
+          <Route path="/product/:category_name/:product_title" element={<ProductList history={history} />}></Route>
+          <Route path="/product/:category_name" element={<ProductList history={history} />}></Route>
+          <Route path="/product" element={<ProductList history={history} />}></Route>
         </Routes>
         {window.location.pathname !== '/verify' && <Footer />}
       </>

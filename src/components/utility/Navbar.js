@@ -12,10 +12,10 @@ import {
   Box,
   Drawer,
   ListItemIcon,
-  Badge
+  Badge,
+  Link
 } from "@mui/material";
 
-import {Link} from 'react-router-dom'
 
 // icon
 import FacebookOutlinedIcon from "../../asset/images/navbar/facebook.png";
@@ -239,19 +239,19 @@ if (e.key === 'Enter')
         <Grid item xs={12} className="topBox">
           <Grid container>
             <Grid item xs={12} md={3} className="center">
-              <Typography variant="caption">
-                +91-9509658944, +91-8587918978
+              <Typography variant="button">
+              +91-8587918978, 9509658944 (WhatsApp)
               </Typography>
             </Grid>
             <Grid item xs={12} md={6} />
             <Grid item xs={12} md={3} className="center icons">
-              <IconButton color="secondary" size="small">
+              <IconButton target = '_blank' href = 'https://www.facebook.com/onlinewoodsala' component = {Link} color="secondary" size="small">
                 <img src={FacebookOutlinedIcon} alt="" />
               </IconButton>
-              <IconButton color="secondary" size="small">
+              <IconButton target = '_blank' component = {Link} href = 'https://twitter.com/onlinewoodsala' color="secondary" size="small">
                 <img src={TwitterIcon} alt="" />
               </IconButton>
-              <IconButton color="secondary" size="small">
+              <IconButton target = '_blank' color="secondary" component = {Link} href = 'https://www.instagram.com/woodsala/' size="small">
                 <img src={InstagramIcon} alt="" />
               </IconButton>
             </Grid>

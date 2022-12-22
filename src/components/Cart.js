@@ -326,7 +326,7 @@ const Cart = (props) => {
     <>
       <title> Cart </title>
       {/* Banner */}
-      <Grid container className="cartBanner">
+      <Grid container className="Banner">
         <Grid item xs={12}>
           <Typography variant="h1">Cart</Typography>
         </Grid>

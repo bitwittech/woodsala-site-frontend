@@ -376,7 +376,7 @@ export default function ProductDetails(props) {
                     <Box className="priceSec">
                       <Typography variant="h4" sx = {{fontWeight : 'bolder'}}>
                         {/* Price */}
-                        {(data.selling_price-(data.selling_price/100)*data.discount_limit).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}
+                        {data.selling_price && (data.selling_price-(data.selling_price/100)*data.discount_limit).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}
                       </Typography>
                       {/* <Typography variant="body1"> */}
                         {/* MRP */}
@@ -569,10 +569,10 @@ export default function ProductDetails(props) {
                     <Stack sx={{ paddingTop: "2%" }}>
                       <Typography variant="body1">
                         Selling Price
-                        <Typography sx={{ float: "right" }} variant="body1">{(data.selling_price).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</Typography>
+                        <Typography sx={{ float: "right" }} variant="body1">{data.selling_price ? (data.selling_price).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' }): 0}</Typography>
                       </Typography>
                       <Typography variant="body1">
-                        Showroom Price<Typography sx={{ float: "right" }} variant="body1">{(data.showroom_price).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</Typography>
+                        Showroom Price<Typography sx={{ float: "right" }} variant="body1">{data.showroom_price ? (data.showroom_price).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' }): 0}</Typography>
                       </Typography>
                       <Typography variant="body1">
                         Discount <Typography sx={{ float: "right" }} variant="body1">{data.discount_limit}%</Typography>
@@ -581,7 +581,7 @@ export default function ProductDetails(props) {
                         Tax <Typography sx={{ float: "right" }} variant="body1">{data.tax_rate}%</Typography>
                       </Typography>
                       <Typography variant="body1">
-                        MRP <Typography sx={{ float: "right" }} variant="body1">{((data.selling_price) - (data.selling_price / 100 * data.discount_limit)).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</Typography>
+                        MRP <Typography sx={{ float: "right" }} variant="body1">{(data.selling_price && data.discount_limit) && ((data.selling_price) - (data.selling_price / 100 * data.discount_limit)).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</Typography>
                       </Typography>
                     </Stack>
                     <Typography sx={{ fontWeight: 400, mt: 1 }} variant="h6">
@@ -803,7 +803,7 @@ export default function ProductDetails(props) {
                               <del>{article.selling_price ? (article.selling_price).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' }) : '0'.toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</del>
                             </Typography>
                             <Typography variant="h6" sx = {{fontWeight : 'bolder'}} color="text.secondary">
-                            {(article.selling_price-(article.selling_price/100)*article.discount_limit).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}
+                            {article.selling_price && (article.selling_price-(article.selling_price/100)*article.discount_limit).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}
                             </Typography>
                           </CardContent>
                         </CardActionArea>

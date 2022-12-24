@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import InfiniteScroll from 'react-infinite-scroll-component';
 // import Carousel from "react-multi-carousel";
@@ -13,7 +13,13 @@ import {
   Divider,
   IconButton,
   Drawer,
-  CircularProgress
+  CircularProgress,
+  Slider,
+  FormControl,
+  Button,
+  FormGroup,
+  FormControlLabel,
+  Checkbox
 } from "@mui/material";
 
 //css
@@ -34,11 +40,6 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 // import dining from ".././asset/images/home/dining_SBR.png";
 import defaultIMG from ".././asset/images/defaultProduct.svg";
 
-// store 
-// import { Store } from '../store/Context'
-// types 
-// import { AddCartItem } from "../store/Types";
-
 // Action 
 import { setAlert, addItem, removeItem, setCart } from '../Redux/action/action'
 
@@ -47,9 +48,11 @@ import { useDispatch, useSelector } from 'react-redux'
 
 
 // services 
-import { getProducts, addCartItem, removeCartItem, getCartItem } from '../service/service'
+import { getProducts, addCartItem, removeCartItem, getCartItem, getMartialList } from '../service/service'
 
 export default function Categories(props) {
+
+  const [Materials, setMaterials] = useState([])
 
   // State
   const state = useSelector(state => state);
@@ -62,6 +65,13 @@ export default function Categories(props) {
 
   // filter params
   const filter = useParams();
+
+  // extra filter
+  const [extraFilter, setExtraFilter] = useState({
+    apply: false,
+    material :[]
+
+  })
 
   // // responsive oject for Slider
   // const responsive = {
@@ -90,7 +100,7 @@ export default function Categories(props) {
   const [meta, setMeta] = useState({
     hasMore: true,
     page: 1,
-    filter: filter
+    filter: filter,
   });
 
   // State
@@ -108,8 +118,9 @@ export default function Categories(props) {
 
   // }
 
+
   // use Effect
-  useEffect(() => {
+  useMemo(() => {
 
     if (state.auth.isAuth) {
       if (state.cart.items.length > 0) {
@@ -135,11 +146,14 @@ export default function Categories(props) {
       }
     }
 
-    fetchMoreData();
+    getMartialList()
+      .then((row) => {
+        setMaterials(row.data.map((item) => {
+          return item.primaryMaterial_name
+        }))
+      })
 
-  }, [state.auth.isAuth, filter])
-
-
+  }, [state.auth.isAuth])
 
   // const categories = [
   //   {
@@ -211,14 +225,15 @@ export default function Categories(props) {
 
     // (meta)
     // (filter)
-    if (filter !== meta.filter) setItems([])
+    if (filter !== meta.filter || extraFilter.apply) setItems([])
 
-    getProducts({ page: filter === meta.filter ? meta.page : 1, filter: filter })
+    getProducts({ page: filter === meta.filter && extraFilter.apply === false ? meta.page : 1, filter: filter, extraFilter: JSON.stringify(extraFilter) })
       .then((data) => {
         if (data.data.length > 0) {
           setMeta({ ...meta, hasMore: true, page: meta.page + 1, filter })
-          if (filter !== meta.filter) {
+          if (filter !== meta.filter || extraFilter.apply) {
             setItems(data.data)
+            setExtraFilter(old => ({ ...old, apply: false }))
             setMeta({ ...meta, hasMore: true, page: 2, filter })
           }
           else
@@ -226,12 +241,17 @@ export default function Categories(props) {
         }
         else {
           setMeta({ ...meta, page: 1, hasMore: false, filter: '' })
+          setExtraFilter(old => ({ ...old, apply: false }))
         }
       })
       .catch((err) => {
         // (err)
       })
   }
+
+  useMemo(() => {
+    return fetchMoreData()
+  }, [filter, extraFilter.apply])
 
   // handle accordions
   const handleChange = (panel) => (event, newExpanded) => {
@@ -336,6 +356,17 @@ export default function Categories(props) {
 
   }
 
+  const handleMartialCheck = (e) => {
+    if (e.target.checked)
+      setExtraFilter((old) => ({ ...old, material: [...old.material, e.target.name] }))
+    else
+      setExtraFilter((old) => ({ ...old, material: old.material.filter(val=>val!==e.target.name) }))
+  }
+  const filterResult = async () => {
+    await setExtraFilter((old) => ({ ...old, apply: true }));
+  }
+
+
   return (
     <>
       <title>Products</title>
@@ -394,14 +425,16 @@ export default function Categories(props) {
         {/* carousal for sub cat ends */}
 
         {/* filter sec */}
-        <Grid className="filters showFilters" sx={{ boxShadow: "1" }} item xs={12} md={2}>
-          <Typography variant="h5" sx={{ padding: "2%" }}>
-            {" "}
-            Filters
-          </Typography>
+        <Grid className="filters showFilters" p = {1} item xs={12} md={2}>
+          <Box className='applyBtn' sx={{ padding: "3%" }}>
+            <Typography variant="h5" >
+              Filters
+            </Typography>
+            <Button onClick={filterResult} size='small' variant='outlined'>Apply</Button>
+          </Box>
           <Divider></Divider>
-          <br></br>
-          <Box className="accordion">
+          {/* Price fitler */}
+          <Box className="accordion" >
             <Accordion
               expanded={expanded === "panel1"}
               onChange={handleChange("panel1")}
@@ -411,22 +444,31 @@ export default function Categories(props) {
                 aria-controls="panel1d-content"
                 id="panel1d-header"
                 expandIcon={<ExpandMoreIcon></ExpandMoreIcon>}
+                p={0}
               >
-                <Typography sx={{ fontWeight: 400 }} variant="body1">
-                  Price
-                </Typography>
+                <Box className='applyBtn'>
+                  <Checkbox size='small' disabled={extraFilter.price ? false : true} checked={extraFilter.price ? true : false} name='price' onChange={() => setExtraFilter(old => { delete old.price; return { ...old, apply: true } })} />
+                  <Typography sx={{ fontWeight: 400 }} variant="body">
+                    Price
+                  </Typography>
+                </Box>
               </AccordionSummary>
-              <AccordionDetails>
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </Typography>
+              <AccordionDetails sx={{ padding: '0px 25px !important' }} >
+                <Slider
+                  size='small'
+                  getAriaLabel={() => 'Price range'}
+                  value={extraFilter.price || [500, 5000]}
+                  onChange={(e, value) => setExtraFilter(old => ({ ...old, price: value }))}
+                  valueLabelDisplay="auto"
+                  marks={[{ value: 500, label: 'Rs.500' }, { value: 10000, label: 'Rs.50K' }]}
+                  max={10000}
+                  min={500}
+                // getAriaValueText={valuetext}
+                />
               </AccordionDetails>
             </Accordion>
           </Box>
+          {/* Length filter  */}
           <Box className="accordion">
             <Accordion
               expanded={expanded === "panel2"}
@@ -438,22 +480,101 @@ export default function Categories(props) {
                 id="panel1d-header"
                 expandIcon={<ExpandMoreIcon></ExpandMoreIcon>}
               >
-                <Typography sx={{ fontWeight: 400 }} variant="body1">
-                  Size
-                </Typography>
+                <Box className='applyBtn'>
+                  <Checkbox size='small' disabled={extraFilter.length ? false : true} checked={extraFilter.length ? true : false} name='price' onChange={() => setExtraFilter(old => { delete old.length; return { ...old, apply: true } })} />
+                  <Typography sx={{ fontWeight: 400 }} variant="body">
+                    Length
+                  </Typography>
+                </Box>
               </AccordionSummary>
-              <AccordionDetails>
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </Typography>
+              <AccordionDetails sx={{ padding: '0px 25px !important' }}>
+                <Slider
+                  size='small'
+                  getAriaLabel={() => 'Length range'}
+                  value={extraFilter.length || [10, 50]}
+                  onChange={(e, value) => setExtraFilter(old => ({ ...old, length: value }))}
+                  valueLabelDisplay="auto"
+                  marks={[{ value: 0, label: '0 In' }, { value: 50, label: '50 In' }, { value: 100, label: '100 In' }]}
+                  max={100}
+                  min={0}
+                // getAriaValueText={valuetext}
+                />
               </AccordionDetails>
             </Accordion>
           </Box>
+          {/* Breadth  filter */}
           <Box className="accordion">
+            <Accordion
+              expanded={expanded === "panel3"}
+              onChange={handleChange("panel3")}
+            >
+              <AccordionSummary
+                className="summary"
+                aria-controls="panel1d-content"
+                id="panel1d-header"
+                expandIcon={<ExpandMoreIcon></ExpandMoreIcon>}
+              >
+                <Box className='applyBtn'>
+                  <Checkbox size='small' disabled={extraFilter.breadth ? false : true} checked={extraFilter.breadth ? true : false}
+                    onChange={() => setExtraFilter(old => { delete old.breadth; return { ...old, apply: true } })} />
+                  <Typography sx={{ fontWeight: 400 }} variant="body">
+                    Breadth
+                  </Typography>
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails sx={{ padding: '0px 25px !important' }}>
+                <Slider
+                  size='small'
+                  getAriaLabel={() => 'Breadth range'}
+                  value={extraFilter.breadth || [10, 50]}
+                  onChange={(e, value) => setExtraFilter(old => ({ ...old, breadth: value }))}
+                  valueLabelDisplay="auto"
+                  marks={[{ value: 0, label: '0 In' }, { value: 50, label: '50 In' }, { value: 100, label: '100 In' }]}
+                  max={100}
+                  min={0}
+                // getAriaValueText={valuetext}
+                />
+              </AccordionDetails>
+            </Accordion>
+          </Box>
+          {/* // height filter */}
+          <Box className="accordion">
+            <Accordion
+              expanded={expanded === "panel4"}
+              onChange={handleChange("panel4")}
+            >
+              <AccordionSummary
+                className="summary"
+                aria-controls="panel1d-content"
+                id="panel1d-header"
+                expandIcon={<ExpandMoreIcon></ExpandMoreIcon>}
+              >
+                <Box className='applyBtn'>
+                  <Checkbox size='small' disabled={extraFilter.height ? false : true} checked={extraFilter.height ? true : false}
+                    onChange={() => setExtraFilter(old => { delete old.height; return { ...old, apply: true } })} />
+                  <Typography sx={{ fontWeight: 400 }} variant="body">
+                    Height
+                  </Typography>
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails sx={{ padding: '0px 25px !important' }}>
+
+                <Slider
+                  size='small'
+                  getAriaLabel={() => 'Height range'}
+                  value={extraFilter.height || [10, 50]}
+                  onChange={(e, value) => setExtraFilter(old => ({ ...old, height: value }))}
+                  valueLabelDisplay="auto"
+                  marks={[{ value: 0, label: '0 In' }, { value: 50, label: '50 In' }, { value: 100, label: '100 In' }]}
+                  max={100}
+                  min={0}
+                // getAriaValueText={valuetext}
+                />
+              </AccordionDetails>
+            </Accordion>
+          </Box>
+          {/* // Delivery */}
+          {/* <Box className="accordion">
             <Accordion
               expanded={expanded === "panel3"}
               onChange={handleChange("panel3")}
@@ -468,21 +589,26 @@ export default function Categories(props) {
                   Delivery Time
                 </Typography>
               </AccordionSummary>
-              <AccordionDetails>
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </Typography>
+              <AccordionDetails sx={{ padding: '0px 25px !important' }}>
+                <Slider
+                  size='small'
+                  getAriaLabel={() => 'Length range'}
+                  value={extraFilter.delivery}
+                  onChange={(e, value) => setExtraFilter(old => ({ ...old, delivery: value }))}
+                  valueLabelDisplay="auto"
+                  marks={[{ value: 5, label: '5 day' }, { value: 50, label: '50 Day' }, { value: 100, label: '100 Day' }]}
+                  max={100}
+                  min={0}
+                // getAriaValueText={valuetext}
+                />
               </AccordionDetails>
             </Accordion>
-          </Box>
+          </Box> */}
+          {/* Martials  */}
           <Box className="accordion">
             <Accordion
-              expanded={expanded === "panel4"}
-              onChange={handleChange("panel4")}
+              expanded={expanded === "panel5"}
+              onChange={handleChange("panel5")}
             >
               <AccordionSummary
                 className="summary"
@@ -490,18 +616,25 @@ export default function Categories(props) {
                 id="panel1d-header"
                 expandIcon={<ExpandMoreIcon></ExpandMoreIcon>}
               >
-                <Typography sx={{ fontWeight: 400 }} variant="body1">
-                  Material
-                </Typography>
+               <Box className='applyBtn'>
+                  <Checkbox size='small' disabled={extraFilter.material.length > 0 ? false : true} checked={extraFilter.material.length > 0 ? true : false}
+                    onChange={() => setExtraFilter(old => { return { ...old,material : [], apply: true } })} />
+                  <Typography sx={{ fontWeight: 400 }} variant="body">
+                    Material
+                  </Typography>
+                </Box>
               </AccordionSummary>
-              <AccordionDetails>
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </Typography>
+              <AccordionDetails sx={{ padding: '0px 20px !important' }}>
+                <FormControl  component="fieldset" variant="standard">
+                  <FormGroup>
+                  {Materials.map((row, index)=><FormControlLabel key = {index}
+                      control={
+                        <Checkbox checked={extraFilter[row]}  onChange={handleMartialCheck} name={row} />
+                      }
+                      label={row}
+                    />)}
+                  </FormGroup>
+                </FormControl>
               </AccordionDetails>
             </Accordion>
           </Box>
@@ -682,10 +815,10 @@ export default function Categories(props) {
                     md={2.9}
                   >
                     <Grid container >
-                    {item.discount_limit > 0 && <Grid className="discount" item xs={12}>
+                      {item.discount_limit > 0 && <Grid className="discount" item xs={12}>
                         <Box >
-                              <Typography variant="body" sx = {{fontWeight: '400'}}>{item.discount_limit}% Off</Typography>                            
-                          </Box>
+                          <Typography variant="body" sx={{ fontWeight: '400' }}>{item.discount_limit}% Off</Typography>
+                        </Box>
                       </Grid>}
                       <Grid item xs={12}
                         onClick={() => history(`/details/${item.SKU}/${item.product_title}/${item.category_name}`)}
@@ -713,13 +846,13 @@ export default function Categories(props) {
                       </Grid>
                       <Grid item xs={12}>
                         <Box className="productInfo">
-                          <Typography sx={{ mt: 0.5 ,mb : 1 }} className='title' variant="body1">
+                          <Typography sx={{ mt: 0.5, mb: 1 }} className='title' variant="body1">
                             {item.product_description}
                           </Typography>
                           <Typography color="text.secondary" sx={{ fontWeight: 'bolder' }} variant="h5"> {(item.selling_price - ((item.selling_price / 100) * item.discount_limit)).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</Typography>
                         </Box>
                       </Grid>
-                      
+
                     </Grid>
                   </Grid>
                 );

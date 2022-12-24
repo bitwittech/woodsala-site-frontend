@@ -75,7 +75,7 @@ export const updateCustomer = async (data) => {
 
 export const getProducts = async (data) => {
   // (data) 
-  return await axios.get(`${API}/getProducts?pageNumber=${data.page}&product_title=${data.filter.product_title}&category_name=${data.filter.category_name}`,
+  return await axios.get(`${API}/getProducts?pageNumber=${data.page}&product_title=${data.filter.product_title}&category_name=${data.filter.category_name}&filter=${data.extraFilter}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -125,6 +125,13 @@ export const getProductDetails = async (data) => {
   return await axios.get(`${API}/getProductDetails?SKU=${data}`);
 }
 
+export const getMartialList = async () => {
+  return await axios.get(`https://admin.woodshala.in/api/getPrimaryMaterial`,{
+    headers: {
+      Authorization: `Bearer ${WDToken}`,
+    },
+  });
+};
 
 
 // ======================== END CURD  product =================================

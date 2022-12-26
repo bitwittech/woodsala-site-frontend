@@ -18,9 +18,9 @@ export default function Footer() {
     <>
       <Grid container className="footerContainer">
         {/* // top image */}
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <img src={footerTop} alt="FooterImage" />
-        </Grid>
+        </Grid> */}
         {/* links */}
         <Grid item xs={12}>
           <Grid container className="linkContainer">
@@ -104,7 +104,7 @@ export default function Footer() {
         {/* bottom */}
         <Grid item xs={12} className="footerBottom">
             <Typography  variant="h6">
-           © Copyright 2022 Woodshala, All Right Reserved
+            © 2022 Woodsala (All Rights Reserved) The unit of S.K.EXPORTS || GST:08ARTPK3236G1ZJ || Plot no. 82, Hasti colony, jhalamand, Jodhpur, 342001.
           </Typography>
           <Typography  variant="caption">
            <a  rel="noreferrer" target = '_blank' style = {{textDecoration : 'none', color : 'white'}} href = 'https://www.bitwittech.com/'>Crafted By BITWIT</a>

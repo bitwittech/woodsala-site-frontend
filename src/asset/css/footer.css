@@ -2,7 +2,8 @@
     margin-top: 5%;
     justify-content: center;
     align-items: center;
-    background-image: linear-gradient(rgba(247, 198, 142, 0.377), rgba(250, 208, 150, 0.384)), url('../images/footer/footerEnd.jpg');
+    /* background-image: linear-gradient(rgba(247, 198, 142, 0.377), rgba(250, 208, 150, 0.384)), url('../images/footer/footerEnd.jpg'); */
+    background-image: linear-gradient(rgba(247, 198, 142, 0.377), rgba(250, 208, 150, 0.384));
     background-size: cover;
     height: fit-content;
     background-position: center;

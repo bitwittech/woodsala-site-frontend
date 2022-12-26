@@ -13,9 +13,15 @@ import {
   Drawer,
   ListItemIcon,
   Badge,
-  Link
+  Link,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemButton
 } from "@mui/material";
 
+import {Link as Redirect} from 'react-router-dom'
 
 // icon
 import FacebookOutlinedIcon from "../../asset/images/navbar/facebook.png";
@@ -56,39 +62,45 @@ import "../../asset/css/navbar.css";
 // import { LogBox, Auth, Notify } from '../../store/Types'
 
 // services 
-import {getSearchList} from '../../service/service'
+import { getSearchList } from '../../service/service'
 
 // Redux
-import {useDispatch,useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Action
-import {setAlert,setAuth,setLoginModal,setCart} from '../../Redux/action/action'
+import { setAlert, setAuth, setLoginModal, setCart } from '../../Redux/action/action'
 
 export default function Navbar(props) {
-// store 
+  // store 
   // const { state, dispatch } = Store();
 
   // redux dispatch
   const dispatch = useDispatch();
   // state 
-  const state = useSelector(state=>state);
+  const state = useSelector(state => state);
 
   // stats for ham burgher icon 
   const [Ham, setHam] = useState(false);
   const [anchor, setAnchorEl] = useState(null);
+  const [show, setShow] = useState({
+    furniture: false,
+    kitchen: false,
+    exclusive: false,
+    gifting: false,
+  });
 
   // state for search
-  const [search,setSearch] = useState({
-    searchList : [],
-    searchParams : undefined
-})
+  const [search, setSearch] = useState({
+    searchList: [],
+    searchParams: undefined
+  })
 
-  
+
   const handleProfileIconClick = (event) => {
-   state.auth.isAuth? setAnchorEl(event.currentTarget) : dispatch(setLoginModal({
-        open: true,
-        type: 'logIn'
-      }))
+    state.auth.isAuth ? setAnchorEl(event.currentTarget) : dispatch(setLoginModal({
+      open: true,
+      type: 'logIn'
+    }))
   };
 
   // close menu
@@ -97,17 +109,17 @@ export default function Navbar(props) {
   };
 
   const navBarComponent = [
-  '/', 
-  '/product/Bajot',
-  '/product/Animal Figurine',
-  '/product/Coaster',
-  '/product/Wall Decor',
-  '/product/Chair',
-  '/product/Candle Holder',
-  '/product/Clock',
-  '/product',
-  
-];
+    '/',
+    '/product/Bajot',
+    '/product/Animal Figurine',
+    '/product/Coaster',
+    '/product/Wall Decor',
+    '/product/Chair',
+    '/product/Candle Holder',
+    '/product/Clock',
+    '/product',
+
+  ];
   const navBarImage = [
     home,
     furniture,
@@ -141,8 +153,8 @@ export default function Navbar(props) {
   // for profile view
   const handleLog = () => {
     state.auth.isAuth &&
-      props.history('/profile') 
-   
+      props.history('/profile')
+
 
     return handleMenuClose();
 
@@ -153,19 +165,19 @@ export default function Navbar(props) {
     localStorage.clear();
 
     dispatch(setAlert({
-        variant: 'success',
-        message: 'Logging Out !!!',
-        open: true
-      }))
+      variant: 'success',
+      message: 'Logging Out !!!',
+      open: true
+    }))
 
     await dispatch(setAuth({
-        isAuth: false,
-        CID: undefined,
-        email: undefined,
-        username: undefined,
-        token: undefined
+      isAuth: false,
+      CID: undefined,
+      email: undefined,
+      username: undefined,
+      token: undefined
     }))
-    await dispatch(setCart({items : []}))
+    await dispatch(setCart({ items: [] }))
 
     handleMenuClose();
 
@@ -200,39 +212,109 @@ export default function Navbar(props) {
   }
 
   // load new searchList
-const handleSearch = async (e) => {
-  const delayDebounceFn = setTimeout(() => {
-    getSearchList(e.target.value)
-    .then((res)=>{
-      // (res.data)
-      setSearch({
-        searchParams : e.target.value,
-        searchList : res.data || []
-      });
-    })
-    .catch((err)=>{
-      setSearch({
-        searchParams : undefined,
-        searchList : []
-      })
-      ('error for Navbar',err);
-    })
-  }, 3000)
+  const handleSearch = async (e) => {
+    const delayDebounceFn = setTimeout(() => {
+      getSearchList(e.target.value)
+        .then((res) => {
+          // (res.data)
+          setSearch({
+            searchParams: e.target.value,
+            searchList: res.data || []
+          });
+        })
+        .catch((err) => {
+          setSearch({
+            searchParams: undefined,
+            searchList: []
+          })
+            ('error for Navbar', err);
+        })
+    }, 3000)
 
-  return () => clearTimeout(delayDebounceFn)
+    return () => clearTimeout(delayDebounceFn)
   }
 
   // firing search 
-  const fireSearchQuery = (e)=>{
-if (e.key === 'Enter')
-   { return props.history(`/product/${e.target.value}/${e.target.value}`)}
+  const fireSearchQuery = (e) => {
+    if (e.key === 'Enter') { return props.history(`/product/${e.target.value}/${e.target.value}`) }
 
-  //  return props.history
+    //  return props.history
   }
+  //  all link 
+  const linkObject = {
+    furniture: [
+      { link: '/product', label: 'Bedroom Set' },
+      { link: '/product/Bed', label: 'Bed' },
+      { link: '/product/Cabinet', label: 'Cabinet' },
+      { link: '/product/Chair', label: 'Chair' },
+      { link: '/product', label: 'Dining Set' },
+      { link: '/product', label: "Drawer's Chest" },
+      { link: '/product/Dressing Table', label: 'Dressing Table' },
+      { link: '/product', label: 'Fruits & Vegetable'},
+      { link: '/product/Table', label: 'Table' },
+      { link: '/product/Sofa', label: 'Sofa' },
+      { link: '/product/Swing', label: 'Swing (Jhula)' },
+    ],
+    kitchen: [
+      { link: '/product', label: 'Bowl' },
+      { link: '/product/Coaster', label: 'Coaster' },
+      { link: '/product', label: 'Chopping Board' },
+      { link: '/product', label: 'Glass' },
+      { link: '/product', label: 'Grinder' },
+      { link: '/product', label: 'Rolling Pin' },
+      { link: '/product', label: 'Tray' },
+      { link: '/product', label: 'Spatula' },
+    ],
+    gifting: [
+      { link: '/product/Animal Figure', label: 'Animal Figure' },
+      { link: '/product/Clock', label: 'Clock' },
+      { link: '/product/Candle Holder', label: 'Candle Holder' },
+      { link: '/product', label: 'Collectibles' },
+      { link: '/product/Wall Decor', label: 'Wall Decor' },
+      { link: '/product', label: 'Desk Organizer' },
+      { link: '/product', label: 'Hook & Holder' },
+      { link: '/product', label: 'Rack' },
+      { link: '/product', label: 'Mirror' },
+    ],
+    exclusive: [
+      { link: '/product/Bajot', label: 'Bajot' },
+      { link: '/product', label: 'Mirror' },
+      { link: '/product', label: 'Silver Furniture' },
+      { link: '/product/Stool', label: 'Wooden Stool' },
+      { link: '/product/Box', label: 'Box (Sanduk)' }
+    ],
+    useful: [
+      { link: '/product/Stool', label: 'Stool' },
+      { link: '/product/Rack', label: 'Rack' }
+    ],
+    traditional: [
+      { link: '/product/Temple', label: 'Temple' },
+      { link: '/product/Traditional Decor', label: 'Traditional Decor' }
+    ],
+    company: [
+      { link: '/product', label: 'ex' }
+    ],
+  }
+
+  // show and hide of dropdown
+  function handleDropdown(tab) {
+    return setShow(old => ({ ...old, [tab]: !old[tab] }))
+  }
+  // generate label link under dropdown
+  function generate(tab = undefined) {
+    return <ListItem disablePadding className = 'listItem'>
+      {tab && linkObject[tab].map((row) =>  <ListItemButton component = {Redirect} to = {row.link}> <ListItemText 
+        primary={row.label}
+      /></ListItemButton>)
+      }
+    </ListItem>
+
+  }
+
 
   return (
     <>
-    {/* // this component controls the dat persistance */}
+      {/* // this component controls the dat persistance */}
       {/* <PersistData /> */}
       <Grid container className="nav">
         {/* Black Top bar */}
@@ -240,18 +322,18 @@ if (e.key === 'Enter')
           <Grid container>
             <Grid item xs={12} md={3} className="center">
               <Typography variant="button">
-              +91-8587918978, 9509658944 (WhatsApp)
+                +91-8587918978, 9509658944 (WhatsApp)
               </Typography>
             </Grid>
             <Grid item xs={12} md={6} />
             <Grid item xs={12} md={3} className="center icons">
-              <IconButton target = '_blank' href = 'https://www.facebook.com/onlinewoodsala' component = {Link} color="secondary" size="small">
+              <IconButton target='_blank' href='https://www.facebook.com/onlinewoodsala' component={Link} color="secondary" size="small">
                 <img src={FacebookOutlinedIcon} alt="" />
               </IconButton>
-              <IconButton target = '_blank' component = {Link} href = 'https://twitter.com/onlinewoodsala' color="secondary" size="small">
+              <IconButton target='_blank' component={Link} href='https://twitter.com/onlinewoodsala' color="secondary" size="small">
                 <img src={TwitterIcon} alt="" />
               </IconButton>
-              <IconButton target = '_blank' color="secondary" component = {Link} href = 'https://www.instagram.com/woodsala/' size="small">
+              <IconButton target='_blank' color="secondary" component={Link} href='https://www.instagram.com/woodsala/' size="small">
                 <img src={InstagramIcon} alt="" />
               </IconButton>
             </Grid>
@@ -327,21 +409,21 @@ if (e.key === 'Enter')
                       window.location.pathname
                     }
                     color="primary"
-                    
+
                   >
                     {
-                      navBarLabel.map((tag,index)=><Tab key = {index}
-                      wrapped
-                      label={tag}
-                      icon={<img alt='home' src={navBarImage[index]} />}
-                      iconPosition="start"
-                      component={Link}
-                      value={navBarComponent[index]}
-                      to={navBarComponent[index]}
-                      onClick = {()=>{setHam(false)}}
-                    />)
+                      navBarLabel.map((tag, index) => <Tab key={index}
+                        wrapped
+                        label={tag}
+                        icon={<img alt='home' src={navBarImage[index]} />}
+                        iconPosition="start"
+                        component={Link}
+                        value={navBarComponent[index]}
+                        to={navBarComponent[index]}
+                        onClick={() => { setHam(false) }}
+                      />)
                     }
-                   
+
                   </Tabs>
                 </Grid>
               </Drawer>
@@ -355,26 +437,26 @@ if (e.key === 'Enter')
         <Grid item xs={12}>
           <Grid container spacing={1} className="main-1">
             <Grid item xs={12} md={3} className="center">
-              <img src={logo} style = {{cursor : 'pointer'}} onClick= {()=>{props.history('/')}} alt="logo.png"></img>
+              <img src={logo} style={{ cursor: 'pointer' }} onClick={() => { props.history('/') }} alt="logo.png"></img>
             </Grid>
             <Grid item xs={10} md={6} className="center searchBar">
-            <Autocomplete
-              disablePortal
-              size = 'small'
-              fullWidth
-              // autoComplete 
-              autoHighlight
-              onKeyPress = {fireSearchQuery}
-              clearOnEscape
-              id="combo-box-demo"
-              options={search.searchList.map((row)=>{return row.product_title})}
-              // sx={{ width: 300 }}
-              renderInput={(params) => <TextField onKeyUpCapture={handleSearch} 
-              // value = {search.searchParams || ''} 
-              // onChange = {} 
-              {...params} 
-              label="Search" />}
-            />
+              <Autocomplete
+                disablePortal
+                size='small'
+                fullWidth
+                // autoComplete 
+                autoHighlight
+                onKeyPress={fireSearchQuery}
+                clearOnEscape
+                id="combo-box-demo"
+                options={search.searchList.map((row) => { return row.product_title })}
+                // sx={{ width: 300 }}
+                renderInput={(params) => <TextField onKeyUpCapture={handleSearch}
+                  // value = {search.searchParams || ''} 
+                  // onChange = {} 
+                  {...params}
+                  label="Search" />}
+              />
               {/* <TextField
                 id="input-with-icon-textfield"
                 size="small"
@@ -396,7 +478,7 @@ if (e.key === 'Enter')
               /> */}
             </Grid>
             <Grid item xs={12} md={3} className="center">
-              <IconButton color="primary" onClick={handleProfileIconClick }>
+              <IconButton color="primary" onClick={handleProfileIconClick}>
                 <PersonOutlineOutlinedIcon />
               </IconButton>
               <MenuBox></MenuBox>
@@ -411,10 +493,10 @@ if (e.key === 'Enter')
               >
                 {window.location.pathname === "/cart" ? (
                   <ShoppingCartIcon />
-                  ) : (
-                    <Badge  badgeContent={state.cart.items.length} color="primary">
-                  <ShoppingCartOutlinedIcon />
-                    </Badge>
+                ) : (
+                  <Badge badgeContent={state.cart.items.length} color="primary">
+                    <ShoppingCartOutlinedIcon />
+                  </Badge>
                 )}
               </IconButton>
             </Grid>
@@ -423,10 +505,9 @@ if (e.key === 'Enter')
         {/* ends main-1 search bar Tab */}
 
         {/* main-2 link container */}
-        <Grid item xs={12} className="main-2">
-          {/* {(window.location.pathname.replace('%20',''))} */}
+        {/* <Grid item xs={12} className="main-2">
           <Tabs
-            scrollButtons
+          scrollButtons
             allowScrollButtonsMobile
             aria-label="scrollable auto tabs example"
             variant="scrollable"
@@ -447,8 +528,88 @@ if (e.key === 'Enter')
             />)}
             
           </Tabs>
-        </Grid>
+        </Grid> */}
         {/* ends main-2 link container */}
+        <Grid item xs={12} className="main-2">
+          <Grid container className='dropdown-wrapper' >
+            <Grid item >
+              <Button component = {Redirect} to = '/' onClick={() => handleDropdown('furniture')} className="btn">Home</Button>
+            </Grid>
+            <Grid item >
+              <Box onMouseOver={() => handleDropdown('furniture')}
+                onMouseOut={() => handleDropdown('furniture')}
+              >
+                <Button onClick={() => handleDropdown('furniture')} className="btn"  >Furniture</Button>
+                <List sx={{ display: show.furniture ? 'block' : 'none' }} dense={true} className='listBox'>
+                  {generate('furniture')}
+                </List>
+              </Box>
+            </Grid>
+            <Grid item >
+              <Box onMouseOver={() => handleDropdown('kitchen')}
+                onMouseOut={() => handleDropdown('kitchen')}
+              >
+                <Button onClick={() => handleDropdown('kitchen')} className="btn"  >Kitchen Item's</Button>
+                <List sx={{ display: show.kitchen ? 'block' : 'none' }} dense={true} className='listBox'>
+                  {generate('kitchen')}
+                </List>
+              </Box>
+            </Grid>
+            <Grid item >
+              <Box onMouseOver={() => handleDropdown('gifting')}
+                onMouseOut={() => handleDropdown('gifting')}
+              >
+                <Button onClick={() => handleDropdown('gifting')} className="btn"  >Gifting</Button>
+                <List sx={{ display: show.gifting ? 'block' : 'none' }} dense={true} className='listBox'>
+                  {generate('gifting')}
+                </List>
+              </Box>
+            </Grid>
+            <Grid item >
+              <Box onMouseOver={() => handleDropdown('exclusive')}
+                onMouseOut={() => handleDropdown('exclusive')}
+              >
+                <Button onClick={() => handleDropdown('exclusive')} className="btn"  >Exclusive</Button>
+                <List sx={{ display: show.exclusive ? 'block' : 'none' }} dense={true} className='listBox'>
+                  {generate('exclusive')}
+                </List>
+              </Box>
+            </Grid>
+            <Grid item >
+              <Box onMouseOver={() => handleDropdown('useful')}
+                onMouseOut={() => handleDropdown('useful')}
+              >
+                <Button onClick={() => handleDropdown('useful')} className="btn"  >Useful Products</Button>
+                <List sx={{ display: show.useful ? 'block' : 'none' }} dense={true} className='listBox'>
+                  {generate('useful')}
+                </List>
+              </Box>
+            </Grid>
+            <Grid item >
+              <Box onMouseOver={() => handleDropdown('traditional')}
+                onMouseOut={() => handleDropdown('traditional')}
+              >
+                <Button onClick={() => handleDropdown('traditional')} className="btn"  >Traditional</Button>
+                <List sx={{ display: show.traditional ? 'block' : 'none' }} dense={true} className='listBox'>
+                  {generate('traditional')}
+                </List>
+              </Box>
+            </Grid>
+            <Grid item >
+              <Box onMouseOver={() => handleDropdown('company')}
+                onMouseOut={() => handleDropdown('company')}
+              >
+                <Button onClick={() => handleDropdown('company')} className="btn"  >Company</Button>
+                <List sx={{ display: show.company ? 'block' : 'none' }} dense={true} className='listBox'>
+                  {generate('company')}
+                </List>
+              </Box>
+            </Grid>
+            <Grid item >
+              <Button  component = {Redirect} to = '/product' className="btn"  >Browse All</Button>
+            </Grid>
+          </Grid>
+        </Grid>
 
 
       </Grid>

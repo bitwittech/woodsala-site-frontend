@@ -37,7 +37,7 @@ const Catagories = lazy(()=>import( "./components/Catagories"))
 const light = createTheme({
   palette: {
     primary: {
-      main: "#91441f",
+      main: "#682D2D",
     },
     secondary: {
       main: "#fbfbfb",

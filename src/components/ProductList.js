@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import InfiniteScroll from 'react-infinite-scroll-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 // import Carousel from "react-multi-carousel";
 //mui
 import {
@@ -26,6 +27,7 @@ import {
 import "../asset/css/product.css";
 import "react-multi-carousel/lib/styles.css";
 
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 // icon
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import AddShoppingCartOutlinedIcon from "@mui/icons-material/AddShoppingCartOutlined";
@@ -69,7 +71,7 @@ export default function Categories(props) {
   // extra filter
   const [extraFilter, setExtraFilter] = useState({
     apply: false,
-    material :[]
+    material: []
 
   })
 
@@ -360,7 +362,7 @@ export default function Categories(props) {
     if (e.target.checked)
       setExtraFilter((old) => ({ ...old, material: [...old.material, e.target.name] }))
     else
-      setExtraFilter((old) => ({ ...old, material: old.material.filter(val=>val!==e.target.name) }))
+      setExtraFilter((old) => ({ ...old, material: old.material.filter(val => val !== e.target.name) }))
   }
   const filterResult = async () => {
     await setExtraFilter((old) => ({ ...old, apply: true }));
@@ -425,7 +427,7 @@ export default function Categories(props) {
         {/* carousal for sub cat ends */}
 
         {/* filter sec */}
-        <Grid className="filters showFilters" p = {1} item xs={12} md={2}>
+        <Grid className="filters showFilters" p={1} item xs={12} md={2}>
           <Box className='applyBtn' sx={{ padding: "3%" }}>
             <Typography variant="h5" >
               Filters
@@ -616,20 +618,20 @@ export default function Categories(props) {
                 id="panel1d-header"
                 expandIcon={<ExpandMoreIcon></ExpandMoreIcon>}
               >
-               <Box className='applyBtn'>
+                <Box className='applyBtn'>
                   <Checkbox size='small' disabled={extraFilter.material.length > 0 ? false : true} checked={extraFilter.material.length > 0 ? true : false}
-                    onChange={() => setExtraFilter(old => { return { ...old,material : [], apply: true } })} />
+                    onChange={() => setExtraFilter(old => { return { ...old, material: [], apply: true } })} />
                   <Typography sx={{ fontWeight: 400 }} variant="body">
                     Material
                   </Typography>
                 </Box>
               </AccordionSummary>
               <AccordionDetails sx={{ padding: '0px 20px !important' }}>
-                <FormControl  component="fieldset" variant="standard">
+                <FormControl component="fieldset" variant="standard">
                   <FormGroup>
-                  {Materials.map((row, index)=><FormControlLabel key = {index}
+                    {Materials.map((row, index) => <FormControlLabel key={index}
                       control={
-                        <Checkbox checked={extraFilter[row]}  onChange={handleMartialCheck} name={row} />
+                        <Checkbox checked={extraFilter[row]} onChange={handleMartialCheck} name={row} />
                       }
                       label={row}
                     />)}
@@ -823,9 +825,16 @@ export default function Categories(props) {
                       <Grid item xs={12}
                         onClick={() => history(`/details/${item.SKU}/${item.product_title}/${item.category_name}`)}
                       >
-                        <img src={item.featured_image || item.product_image[0] || defaultIMG} alt="product_Images" />
+                        <LazyLoadImage src={item.featured_image || item.product_image[0] || defaultIMG}
+                          PlaceholderSrc={defaultIMG}
+                          effect="blur"
+                          alt = {item.product_title}
+                        />
+                        {/* {() ? <img src={item.featured_image || item.product_image[0] || defaultIMG} alt="product_Images" /> : <CircularProgress/> } */}
                       </Grid>
-                      <Grid item xs={8.8}>
+                      <Grid item xs={8.8} 
+                        onClick={() => history(`/details/${item.SKU}/${item.product_title}/${item.category_name}`)}
+                        >
                         <Box className="productInfo">
                           <Typography variant="h5" sx={{ fontWeight: 'bolder' }} className='title'>{item.product_title}</Typography>
                         </Box>
@@ -844,7 +853,9 @@ export default function Categories(props) {
                           </IconButton>
                         </Box>
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid 
+                        onClick={() => history(`/details/${item.SKU}/${item.product_title}/${item.category_name}`)}
+                        item xs={12}>
                         <Box className="productInfo">
                           <Typography sx={{ mt: 0.5, mb: 1 }} className='title' variant="body1">
                             {item.product_description}

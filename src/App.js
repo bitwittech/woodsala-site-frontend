@@ -2,6 +2,8 @@ import React, {useEffect, lazy,Suspense} from "react";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "./App.css";
 import "../src/asset/css/home.css";
+import "../src/asset/css/footer.css";
+import "../src/asset/css/navbar.css";
 
 // MUI
 import { CssBaseline } from "@mui/material";

@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid, Box, Typography } from '@mui/material';
 import {Link} from 'react-router-dom'
 import '../asset/css/categories.css'
+import { Helmet } from "react-helmet";
 
 // images 
 import bajot  from '../asset/images/home/bajot_TC.png'
@@ -47,6 +48,13 @@ const Catagories = () => {
     
 
     return (<>
+     {/* helmet tag  */}
+     <Helmet>
+    <title>Categories</title>
+    <meta name="description" content="This page contains list of vaiouse type stuff provided by Woodsala." />
+    <meta name="keywords" content="category,wooden furniture category,online furniture category,which furniture store is the cheapest,search furniture category" />
+    </Helmet>
+    {/* helmet tag ends  */}
         <title>Categories</title>
         {/* {(meta)} */}
         {/* Main Container */}

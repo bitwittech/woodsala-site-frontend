@@ -40,6 +40,7 @@ import {
 
 
 } from "@mui/material";
+import { Helmet } from "react-helmet";
 
 // APis function 
 import { getProductDetails, addCartItem, getRelatedProduct } from '../service/service'
@@ -310,7 +311,12 @@ export default function ProductDetails(props) {
 
   return (
     <>
-      <title>Product</title>
+    {/* helmet tag  */}
+    <Helmet>
+    <title>{`Product || ${title}`}</title>
+    <meta name="description" content="This page contains product detils. And all the information about the particular product" />
+    </Helmet>
+    {/* helmet tag ends  */}
       {data ? 
       <>
             {/* main section  */}

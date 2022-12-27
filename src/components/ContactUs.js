@@ -8,6 +8,8 @@ import "../asset/css/contactUs.css";
 import HomeIcon from "@mui/icons-material/Home";
 import EmailIcon from "@mui/icons-material/Email";
 import CallRoundedIcon from "@mui/icons-material/CallRounded";
+import { Helmet } from "react-helmet";
+
 export default function ContactUs() {
 
   const subject = [
@@ -16,7 +18,13 @@ export default function ContactUs() {
 
   return (
     <>
-      <title>Contact Us</title>
+      {/* helmet tag  */}
+     <Helmet>
+    <title>Contact Us</title>
+    <meta name="description" content="This Page contains all catact details for Woodsala." />
+    <meta name="keywords" content="contact us,contact Woodsala,react out woodsala,how to connect with woodsala,search catact woodsala" />
+    </Helmet>
+    {/* helmet tag ends  */}
 
       {/* Banner */}
       <Grid container className="Banner">

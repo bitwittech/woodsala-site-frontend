@@ -12,6 +12,7 @@ import {
   InputAdornment,
   IconButton
 } from "@mui/material";
+import { Helmet } from "react-helmet";
 
 
 import {
@@ -324,7 +325,13 @@ const Cart = (props) => {
 
   return (
     <>
-      <title> Cart </title>
+     {/* helmet tag  */}
+     <Helmet>
+    <title>Cart</title>
+    <meta name="description" content="Woodsala cart and checkout page." />
+    </Helmet>
+    {/* helmet tag ends  */}
+      
       {/* Banner */}
       <Grid container className="Banner">
         <Grid item xs={12}>

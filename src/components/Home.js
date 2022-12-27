@@ -50,6 +50,7 @@ import post2 from ".././asset/images/home/insta2.png";
 import FJ1 from ".././asset/images/home/FJ_1.png";
 import FJ2 from ".././asset/images/home/FJ_2.png";
 import FJ3 from ".././asset/images/home/FJ_3.png";
+import { Helmet } from "react-helmet";
 
 export default function Home(props) {
   let instaPost = [
@@ -211,7 +212,14 @@ export default function Home(props) {
   };
   return (
     <>
-      <title>Home</title>
+
+    {/* helmet tag  */}
+    <Helmet>
+    <title>Online Furniture Store | Buy Wooden Furniture Online</title>
+    <meta name="description" content="Woodsala is an online furniture store that provides customized furniture solutions for all your need. Buy premium quality wooden furniture at a reasonable price." />
+    <meta name="keywords" content="furniture,wooden furniture,online furniture,which furniture store is the cheapest,search furniture,table,bajot,gift,chair" />
+    </Helmet>
+    {/* helmet tag ends  */}
 
       {/* Banner  */}
 

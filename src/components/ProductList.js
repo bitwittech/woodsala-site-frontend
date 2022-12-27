@@ -35,6 +35,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { Helmet } from "react-helmet";
+
 //image
 // import living from ".././asset/images/home/sofa_SBR.png";
 // import wfh from ".././asset/images/home/table_SBR.png";
@@ -371,7 +373,13 @@ export default function Categories(props) {
 
   return (
     <>
-      <title>Products</title>
+     {/* helmet tag  */}
+     <Helmet>
+    <title> {`${filter.category_name || meta.filter.category_name} | Products`}</title>
+    <meta name="description" content="List of all products available under the category by Woodsala" />
+    <meta name="keywords" content="list furniture,wooden furniture list,online furniture,search furniture,table,bajot,gift,chair" />
+    </Helmet>
+    {/* helmet tag ends  */}
       {/* {(meta)} */}
       {/* Main Container */}
       <Grid container sx={{ padding: "1%" }}>

@@ -18,6 +18,7 @@ import {
 // image 
 import sidePic from '../asset/images/logBox/sidePicLog.jpg'
 import sign from '../asset/images/logBox/sign.jpg'
+import { Helmet } from "react-helmet";
 
 // css 
 import '../asset/css/entrypoint.css'
@@ -39,7 +40,6 @@ import {useDispatch,useSelector} from 'react-redux';
 
 // Action
 import {setAlert,setAuth,setLoginModal} from '../Redux/action/action'
-
 export default function EntryPoint() {
 
     // dispatch action
@@ -257,8 +257,15 @@ export default function EntryPoint() {
             >
                 <Fade in={state.box.open}>
                     <Box className='box' sx={{ boxShadow: 24 }}>
+   
                         {state.box.type === 'logIn' &&
                             <Grid container className='login' >
+                                                          {/* helmet tag  */}
+     <Helmet>
+    <title>Log-in </title>
+    </Helmet>
+    {/* helmet tag ends  */}
+   
                                 {/* // form  */}
                                 <Grid className='formBox' item xs={12} md={5} >
                                     <form onSubmit={handleLogIn} className='form' action='' method='post'>
@@ -336,7 +343,12 @@ export default function EntryPoint() {
                         }
                         {state.box.type === 'signUp' &&
                             <Grid container >
-
+                          {/* helmet tag  */}
+                          <Helmet>
+    <title>Sign-up</title>
+    </Helmet>
+    {/* helmet tag ends  */}
+   
                                 {/* Side pic */}
                                 <Grid item className='sidePic' xs={12} md={6} >
                                     <img className='posterImage' alt='logPic' src={sign} />

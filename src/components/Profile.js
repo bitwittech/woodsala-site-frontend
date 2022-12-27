@@ -11,6 +11,7 @@ import {
 import UserInfo from './profileMenu/UserInfo';
 import Address from './profileMenu/Address';
 import Order from './profileMenu/Order';
+import { Helmet } from "react-helmet";
 
 //css 
 import '../asset/css/profile.css'
@@ -53,8 +54,12 @@ const Profile = () => {
 
     return (
         <>
-            <title>Profile</title>
-
+             {/* helmet tag  */}
+    <Helmet>
+    <title>Profile</title>
+    <meta name="description" content="Customer details and order sections" />
+    </Helmet>
+    {/* helmet tag ends  */}
             {/* Banner */}
             <Grid container className="Banner">
                 <Grid item xs={12}>

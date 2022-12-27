@@ -15,6 +15,7 @@ import {
   Radio,
   MenuItem
 } from "@mui/material";
+import { Helmet } from "react-helmet";
 
 // css
 import "../asset/css/checkout.css";
@@ -338,7 +339,13 @@ async function displayRazorpay(e) {
 
   return (
     <>
-      <title>Checkout</title>
+    
+     {/* helmet tag  */}
+     <Helmet>
+    <title>Check-Out</title>
+    <meta name="description" content="This page is for finall checkout and bill paying." />
+    </Helmet>
+    {/* helmet tag ends  */}
       {/* Banner */}
       <Grid container className="Banner">
         <Grid item xs={12}>

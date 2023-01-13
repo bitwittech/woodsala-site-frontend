@@ -1,5 +1,5 @@
 // css
-import ".././asset/css/cart.css";
+import "../../asset/css/cart.css";
 // react
 import React, { useEffect, useState } from "react";
 import {
@@ -30,7 +30,7 @@ import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
 import OutlinedFlagSharpIcon from "@mui/icons-material/OutlinedFlagSharp";
 import DeleteIcon from '@mui/icons-material/Delete';
 // APis services 
-import { getDetails, updateQuantity, removeCartItem, getCartItem } from "../service/service"
+import { getDetails, updateQuantity, removeCartItem, getCartItem } from "../../service/service"
 
 // state global
 // import { Store } from '../store/Context'
@@ -40,7 +40,7 @@ import { getDetails, updateQuantity, removeCartItem, getCartItem } from "../serv
 import { useDispatch, useSelector } from 'react-redux'
 
 // action 
-import {setCart,removeItem,setAlert,addQTY,subQTY} from '../Redux/action/action'
+import {setCart,removeItem,setAlert,addQTY,subQTY} from '../../Redux/action/action'
 
 const countries = [
   {

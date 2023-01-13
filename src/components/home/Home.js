@@ -5,7 +5,7 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 // css
 import "react-animated-slider/build/horizontal.css";
-import "../asset/css/home.css";
+import "../../asset/css/home.css";
 // MUI
 import {
   Button,
@@ -19,37 +19,37 @@ import {
   Link
 } from "@mui/material";
 // Images
-import living from ".././asset/images/home/sofa_SBR.png";
-import wfh from ".././asset/images/home/table_SBR.png";
-import bedroom from ".././asset/images/home/bedroom_SBR.png";
-import dining from ".././asset/images/home/dining_SBR.png";
-import bed from ".././asset/images/home/bed_SBF.png";
-import cabinet from ".././asset/images/home/cabinet_SBF.png";
-import chair from ".././asset/images/home/chire_SBF.png";
-import drawerChest from ".././asset/images/home/drawerChest_SBF.png";
-import dressingTable from ".././asset/images/home/dressingTable_SBF.png";
-import fruitCabinet from ".././asset/images/home/fruitCabinet_SBF.png";
-import room from ".././asset/images/home/room_SBF.png";
-import sofa from ".././asset/images/home/sofa_SBF.png";
-import swing from ".././asset/images/home/swing_SBF.png";
-import table from ".././asset/images/home/table_SBF.png";
-import dining2 from ".././asset/images/home/dining_SBF.png";
-import perfaction from ".././asset/images/home/perfaction_SER.png";
-import woodFurniture from ".././asset/images/home/woodFurniture_SER.png";
-import quality from ".././asset/images/home/qualityTraditional_SER.png";
-import delivery from ".././asset/images/home/delivery_SER.png";
-import bajot from ".././asset/images/home/bajot_TC.png";
-import stool from ".././asset/images/home/stool_TC.png";
-import mirror from ".././asset/images/home/mirror_TC.png";
-import wallCabinet from ".././asset/images/home/wallCabinet_TC.png";
-import banner from ".././asset/images/home/banner1_BS.png";
-import box from ".././asset/images/home/Box.jpg";
+import living from "../../asset/images/home/sofa_SBR.png";
+import wfh from "../../asset/images/home/table_SBR.png";
+import bedroom from "../../asset/images/home/bedroom_SBR.png";
+import dining from "../../asset/images/home/dining_SBR.png";
+import bed from "../../asset/images/home/bed_SBF.png";
+import cabinet from "../../asset/images/home/cabinet_SBF.png";
+import chair from "../../asset/images/home/chire_SBF.png";
+import drawerChest from "../../asset/images/home/drawerChest_SBF.png";
+import dressingTable from "../../asset/images/home/dressingTable_SBF.png";
+import fruitCabinet from "../../asset/images/home/fruitCabinet_SBF.png";
+import room from "../../asset/images/home/room_SBF.png";
+import sofa from "../../asset/images/home/sofa_SBF.png";
+import swing from "../../asset/images/home/swing_SBF.png";
+import table from "../../asset/images/home/table_SBF.png";
+import dining2 from "../../asset/images/home/dining_SBF.png";
+import perfaction from "../../asset/images/home/perfaction_SER.png";
+import woodFurniture from "../../asset/images/home/woodFurniture_SER.png";
+import quality from "../../asset/images/home/qualityTraditional_SER.png";
+import delivery from "../../asset/images/home/delivery_SER.png";
+import bajot from "../../asset/images/home/bajot_TC.png";
+import stool from "../../asset/images/home/stool_TC.png";
+import mirror from "../../asset/images/home/mirror_TC.png";
+import wallCabinet from "../../asset/images/home/wallCabinet_TC.png";
+import banner from "../../asset/images/home/banner1_BS.png";
+import box from "../../asset/images/home/Box.jpg";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import post1 from ".././asset/images/home/insta.png";
-import post2 from ".././asset/images/home/insta2.png";
-import FJ1 from ".././asset/images/home/FJ_1.png";
-import FJ2 from ".././asset/images/home/FJ_2.png";
-import FJ3 from ".././asset/images/home/FJ_3.png";
+import post1 from "../../asset/images/home/insta.png";
+import post2 from "../../asset/images/home/insta2.png";
+import FJ1 from "../../asset/images/home/FJ_1.png";
+import FJ2 from "../../asset/images/home/FJ_2.png";
+import FJ3 from "../../asset/images/home/FJ_3.png";
 import { Helmet } from "react-helmet";
 
 export default function Home(props) {

@@ -13,16 +13,16 @@ import {
     TextareaAutosize
 } from '@mui/material'
 import StarIcon from '@mui/icons-material/Star';
-import '../asset/css/review.css'
+import '../../asset/css/review.css'
 import TurnedInIcon from '@mui/icons-material/TurnedIn';
 
-import avatar from '../asset/images/profile/avatar.svg'
+import avatar from '../../asset/images/profile/avatar.svg'
 // APIS import 
-import { addReview, listReview } from '../service/service'
+import { addReview, listReview } from '../../service/service'
 
 // state
 import { useDispatch, useSelector } from 'react-redux'
-import { setAlert } from '../Redux/action/action'
+import { setAlert } from '../../Redux/action/action'
 
 
 const style = {

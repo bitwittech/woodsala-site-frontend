@@ -1,26 +1,26 @@
 import React from 'react';
 import { Grid, Box, Typography } from '@mui/material';
 import {Link} from 'react-router-dom'
-import '../asset/css/categories.css'
+import '../../asset/css/categories.css'
 import { Helmet } from "react-helmet";
 
 // images 
-import bajot  from '../asset/images/home/bajot_TC.png'
-import bed from ".././asset/images/home/bed_SBF.png";
-import cabinet from ".././asset/images/home/cabinet_SBF.png";
-import chair from ".././asset/images/home/chire_SBF.png";
-import drawerChest from ".././asset/images/home/drawerChest_SBF.png";
-import dressingTable from ".././asset/images/home/dressingTable_SBF.png";
-import fruitCabinet from ".././asset/images/home/fruitCabinet_SBF.png";
-import sofa from ".././asset/images/home/sofa_SBF.png";
-import swing from ".././asset/images/home/swing_SBF.png";
-import table from ".././asset/images/home/table_SBF.png";
-import box from ".././asset/images/home/Box.jpg";
-import clock from ".././asset/images/category/clock.jpg";
-import candle from ".././asset/images/category/candle.jpg";
-import coster from ".././asset/images/category/coster.jpg";
-import animalFigure from ".././asset/images/category/animalFigure.jpg";
-import wall from ".././asset/images/category/wallDecor.jpg";
+import bajot  from '../../asset/images/home/bajot_TC.png'
+import bed from "../../asset/images/home/bed_SBF.png";
+import cabinet from "../../asset/images/home/cabinet_SBF.png";
+import chair from "../../asset/images/home/chire_SBF.png";
+import drawerChest from "../../asset/images/home/drawerChest_SBF.png";
+import dressingTable from "../../asset/images/home/dressingTable_SBF.png";
+import fruitCabinet from "../../asset/images/home/fruitCabinet_SBF.png";
+import sofa from "../../asset/images/home/sofa_SBF.png";
+import swing from "../../asset/images/home/swing_SBF.png";
+import table from "../../asset/images/home/table_SBF.png";
+import box from "../../asset/images/home/Box.jpg";
+import clock from "../../asset/images/category/clock.jpg";
+import candle from "../../asset/images/category/candle.jpg";
+import coster from "../../asset/images/category/coster.jpg";
+import animalFigure from "../../asset/images/category/animalFigure.jpg";
+import wall from "../../asset/images/category/wallDecor.jpg";
 
 const Catagories = () => {
 

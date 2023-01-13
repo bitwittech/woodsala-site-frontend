@@ -3,7 +3,7 @@ import React from "react";
 //mui
 import { MenuItem,Grid, Box, Typography, TextField, Stack, Button, TextareaAutosize } from "@mui/material";
 // css
-import "../asset/css/contactUs.css";
+import "../../asset/css/contactUs.css";
 //icon
 import HomeIcon from "@mui/icons-material/Home";
 import EmailIcon from "@mui/icons-material/Email";

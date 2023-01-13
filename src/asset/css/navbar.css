@@ -100,6 +100,10 @@
     align-items: baseline !important;
 }
 
+.listItem a {
+    width: 100% !important;
+}
+
 .listItem span {
     font-size: 1rem !important;
 }

@@ -18,7 +18,7 @@ import {
 import { Helmet } from "react-helmet";
 
 // css
-import "../asset/css/checkout.css";
+import "../../asset/css/checkout.css";
 
 // icon
 // import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
@@ -26,7 +26,7 @@ import "../asset/css/checkout.css";
 // import bajot from "../asset/images/home/bajot_TC.png";
 
 // apis function 
-import { getCustomer, getLastOrder, placeOrder, removeCartItem, verifyPayment, getCartItem } from '../service/service'
+import { getCustomer, getLastOrder, placeOrder, removeCartItem, verifyPayment, getCartItem } from '../../service/service'
 
 // // store
 // import {Store} from '../store/Context';
@@ -34,7 +34,7 @@ import { getCustomer, getLastOrder, placeOrder, removeCartItem, verifyPayment, g
 
 // redux 
 import { useDispatch, useSelector } from 'react-redux'
-import { setAlert, setCart, thanks } from '../Redux/action/action'
+import { setAlert, setCart, thanks } from '../../Redux/action/action'
 
 
 

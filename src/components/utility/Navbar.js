@@ -21,7 +21,7 @@ import {
   ListItemButton
 } from "@mui/material";
 
-import {Link as Redirect} from 'react-router-dom'
+import { Link as Redirect } from 'react-router-dom'
 
 // icon
 import FacebookOutlinedIcon from "../../asset/images/navbar/facebook.png";
@@ -250,7 +250,7 @@ export default function Navbar(props) {
       { link: '/product', label: 'Dining Set' },
       { link: '/product', label: "Drawer's Chest" },
       { link: '/product/Dressing Table', label: 'Dressing Table' },
-      { link: '/product', label: 'Fruits & Vegetable'},
+      { link: '/product', label: 'Fruits & Vegetable' },
       { link: '/product/Table', label: 'Table' },
       { link: '/product/Sofa', label: 'Sofa' },
       { link: '/product/Swing', label: 'Swing (Jhula)' },
@@ -302,8 +302,8 @@ export default function Navbar(props) {
   }
   // generate label link under dropdown
   function generate(tab = undefined) {
-    return <ListItem disablePadding className = 'listItem'>
-      {tab && linkObject[tab].map((row) =>  <ListItemButton component = {Redirect} to = {row.link}> <ListItemText 
+    return <ListItem disablePadding className='listItem'>
+      {tab && linkObject[tab].map((row) => <ListItemButton fullWidth component={Redirect} to={row.link}> <ListItemText
         primary={row.label}
       /></ListItemButton>)
       }
@@ -533,13 +533,13 @@ export default function Navbar(props) {
         <Grid item xs={12} className="main-2">
           <Grid container className='dropdown-wrapper' >
             <Grid item >
-              <Button component = {Redirect} to = '/'  className="btn">Home</Button>
+              <Button component={Redirect} to='/' className="btn">Home</Button>
             </Grid>
             <Grid item >
               <Box onMouseOver={() => handleDropdown('furniture')}
                 onMouseOut={() => handleDropdown('furniture')}
               >
-                <Button  className="btn"  >Furniture</Button>
+                <Button className="btn"  >Furniture</Button>
                 <List sx={{ display: show.furniture ? 'block' : 'none' }} dense={true} className='listBox'>
                   {generate('furniture')}
                 </List>
@@ -549,7 +549,7 @@ export default function Navbar(props) {
               <Box onMouseOver={() => handleDropdown('kitchen')}
                 onMouseOut={() => handleDropdown('kitchen')}
               >
-                <Button  className="btn"  >Kitchen Item's</Button>
+                <Button className="btn"  >Kitchen Item's</Button>
                 <List sx={{ display: show.kitchen ? 'block' : 'none' }} dense={true} className='listBox'>
                   {generate('kitchen')}
                 </List>
@@ -559,7 +559,7 @@ export default function Navbar(props) {
               <Box onMouseOver={() => handleDropdown('gifting')}
                 onMouseOut={() => handleDropdown('gifting')}
               >
-                <Button  className="btn"  >Gifting</Button>
+                <Button className="btn"  >Gifting</Button>
                 <List sx={{ display: show.gifting ? 'block' : 'none' }} dense={true} className='listBox'>
                   {generate('gifting')}
                 </List>
@@ -569,7 +569,7 @@ export default function Navbar(props) {
               <Box onMouseOver={() => handleDropdown('exclusive')}
                 onMouseOut={() => handleDropdown('exclusive')}
               >
-                <Button  className="btn"  >Exclusive</Button>
+                <Button className="btn"  >Exclusive</Button>
                 <List sx={{ display: show.exclusive ? 'block' : 'none' }} dense={true} className='listBox'>
                   {generate('exclusive')}
                 </List>
@@ -589,7 +589,7 @@ export default function Navbar(props) {
               <Box onMouseOver={() => handleDropdown('traditional')}
                 onMouseOut={() => handleDropdown('traditional')}
               >
-                <Button  className="btn"  >Traditional</Button>
+                <Button className="btn"  >Traditional</Button>
                 <List sx={{ display: show.traditional ? 'block' : 'none' }} dense={true} className='listBox'>
                   {generate('traditional')}
                 </List>
@@ -599,14 +599,14 @@ export default function Navbar(props) {
               <Box onMouseOver={() => handleDropdown('company')}
                 onMouseOut={() => handleDropdown('company')}
               >
-                <Button  className="btn"  >Company</Button>
+                <Button className="btn"  >Company</Button>
                 <List sx={{ display: show.company ? 'block' : 'none' }} dense={true} className='listBox'>
                   {generate('company')}
                 </List>
               </Box>
             </Grid>
             <Grid item >
-              <Button  component = {Redirect} to = '/product' className="btn"  >Browse All</Button>
+              <Button component={Redirect} to='/product' className="btn"  >Browse All</Button>
             </Grid>
           </Grid>
         </Grid>

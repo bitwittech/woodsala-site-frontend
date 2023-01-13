@@ -16,12 +16,12 @@ import {
 } from '@mui/material';
 
 // image 
-import sidePic from '../asset/images/logBox/sidePicLog.jpg'
-import sign from '../asset/images/logBox/sign.jpg'
+import sidePic from '../../asset/images/logBox/sidePicLog.jpg'
+import sign from '../../asset/images/logBox/sign.jpg'
 import { Helmet } from "react-helmet";
 
 // css 
-import '../asset/css/entrypoint.css'
+import '../../asset/css/entrypoint.css'
 
 // // Store
 // import { Store } from '../store/Context';
@@ -33,13 +33,13 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 // services 
-import { sendVerificationLink, login } from '../service/service.js'
+import { sendVerificationLink, login } from '../../service/service.js'
 
 // Redux
 import {useDispatch,useSelector} from 'react-redux';
 
 // Action
-import {setAlert,setAuth,setLoginModal} from '../Redux/action/action'
+import {setAlert,setAuth,setLoginModal} from '../../Redux/action/action'
 export default function EntryPoint() {
 
     // dispatch action

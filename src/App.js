@@ -15,6 +15,7 @@ const Footer =  lazy(()=>import("./components/utility/Footer"))
 const SnakBar =  lazy(()=>import("./components/utility/SnakBar"))
 const NotFound =  lazy(()=>import("./components/utility/NotFound"))
 const Thanks =  lazy(()=>import("./components/utility/Thanks"))
+const Verify = lazy(()=>import( "./components/utility/Verify"))
 
 
 // context
@@ -22,16 +23,15 @@ const Thanks =  lazy(()=>import("./components/utility/Thanks"))
 // import {Auth} from './store/Types'
 
 // components
-const Home = lazy(()=>import( "./components/Home"))
-const Cart = lazy(()=>import( "./components/Cart"))
-const Checkout = lazy(()=>import( "./components/Checkout"))
-const ProductDetails = lazy(()=>import( "./components/ProductDetails"))
-const ContactUs = lazy(()=>import( "./components/ContactUs"))
-const ProductList = lazy(()=>import( "./components/ProductList"))
-const EntryPoint = lazy(()=>import( "./components/EntryPoint"))
-const Profile = lazy(()=>import( "./components/Profile"))
-const Verify = lazy(()=>import( "./components/Verify"))
-const Catagories = lazy(()=>import( "./components/Catagories"))
+const Home = lazy(()=>import( "./components/home/Home"))
+const Cart = lazy(()=>import( "./components/cart/Cart"))
+const Checkout = lazy(()=>import( "./components/cart/Checkout"))
+const ProductDetails = lazy(()=>import( "./components/product/ProductDetails"))
+const ContactUs = lazy(()=>import( "./components/aboutUs/ContactUs"))
+const ProductList = lazy(()=>import( "./components/product/ProductList"))
+const EntryPoint = lazy(()=>import( "./components/home/EntryPoint"))
+const Profile = lazy(()=>import( "./components/user/Profile"))
+const Catagories = lazy(()=>import( "./components/product/Catagories"))
 
 
 // global theme

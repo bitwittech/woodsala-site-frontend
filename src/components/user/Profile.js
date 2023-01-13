@@ -8,13 +8,13 @@ import {
 } from '@mui/material';
 
 // My components 
-import UserInfo from './profileMenu/UserInfo';
-import Address from './profileMenu/Address';
-import Order from './profileMenu/Order';
+import UserInfo from '../profileMenu/UserInfo';
+import Address from '../profileMenu/Address';
+import Order from '../profileMenu/Order';
 import { Helmet } from "react-helmet";
 
 //css 
-import '../asset/css/profile.css'
+import '../../asset/css/profile.css'
 
 const Profile = () => {
 

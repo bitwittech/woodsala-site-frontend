@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Grid, Typography, CircularProgress , IconButton} from '@mui/material'
 import { useSearchParams } from 'react-router-dom';
-import { verify, register, login } from '../service/service'
+import { verify, register, login } from '../../service/service'
 
 //icon 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -13,7 +13,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import {useDispatch} from 'react-redux'
 
 //action 
-import {setAlert,setAuth} from '../Redux/action/action'
+import {setAlert,setAuth} from '../../Redux/action/action'
 
 export default function Verify(props) {
     const [search] = useSearchParams()

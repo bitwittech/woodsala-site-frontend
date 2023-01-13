@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 
 //css
-import "../asset/css/product.css";
+import "../../asset/css/product.css";
 import "react-multi-carousel/lib/styles.css";
 
 import { LazyLoadImage } from 'react-lazy-load-image-component';
@@ -42,17 +42,17 @@ import { Helmet } from "react-helmet";
 // import wfh from ".././asset/images/home/table_SBR.png";
 // import bedroom from ".././asset/images/home/bedroom_SBR.png";
 // import dining from ".././asset/images/home/dining_SBR.png";
-import defaultIMG from ".././asset/images/defaultProduct.svg";
+import defaultIMG from "../../asset/images/defaultProduct.svg";
 
 // Action 
-import { setAlert, addItem, removeItem, setCart } from '../Redux/action/action'
+import { setAlert, addItem, removeItem, setCart } from '../../Redux/action/action'
 
 // Redux 
 import { useDispatch, useSelector } from 'react-redux'
 
 
 // services 
-import { getProducts, addCartItem, removeCartItem, getCartItem, getMartialList } from '../service/service'
+import { getProducts, addCartItem, removeCartItem, getCartItem, getMartialList } from '../../service/service'
 
 export default function Categories(props) {
 

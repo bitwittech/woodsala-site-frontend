@@ -309,7 +309,7 @@ export default function ProductDetails(props) {
       {/* helmet tag  */}
       <Helmet>
         <title>{`Product || ${title}`}</title>
-        <meta name="description" content="This page contains product detils. And all the information about the particular product" />
+        <meta name="description" content="This page contains product details. And all the information about the particular product" />
       </Helmet>
       {/* helmet tag ends  */}
       {data ?
@@ -415,7 +415,7 @@ export default function ProductDetails(props) {
                       <Typography sx={{ float: "right" }} variant="body1">{data.primary_material}</Typography>
                     </Typography>
                     <Typography variant="body1">
-                      Delivery By<Typography sx={{ float: "right" }} variant="body1">{data.dispatch}</Typography>
+                      Delivery By<Typography sx={{ float: "right" }} variant="body1">{data.manufacturing_time + data.polish_time} Days</Typography>
                     </Typography>
                     {/* <Typography variant="body1">
                       Manufacturing Time<Typography sx={{ float: "right" }} variant="body1">{data.manufacturing_time}</Typography>

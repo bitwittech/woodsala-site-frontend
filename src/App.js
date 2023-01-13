@@ -1,4 +1,4 @@
-import React, {useEffect, lazy,Suspense} from "react";
+import React, { useEffect, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "./App.css";
 import "../src/asset/css/home.css";
@@ -9,29 +9,30 @@ import { CssBaseline } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import FallBack from "./components/utility/FallBack"
 
-// utility 
-const Navbar =  lazy(()=>import("./components/utility/Navbar"))
-const Footer =  lazy(()=>import("./components/utility/Footer"))
-const SnakBar =  lazy(()=>import("./components/utility/SnakBar"))
-const NotFound =  lazy(()=>import("./components/utility/NotFound"))
-const Thanks =  lazy(()=>import("./components/utility/Thanks"))
-const Verify = lazy(()=>import( "./components/utility/Verify"))
-
 
 // context
 // import {Store} from './store/Context'
 // import {Auth} from './store/Types'
 
 // components
-const Home = lazy(()=>import( "./components/home/Home"))
-const Cart = lazy(()=>import( "./components/cart/Cart"))
-const Checkout = lazy(()=>import( "./components/cart/Checkout"))
-const ProductDetails = lazy(()=>import( "./components/product/ProductDetails"))
-const ContactUs = lazy(()=>import( "./components/aboutUs/ContactUs"))
-const ProductList = lazy(()=>import( "./components/product/ProductList"))
-const EntryPoint = lazy(()=>import( "./components/home/EntryPoint"))
-const Profile = lazy(()=>import( "./components/user/Profile"))
-const Catagories = lazy(()=>import( "./components/product/Catagories"))
+// const Home = lazy(()=>import( "./components/home/Home"))
+import Home from "./components/home/Home";
+
+// utility 
+const Navbar = lazy(() => import("./components/utility/Navbar"))
+const Footer = lazy(() => import("./components/utility/Footer"))
+const SnakBar = lazy(() => import("./components/utility/SnakBar"))
+const NotFound = lazy(() => import("./components/utility/NotFound"))
+const Thanks = lazy(() => import("./components/utility/Thanks"))
+const Verify = lazy(() => import("./components/utility/Verify"))
+const Cart = lazy(() => import("./components/cart/Cart"))
+const Checkout = lazy(() => import("./components/cart/Checkout"))
+const ProductDetails = lazy(() => import("./components/product/ProductDetails"))
+const ContactUs = lazy(() => import("./components/aboutUs/ContactUs"))
+const ProductList = lazy(() => import("./components/product/ProductList"))
+const EntryPoint = lazy(() => import("./components/home/EntryPoint"))
+const Profile = lazy(() => import("./components/user/Profile"))
+const Catagories = lazy(() => import("./components/product/Catagories"))
 
 
 // global theme
@@ -56,28 +57,28 @@ const light = createTheme({
 
 function App() {
 
- 
+
   function Path() {
     const history = useNavigate();
     const { pathname } = useLocation();
 
-    useEffect(()=>{
+    useEffect(() => {
       window.scrollTo(0, 0);
-    },[pathname])
-    
-    
+    }, [pathname])
+
+
     return (
       <>
         {window.location.pathname !== '/verify' && <Navbar history={history} />}
         <Routes>
 
           {/* Not found  */}
-          <Route path="*" element={<NotFound/>}/>
+          <Route path="*" element={<NotFound />} />
 
           {/* // main routes  */}
-          <Route path="/" element={<Home history={history}/>}></Route>
-          <Route path="/verify" element={<Verify history = {history}/>}></Route>
-          <Route path="/categories" element={<Catagories history = {history}/>}></Route>
+          <Route path="/" element={<Home history={history} />}></Route>
+          <Route path="/verify" element={<Verify history={history} />}></Route>
+          <Route path="/categories" element={<Catagories history={history} />}></Route>
 
           {/* // page routes  */}
           <Route path="/home" element={<Home history={history} />}></Route>
@@ -100,18 +101,18 @@ function App() {
 
   return (
     <>
-    <Suspense fallback = {<FallBack/>}>
-      <ThemeProvider theme={light}>
-        <CssBaseline enableColorScheme>
-          <BrowserRouter>
-            <Path />
-          </BrowserRouter>
-          <EntryPoint />
-          <Thanks />
-          <SnakBar />
-        </CssBaseline>
-      </ThemeProvider>
-    </Suspense>
+      <Suspense fallback={<FallBack />}>
+        <ThemeProvider theme={light}>
+          <CssBaseline enableColorScheme>
+            <BrowserRouter>
+              <Path />
+            </BrowserRouter>
+            <EntryPoint />
+            <Thanks />
+            <SnakBar />
+          </CssBaseline>
+        </ThemeProvider>
+      </Suspense>
     </>
   );
 }

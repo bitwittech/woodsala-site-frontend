@@ -131,7 +131,8 @@
 }
 
 .detailsCarousel .react-multi-carousel-list {
-    height: 400px !important;
+    height: 400px;
+    width: auto;
 }
 
 .productTitle {
@@ -144,6 +145,10 @@
     min-height: 2.9em;
     max-height: 2.9em;
     -webkit-box-orient: vertical;
+}
+
+.detailsCarousel ul {
+    gap: 10px;
 }
 
 .cardMedia {

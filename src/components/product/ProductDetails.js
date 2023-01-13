@@ -37,6 +37,8 @@ import {
 } from "@mui/material";
 import { Helmet } from "react-helmet";
 
+
+
 // APis function 
 import { getProductDetails, addCartItem, getRelatedProduct } from '../../service/service'
 
@@ -106,17 +108,21 @@ export default function ProductDetails(props) {
 
 
   const responsive = {
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
+    midDesktop: {
+      breakpoint: { max: 3000, min: 1900 },
+      items: 7,
+    },
+    minDesktop: {
+      breakpoint: { max: 1900, min: 1000 },
       items: 5,
     },
     tablet: {
-      breakpoint: { max: 800, min: 600 },
+      breakpoint: { max: 800, min: 500 },
       items: 3,
     },
     mobile: {
-      breakpoint: { max: 600, min: 0 },
-      items: 2,
+      breakpoint: { max: 400, min: 0 },
+      items: 1,
     },
   };
 
@@ -446,7 +452,7 @@ export default function ProductDetails(props) {
                     // onChange={handleProductFelids}
                     helperText="Please select your polish preference."
                   >
-                    {data.polish && data.polish.map(
+                    {(data.polish && typeof (data.polish) === 'Array') && data.polish.map(
                       (option) =>
                         <MenuItem
                           key={option}
@@ -688,7 +694,7 @@ export default function ProductDetails(props) {
             Related Products
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} mt={1}>
           <Carousel
             dotListClass="custom-dot-list-style"
             keyBoardControl={true}
@@ -702,7 +708,7 @@ export default function ProductDetails(props) {
                 <Card
                   component={Link}
                   to={`/details/${article.SKU}/${article.product_title}/${article.category_name}`}
-                  className="card" key={index} sx={{ maxWidth: 250, minHeight: 400, maxHeight: 400, boxShadow: 2 }}>
+                  className="card" key={index} sx={{ boxShadow: 2 }}>
                   <CardActionArea>
                     <CardMedia
                       className="cardMedia"

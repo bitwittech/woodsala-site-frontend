@@ -1,5 +1,5 @@
 import config from '../config.json'
-import {useSelector} from 'react-redux'
+import { useSelector } from 'react-redux'
 
 const API = config.OfficialAPI;
 
@@ -105,7 +105,7 @@ export const getSearchList = async (data) => {
 
 // addReview
 export const addReview = async (data) => {
-  return await axios.post(`${API}/addReview`,data,
+  return await axios.post(`${API}/addReview`, data,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -126,7 +126,7 @@ export const getProductDetails = async (data) => {
 }
 
 export const getMartialList = async () => {
-  return await axios.get(`https://admin.woodshala.in/api/getPrimaryMaterial`,{
+  return await axios.get(`https://admin.woodshala.in/api/getPrimaryMaterial`, {
     headers: {
       Authorization: `Bearer ${WDToken}`,
     },
@@ -185,7 +185,7 @@ export const getDetails = async (data) => {
 
 
 export const updateQuantity = async (data) => {
-  return await axios.patch(`${API}/updateQuantity`,data,
+  return await axios.patch(`${API}/updateQuantity`, data,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -197,11 +197,11 @@ export const updateQuantity = async (data) => {
 
 // ========================  END CURD from Cart =================================
 
-// ========================== order CURD =================
+// ========================== Order CURD =================
 
 // order ID at last
 export const getLastOrder = async () => {
-  return await axios.get(`https://admin.woodshala.in/api/getLastOrder`,{
+  return await axios.get(`https://admin.woodshala.in/api/getLastOrder`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
     },
@@ -211,7 +211,7 @@ export const getLastOrder = async () => {
 // for  adding order to the list
 
 export const placeOrder = async (data) => {
-  return await axios.post(`${API}/placeOrder`,data,{
+  return await axios.post(`${API}/placeOrder`, data, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
     },
@@ -220,9 +220,60 @@ export const placeOrder = async (data) => {
 // for  verify check out
 
 export const verifyPayment = async (data) => {
-  return await axios.post(`${API}/verifyPayment`,data,{
+  return await axios.post(`${API}/verifyPayment`, data, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
     },
   });
 };
+
+
+// ========================  END ORDER =================================
+
+// ========================== Wishlist CURD =================
+
+// for  add item to wishlist check out
+
+export const addWshList = async (data) => {
+  return await axios.post(`${API}/addWshList`, data, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
+    },
+  });
+};
+
+// for  remove WshList item
+
+export const removeWshList = async (data) => {
+  return await axios.delete(`${API}/removeWshList?CID=${data.CID}&product_id=${data.product_id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }
+  );
+}
+// for get wished product
+
+export const getWishedProduct = async (data) => {
+  return await axios.get(`${API}/getWishedProduct?list=${JSON.stringify(data)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }
+  );
+}
+// for get wished product
+
+export const getWishList = async (data) => {
+  return await axios.get(`${API}/getWishList?CID=${data}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }
+  );
+}
+
+// ========================== Ends Wishlist CURD =================

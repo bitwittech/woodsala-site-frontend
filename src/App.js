@@ -26,6 +26,7 @@ const NotFound = lazy(() => import("./components/utility/NotFound"))
 const Thanks = lazy(() => import("./components/utility/Thanks"))
 const Verify = lazy(() => import("./components/utility/Verify"))
 const Cart = lazy(() => import("./components/cart/Cart"))
+const Wishlist = lazy(() => import("./components/cart/Wishlist"))
 const Checkout = lazy(() => import("./components/cart/Checkout"))
 const ProductDetails = lazy(() => import("./components/product/ProductDetails"))
 const ContactUs = lazy(() => import("./components/aboutUs/ContactUs"))
@@ -83,6 +84,7 @@ function App() {
           {/* // page routes  */}
           <Route path="/home" element={<Home history={history} />}></Route>
           <Route path="/cart" element={<Cart history={history} />}></Route>
+          <Route path="/wishlist" element={<Wishlist history={history} />}></Route>
           <Route path="/checkout" element={<Checkout />}></Route>
           <Route path="/details/:SKU/:title/:category" element={<ProductDetails history={history} />}></Route>
           <Route path="/contact" element={<ContactUs />}></Route>

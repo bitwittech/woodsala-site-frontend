@@ -33,7 +33,7 @@ import room from "../../asset/images/home/room_SBF.png";
 import sofa from "../../asset/images/home/sofa_SBF.png";
 import swing from "../../asset/images/home/swing_SBF.png";
 import table from "../../asset/images/home/table_SBF.png";
-import dining2 from "../../asset/images/home/dining_SBF.png";
+// import dining2 from "../../asset/images/home/dining_SBF.png";
 import perfaction from "../../asset/images/home/perfaction_SER.png";
 import woodFurniture from "../../asset/images/home/woodFurniture_SER.png";
 import quality from "../../asset/images/home/qualityTraditional_SER.png";

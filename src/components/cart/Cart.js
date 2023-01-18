@@ -93,21 +93,10 @@ const Cart = (props) => {
     }
   );
 
-  useEffect(()=>{
-    if(state.auth.isAuth)
-    {
-      getCartItem(state.auth.CID)
-      .then((response) => {
-        if(response.data.length > 0)
-          dispatch(setCart({ items: response.data }))
-      })  
-    }
-  },[state.auth.isAuth])
-
 
   // fetching the cart item
   useEffect(() => {
-    // (state.cart.items)
+    console.log(state.cart.items)
     getDetails(JSON.stringify(state.cart.items.map((item) => { return item.product_id })))
       .then((response) => {
         console.log(state.cart.items)

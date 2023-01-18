@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Menu,
   MenuItem,
@@ -25,6 +25,8 @@ import { Link as Redirect } from 'react-router-dom'
 
 // icon
 import FacebookOutlinedIcon from "../../asset/images/navbar/facebook.png";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+
 import TwitterIcon from "../../asset/images/navbar/twitter.png";
 import InstagramIcon from "../../asset/images/navbar/instagram.png";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
@@ -62,13 +64,13 @@ import "../../asset/css/navbar.css";
 // import { LogBox, Auth, Notify } from '../../store/Types'
 
 // services 
-import { getSearchList } from '../../service/service'
+import { addWshList, getSearchList, getWishList, addCartItem, getCartItem} from '../../service/service'
 
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 
 // Action
-import { setAlert, setAuth, setLoginModal, setCart } from '../../Redux/action/action'
+import { setAlert, setAuth, setLoginModal, setCart, setList } from '../../Redux/action/action'
 
 export default function Navbar(props) {
   // store 
@@ -77,7 +79,7 @@ export default function Navbar(props) {
   // redux dispatch
   const dispatch = useDispatch();
   // state 
-  const state = useSelector(state => state);
+  const {auth, cart, wishlist} = useSelector(state => state);
 
   // stats for ham burgher icon 
   const [Ham, setHam] = useState(false);
@@ -95,9 +97,64 @@ export default function Navbar(props) {
     searchParams: undefined
   })
 
+    // use Effect
+    useMemo(() => {
+
+      if (auth.isAuth) {
+        if (wishlist.items.length > 0) {
+          Promise.all(wishlist.items.map(async row => await addWshList({
+            CID: auth.CID,
+            product_id: row.product_id,
+            quantity: row.quantity,
+          })))
+            .then(() => {
+              getWishList(auth.CID)
+                .then((response) => {
+                  if (response.data.length > 0)
+                    dispatch(setList({ items: response.data }))
+                })
+            })
+        }
+        else {
+          getWishList(auth.CID)
+            .then((response) => {
+              if (response.data.length > 0)
+                dispatch(setList({ items: response.data }))
+            })
+        }
+
+        // for cart 
+        if (cart.items.length > 0) {
+          Promise.all(cart.items.map(async row => await addCartItem({
+            CID: auth.CID,
+            product_id: row.product_id,
+            quantity: row.quantity,
+          })))
+            .then(() => {
+              getCartItem(auth.CID)
+                .then((response) => {
+                  if (response.data.length > 0)
+                    dispatch(setCart({ items: response.data }))
+                })
+            })
+        }
+        else {
+          getCartItem(auth.CID)
+            .then((response) => {
+              if (response.data.length > 0)
+                dispatch(setCart({ items: response.data }))
+            })
+        }
+
+
+      }
+  
+  
+    }, [auth.isAuth])
+  
 
   const handleProfileIconClick = (event) => {
-    state.auth.isAuth ? setAnchorEl(event.currentTarget) : dispatch(setLoginModal({
+    auth.isAuth ? setAnchorEl(event.currentTarget) : dispatch(setLoginModal({
       open: true,
       type: 'logIn'
     }))
@@ -152,7 +209,7 @@ export default function Navbar(props) {
 
   // for profile view
   const handleLog = () => {
-    state.auth.isAuth &&
+    auth.isAuth &&
       props.history('/profile')
 
 
@@ -482,8 +539,16 @@ export default function Navbar(props) {
                 <PersonOutlineOutlinedIcon />
               </IconButton>
               <MenuBox></MenuBox>
-              <IconButton color="primary">
-                <FavoriteBorderOutlinedIcon />
+              <IconButton 
+               onClick={() => {
+                props.history("/wishlist");
+              }}
+              color="primary">
+              {window.location.pathname === "/wishlist" ? 
+              <FavoriteIcon /> :
+                                <Badge badgeContent={wishlist.items.length} color="primary">
+                                <FavoriteBorderOutlinedIcon />
+                              </Badge>}
               </IconButton>
               <IconButton
                 color="primary"
@@ -494,7 +559,7 @@ export default function Navbar(props) {
                 {window.location.pathname === "/cart" ? (
                   <ShoppingCartIcon />
                 ) : (
-                  <Badge badgeContent={state.cart.items.length} color="primary">
+                  <Badge badgeContent={cart.items.length} color="primary">
                     <ShoppingCartOutlinedIcon />
                   </Badge>
                 )}

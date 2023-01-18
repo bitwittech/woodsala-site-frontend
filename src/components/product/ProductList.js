@@ -30,6 +30,7 @@ import "react-multi-carousel/lib/styles.css";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 // icon
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import AddShoppingCartOutlinedIcon from "@mui/icons-material/AddShoppingCartOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
@@ -38,23 +39,21 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Helmet } from "react-helmet";
 
 //image
-// import living from ".././asset/images/home/sofa_SBR.png";
-// import wfh from ".././asset/images/home/table_SBR.png";
-// import bedroom from ".././asset/images/home/bedroom_SBR.png";
-// import dining from ".././asset/images/home/dining_SBR.png";
 import defaultIMG from "../../asset/images/defaultProduct.svg";
 
+import NoProductIMG from "../../asset/images/productPage/noProductFound.gif";
+
 // Action 
-import { setAlert, addItem, removeItem, setCart } from '../../Redux/action/action'
+import { setAlert, addItem, removeItem, setCart, addToList, removeFromList } from '../../Redux/action/action'
 
 // Redux 
 import { useDispatch, useSelector } from 'react-redux'
 
 
 // services 
-import { getProducts, addCartItem, removeCartItem, getCartItem, getMartialList } from '../../service/service'
+import { getProducts, addCartItem, removeCartItem, getCartItem, getMartialList, addWshList, removeWshList } from '../../service/service'
 
-export default function Categories(props) {
+export default function ProductList(props) {
 
   const [Materials, setMaterials] = useState([])
 
@@ -110,45 +109,9 @@ export default function Categories(props) {
   // State
   const [filterShow, setFilter] = useState(false);
 
-  // // style 
-  // const styleScroller = {
-  //   display: 'flex',
-  //   justifyContent: "center",
-  //   alignItem: 'center',
-  //   minWidth: '100%',
-  //   flexDirection: 'column',
-  //   overflow: 'hidden !important',
-  //   margin: 'auto'
-
-  // }
-
 
   // use Effect
   useMemo(() => {
-
-    if (state.auth.isAuth) {
-      if (state.cart.items.length > 0) {
-        Promise.all(state.cart.items.map(async row => await addCartItem({
-          CID: state.auth.CID,
-          product_id: row.product_id,
-          quantity: row.quantity,
-        })))
-          .then(() => {
-            getCartItem(state.auth.CID)
-              .then((response) => {
-                if (response.data.length > 0)
-                  dispatch(setCart({ items: response.data }))
-              })
-          })
-      }
-      else {
-        getCartItem(state.auth.CID)
-          .then((response) => {
-            if (response.data.length > 0)
-              dispatch(setCart({ items: response.data }))
-          })
-      }
-    }
 
     getMartialList()
       .then((row) => {
@@ -265,7 +228,6 @@ export default function Categories(props) {
   // addItemToCart 
   const addToCart = async (item) => {
 
-
     // server side 
     if (state.auth.isAuth) {
       await addCartItem({
@@ -351,7 +313,7 @@ export default function Categories(props) {
 
       return dispatch(setAlert({
         variant: 'warning',
-        message: 'Item removed added to the cart !!!',
+        message: 'Item removed from cart !!!',
         open: true
       }))
 
@@ -371,15 +333,130 @@ export default function Categories(props) {
   }
 
 
+  // for No search result available
+  function NoItemFound() {
+    return (
+      <>
+        <Box p={3}>
+          <center>
+            <img width='30%' src={NoProductIMG} alt="No More Products !!!" />
+            <Typography variant='h4'>Oops !!!</Typography>
+            <Typography variant='h6'>No product found. </Typography>
+
+          </center>
+        </Box>
+      </>
+    )
+  }
+
+  // function for adding the item into the wishlist
+  async function addToWish(item) {
+    // server side 
+    if (state.auth.isAuth) {
+
+      let response = await addWshList({
+        CID: state.auth.CID,
+        product_id: item.SKU,
+        quantity: 1,
+      })
+
+      if (response) {
+        // for client side 
+        dispatch(
+          addToList({
+            CID: state.auth.CID || 'Not Logged In',
+            product_id: item.SKU,
+            quantity: 1,
+          })
+        )
+        return dispatch(setAlert({
+          variant: 'success',
+          message: response.data.message,
+          open: true
+        }))
+      }
+      else {
+        return dispatch(setAlert({
+          variant: 'error',
+          message: 'Something Went Wrong !!!',
+          open: true
+        }))
+
+      }
+    }
+    else {
+
+      // for client side 
+      dispatch(
+        addToList({
+          CID: state.auth.CID || 'Not Logged In',
+          product_id: item.SKU,
+          quantity: 1,
+        })
+      )
+      return dispatch(setAlert({
+        variant: 'success',
+        message: 'Item added to the wishlist !!!',
+        open: true
+      }))
+
+    }
+
+  }
+
+  // removeItemFromCart 
+  async function removeFromWishlist(item) {
+
+    // server side 
+    if (state.auth.isAuth) {
+      await removeWshList({
+        CID: state.auth.CID,
+        product_id: item.SKU
+      })
+        .then((response) => {
+          // for client side
+          dispatch(removeFromList(item.SKU));
+
+          return dispatch(setAlert({
+            variant: 'warning',
+            message: response.data.message,
+            open: true
+          }))
+
+        })
+        .catch((err) => {
+          return dispatch(setAlert({
+            variant: 'error',
+            message: 'Something Went Wrong !!!',
+            open: true
+          }))
+
+        })
+    }
+    else {
+      // for client side
+      dispatch(removeFromList(item.SKU))
+
+      return dispatch(setAlert({
+        variant: 'warning',
+        message: 'Item removed from wishlist !!!',
+        open: true
+      }))
+
+    }
+
+
+  }
+
   return (
     <>
-     {/* helmet tag  */}
-     <Helmet>
-    <title> {`${filter.category_name || meta.filter.category_name} | Products`}</title>
-    <meta name="description" content="List of all products available under the category by Woodsala" />
-    <meta name="keywords" content="list furniture,wooden furniture list,online furniture,search furniture,table,bajot,gift,chair" />
-    </Helmet>
-    {/* helmet tag ends  */}
+      {/* helmet tag  */}
+      <Helmet>
+        <title> {`${filter.category_name || meta.filter.category_name} | Products`}</title>
+        <meta name="description" content="List of all products available under the category by Woodshala" />
+        <meta name="keywords" content="list furniture,wooden furniture list,online furniture,search furniture,table,bajot,gift,chair" />
+      </Helmet>
+      {/* helmet tag ends  */}
       {/* {(meta)} */}
       {/* Main Container */}
       <Grid container sx={{ padding: "1%" }}>
@@ -800,6 +877,11 @@ export default function Categories(props) {
         </Grid>
         {/* Hamburger for Filter ends */}
 
+
+        {items.length < 1 && <Grid item xs={12} md={10}>
+          <NoItemFound />
+        </Grid>}
+
         {/* product container */}
         <Grid className="productContainer" item xs={12} md={10}>
           {/* {(state.AddCartItem)} */}
@@ -836,19 +918,20 @@ export default function Categories(props) {
                         <LazyLoadImage src={item.featured_image || item.product_image[0] || defaultIMG}
                           PlaceholderSrc={defaultIMG}
                           effect="blur"
-                          alt = {item.product_title}
+                          alt={item.product_title}
                         />
                         {/* {() ? <img src={item.featured_image || item.product_image[0] || defaultIMG} alt="product_Images" /> : <CircularProgress/> } */}
                       </Grid>
-                      <Grid item xs={8.8} 
+                      <Grid item xs={8.8}
                         onClick={() => history(`/details/${item.SKU}/${item.product_title}/${item.category_name}`)}
-                        >
+                      >
                         <Box className="productInfo">
                           <Typography variant="h5" sx={{ fontWeight: 'bolder' }} className='title'>{item.product_title}</Typography>
                         </Box>
                       </Grid>
                       <Grid item xs={3.2}>
                         <Box className="buttonAction" sx={{ display: 'flex' }}>
+                          {/* // CART */}
                           {
                             state.cart.items.filter((row) => { return row.product_id === item.SKU }).length > 0 ?
                               <IconButton onClick={() => removeItemFromCart(item)}><ShoppingCartIcon /></IconButton> :
@@ -856,12 +939,17 @@ export default function Categories(props) {
                                 <AddShoppingCartOutlinedIcon ></AddShoppingCartOutlinedIcon>
                               </IconButton>
                           }
-                          <IconButton>
-                            <FavoriteBorderOutlinedIcon></FavoriteBorderOutlinedIcon>
-                          </IconButton>
+                          {/* // WISHLIST */}
+                          {
+                            state.wishlist.items.filter((row) => { return row.product_id === item.SKU }).length > 0 ?
+                              <IconButton onClick={() => removeFromWishlist(item)}><FavoriteIcon /></IconButton> :
+                              <IconButton onClick={() => addToWish(item)}>
+                                <FavoriteBorderOutlinedIcon />
+                              </IconButton>
+                          }
                         </Box>
                       </Grid>
-                      <Grid 
+                      <Grid
                         onClick={() => history(`/details/${item.SKU}/${item.product_title}/${item.category_name}`)}
                         item xs={12}>
                         <Box className="productInfo">
@@ -879,7 +967,9 @@ export default function Categories(props) {
             </Grid>
           </InfiniteScroll>
 
+
         </Grid>
+
       </Grid>
       {/* Main Container Ends */}
     </>

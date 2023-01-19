@@ -1,6 +1,6 @@
 // Old Page ==============
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { Link, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Carousel from "react-multi-carousel";
@@ -71,14 +71,14 @@ export default function ProductDetails(props) {
 
 
   // for getting the product 
-  useEffect(() => {
+  useMemo(() => {
     setData(null)
     setRelatedProducts([])
     getData()
   }, [SKU, title, category]);
 
 
-  const getData = async (filters) => {
+  async function getData(filters) {
     await getProductDetails(SKU)
       .then((response) => {
         setData(response.data)
@@ -102,9 +102,9 @@ export default function ProductDetails(props) {
   // };
 
 
-  const handleChangeTab = (event, newValue) => {
-    setValue(newValue);
-  };
+  // const handleChangeTab = (event, newValue) => {
+  //   setValue(newValue);
+  // };
 
 
   const responsive = {
@@ -213,102 +213,6 @@ export default function ProductDetails(props) {
     }
   }
 
-  const specification = [
-    'product_title',
-    'category_name',
-    'sub_category_name',
-    'primary_material',
-    'length_main',
-    'breadth',
-    'height',
-    'weight',
-    'polish_name',
-    'assembly_required',
-    'assembly_part',
-    'selling_price',
-    'showroom_price',
-    'discount_limit',
-    'show_on_mobile',
-    'range',
-  ]
-
-  const image = [
-    'featured_image',
-    'mannequin_image',
-    'specification_image',
-  ]
-
-  const feature = [
-    "rotating_seats",
-    "eatable_oil_polish",
-    "no_chemical",
-    "weaving",
-    "knife",
-    "not_suitable_for_Micro_Dish",
-    "tilt_top",
-    "inside_compartments",
-    "stackable",
-    "ceramic_drawers",
-    "ceramic_tiles",
-  ]
-
-  const miscellanous = [
-    "weight_capacity",
-    "joints",
-    "drawer",
-    "drawer_count",
-    "back_style",
-  ]
-
-  const inventory = [
-    'warehouse',
-    'bangalore_stock',
-    'jodhpur_stock',
-    'selling_points',
-    'polish_time',
-    'manufacturing_time',
-    'returnDays',
-    'COD',
-    'returnable',
-    'package_length',
-    'package_height',
-    'package_breadth',
-    'quantity',
-    'unit',
-  ]
-
-  const seo = [
-    'product_description',
-    'seo_title',
-    'seo_description',
-    'seo_keyword',
-  ]
-
-  const extra = [
-    'hinge_name',
-    'knob_name',
-    'textile_name',
-    'textile_type',
-    'door_name',
-    'fitting_name',
-    'top_size',
-    'dial_size',
-    'seating_size_width',
-    'seating_size_depth',
-    'seating_size_height',
-    'fabric',
-    'fabric_name',
-    'mirror',
-    'mirror_length',
-    'mirror_width',
-    'silver',
-    'silver_weight',
-    'wheel',
-    'trolley',
-    'trolley_material',
-    'tax_rate',
-    'legs'
-  ]
 
   return (
     <>
@@ -746,7 +650,7 @@ export default function ProductDetails(props) {
       {/* Related Products Ends */}
 
       {/* Review Section */}
-      {SKU && <Review product_id={SKU} />}
+      <Review product_id={SKU} />
       {/* Review Section EnDs */}
     </>
   );
@@ -754,3 +658,100 @@ export default function ProductDetails(props) {
 
 
 
+
+  // const specification = [
+  //   'product_title',
+  //   'category_name',
+  //   'sub_category_name',
+  //   'primary_material',
+  //   'length_main',
+  //   'breadth',
+  //   'height',
+  //   'weight',
+  //   'polish_name',
+  //   'assembly_required',
+  //   'assembly_part',
+  //   'selling_price',
+  //   'showroom_price',
+  //   'discount_limit',
+  //   'show_on_mobile',
+  //   'range',
+  // ]
+
+  // const image = [
+  //   'featured_image',
+  //   'mannequin_image',
+  //   'specification_image',
+  // ]
+
+  // const feature = [
+  //   "rotating_seats",
+  //   "eatable_oil_polish",
+  //   "no_chemical",
+  //   "weaving",
+  //   "knife",
+  //   "not_suitable_for_Micro_Dish",
+  //   "tilt_top",
+  //   "inside_compartments",
+  //   "stackable",
+  //   "ceramic_drawers",
+  //   "ceramic_tiles",
+  // ]
+
+  // const miscellanous = [
+  //   "weight_capacity",
+  //   "joints",
+  //   "drawer",
+  //   "drawer_count",
+  //   "back_style",
+  // ]
+
+  // const inventory = [
+  //   'warehouse',
+  //   'bangalore_stock',
+  //   'jodhpur_stock',
+  //   'selling_points',
+  //   'polish_time',
+  //   'manufacturing_time',
+  //   'returnDays',
+  //   'COD',
+  //   'returnable',
+  //   'package_length',
+  //   'package_height',
+  //   'package_breadth',
+  //   'quantity',
+  //   'unit',
+  // ]
+
+  // const seo = [
+  //   'product_description',
+  //   'seo_title',
+  //   'seo_description',
+  //   'seo_keyword',
+  // ]
+
+  // const extra = [
+  //   'hinge_name',
+  //   'knob_name',
+  //   'textile_name',
+  //   'textile_type',
+  //   'door_name',
+  //   'fitting_name',
+  //   'top_size',
+  //   'dial_size',
+  //   'seating_size_width',
+  //   'seating_size_depth',
+  //   'seating_size_height',
+  //   'fabric',
+  //   'fabric_name',
+  //   'mirror',
+  //   'mirror_length',
+  //   'mirror_width',
+  //   'silver',
+  //   'silver_weight',
+  //   'wheel',
+  //   'trolley',
+  //   'trolley_material',
+  //   'tax_rate',
+  //   'legs'
+  // ]

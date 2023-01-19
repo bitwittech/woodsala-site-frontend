@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import {
     Typography,
@@ -10,7 +10,8 @@ import {
     Fade,
     Rating,
     CircularProgress,
-    TextareaAutosize
+    TextareaAutosize,
+    TextField
 } from '@mui/material'
 import StarIcon from '@mui/icons-material/Star';
 import '../../asset/css/review.css'
@@ -24,13 +25,16 @@ import { addReview, listReview } from '../../service/service'
 import { useDispatch, useSelector } from 'react-redux'
 import { setAlert } from '../../Redux/action/action'
 
+// third party component
+import ImageUploader from '../utility/ImageUploader';
+
 
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 'content-fit',
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 3,
@@ -38,10 +42,8 @@ const style = {
 };
 
 
-const Review = (props) => {
+function Review(props) {
 
-    const dispatch = useDispatch();
-    const { auth } = useSelector(state => state);
 
     const [reviews, setReviews] = useState([])
 
@@ -50,14 +52,76 @@ const Review = (props) => {
         refresh: 0,
     })
 
-    useEffect(() => {
+    useMemo(() => {
         listReview(props.product_id)
             .then((data) => {
                 setReviews([...data.data])
             })
-    }, [reviewState.refresh,props.product_id])
+    }, [reviewState.refresh, props.product_id])
 
 
+
+
+
+
+    return (
+        <Grid container className="moreInfo">
+            {/* // review Model */}
+            <ReviewBox reviewState={reviewState} setReviewState={setReviewState} product_id={props.product_id} />
+            <Grid item xs={12}>
+                <Typography sx={{ fontWeight: 500 }} variant="h4">
+                    Customer Reviews
+                </Typography>
+            </Grid>
+            <Grid item xs={12} className='reviewContainer'>
+                <Grid container sx={{ gap: '20px' }}>
+                    {reviews.length > 0 ? reviews.map((row) => {
+                        return <Grid item xs={12}>
+                            <Grid container className='review'>
+                                <Grid xs={12} className='cusDetails'>
+                                    <img src={row.customer.length > 0 ? row.customer[0].profile_image : avatar} alt='profile' />
+                                    <Typography className='review_name' variant='h5'>{row.customer.length > 0 ? row.reviewer_name : 'Anonymous User'}</Typography>
+                                    <Box  ><Typography variant='button'>Posted On {row.date.split('T')[0]}</Typography></Box>
+                                </Grid>
+                                <Grid xs={12} pt={1}>
+                                    <Rating
+                                        value={row.rating}
+                                        precision={0.5}
+                                        readOnly
+                                        size='large'
+                                        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                                    />
+                                </Grid>
+                                <Grid xs={12}><Typography variant='h5'>{row.review_title || 'Review Question'}</Typography></Grid>
+                                <Grid xs={12}><Typography variant='body1'><q>{row.review}</q></Typography></Grid>
+                                {row.review_images.length > 0 && <Grid mt={1} item xs={12}>
+                                    <Typography variant='h5'>Review Images</Typography>
+                                    <Grid container className='reviewedImagesContainer'>
+                                        {row.review_images.map((image, index) => <Grid className={'reviewedImages'} item xs={2.5}>
+                                            <img src={image} alt={`review Images ${index}`} />
+                                        </Grid>)}
+                                    </Grid>
+                                </Grid>}
+                            </Grid>
+                        </Grid>
+                    }) :
+                        <Typography variant='h6'>
+                            Be first to write a review for it...
+                        </Typography>
+                    }
+                </Grid>
+            </Grid>
+            <Grid item sx={{ padding: '1%' }} xs={12}>
+                <Button startIcon={<RateReviewIcon />} size='large' onClick={() => setReviewState(open => ({ open: true }))} variant='contained'>Write Review</Button>
+            </Grid>
+        </Grid>
+    );
+}
+
+// Child Model Box For Review
+function ReviewBox({ reviewState, setReviewState, product_id }) {
+    const dispatch = useDispatch();
+    const { auth } = useSelector(state => state);
 
 
     const labels = {
@@ -73,83 +137,133 @@ const Review = (props) => {
         5: 'Excellent+',
     };
 
-    function ReviewBox() {
+    const [hover, setHover] = React.useState(-1);
+    const [reviewData, setReviewData] = useState({
+        isLoading: false,
+        data: {
+            CID: auth.CID || 'Not Logged In',
+            rating: 4,
+            review: null,
+            product_id: product_id,
+            review_title: '',
+            yourTube_url: '',
+            reviewer_name: '',
+            reviewer_email: '',
+            review_images: []
+        }
+    })
 
-        const [hover, setHover] = React.useState(-1);
-        const [reviewData, setReviewData] = useState({
+    function handleValue(e) {
+        setReviewData(old => ({ ...old, data: { ...old.data, [e.target.name]: e.target.value } }));
+    }
+
+    // for label the ratting 
+    function getLabelText(value) {
+        return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
+    }
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+        setReviewData(old => ({ ...old, isLoading: true }))
+
+        console.log(reviewData.data);
+
+        const FD = new FormData();
+
+        FD.append('CID', reviewData.data.CID)
+        FD.append('rating', reviewData.data.rating)
+        FD.append('review', reviewData.data.review)
+        FD.append('product_id', reviewData.data.product_id)
+        FD.append('review_title', reviewData.data.review_title)
+        FD.append('yourTube_url', reviewData.data.yourTube_url)
+        FD.append('reviewer_name', reviewData.data.reviewer_name)
+        FD.append('reviewer_email', reviewData.data.reviewer_email)
+
+        if (reviewData.data.review_images.length > 0) reviewData.data.review_images.map((file) => FD.append('review_images', file))
+        else reviewData.data.review_images.map((file) => FD.append('review_images', []))
+
+        const response = await addReview(FD);
+
+
+        if (response) {
+            setReviewState(old => ({
+                open: false,
+                refresh: old.refresh + 1
+            }))
+
+            dispatch(setAlert({
+                open: true,
+                variant: 'success',
+                message: response.data.message
+            }))
+            handleClose()
+
+        }
+        else {
+            dispatch(setAlert({
+                open: true,
+                variant: 'error',
+                message: 'Something Went Wrong !!!'
+            }))
+            setReviewData(old => ({ ...old, isLoading: false }))
+
+        }
+
+
+    }
+
+    function handleClose() {
+        setReviewData({
             isLoading: false,
             data: {
                 CID: auth.CID || 'Not Logged In',
                 rating: 4,
                 review: null,
-                product_id: props.product_id
+                product_id: product_id,
+                review_title: '',
+                yourTube_url: '',
+                reviewer_name: '',
+                reviewer_email: '',
+                review_images: []
             }
         })
+        setReviewState(old => ({ ...old, open: false }));
+    }
 
-        function getLabelText(value) {
-            return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
-        }
+    return (
+        <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={reviewState.open}
+            onClose={handleClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+                timeout: 500,
+            }}
+        >
+            <Fade in={reviewState.open}>
+                <Box sx={style}>
+                    <Grid container component={'form'} sx={{ gap: '5px', justifyContent: 'center' }} method='post' onSubmit={handleSubmit}>
+                        <Grid item xs={12} sx={{ mb: '2%' }}>
+                            <Typography sx={{ fontWeight: '400' }} variant='h5'>
+                                Add a review for
+                            </Typography>
+                        </Grid>
 
-        async function handleSubmit(e) {
-            e.preventDefault();
-            setReviewData(old => ({ ...old, isLoading: true }))
-            console.log(reviewData.data)
+                        {/* product image */}
+                        <Grid item xs={12} sx={{ padding: '1%' }} md={5.5} >
+                            <Typography variant='h5'>
+                                Image Section
+                            </Typography>
+                            <br></br>
+                            <ImageUploader state={reviewData} setData={setReviewData} />
+                        </Grid>
+                        {/* More Details */}
+                        <Grid item xs={12} md={5.5} sx={{ padding: '1%' }}>
 
-            const FD = new FormData();
-
-            FD.append('CID', reviewData.data.CID)
-            FD.append('rating', reviewData.data.rating)
-            FD.append('review', reviewData.data.review)
-            FD.append('product_id', reviewData.data.product_id)
-
-            const res = addReview(FD)
-
-            res
-                .then((response) => {
-                        setReviewState(old => ({
-                            open: false,
-                            refresh: old.refresh + 1
-                        }))
-
-                        dispatch(setAlert({
-                            open: true,
-                            variant: 'success',
-                            message: response.data.message
-                        }))
-
-                })
-                .catch((err) => {
-                    dispatch(setAlert({
-                        open: true,
-                        variant: 'error',
-                        message: 'Something Went Wrong !!!'
-                    }))
-                })
-
-
-        }
-
-        return (
-            <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                open={reviewState.open}
-                onClose={() => setReviewState(old => ({ ...old, open: false }))}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
-            >
-                <Fade in={reviewState.open}>
-                    <Box sx={style}>
-                        <Grid container component={'form'} method='post' onSubmit={handleSubmit}>
-                            <Grid item xs={12} >
-                                <Typography sx={{ fontWeight: '400' }} variant='h5'>
-                                    Add a review for
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12} sx={{ padding: '1%', mt: '3%' }}>
+                            {/* // ratting  */}
+                            <Grid item xs={12} sx={{ padding: '1%' }}>
                                 <Typography sx={{ fontWeight: '400' }} variant='body1'>
                                     1) How would rate this product?
                                 </Typography>
@@ -172,75 +286,103 @@ const Review = (props) => {
                                     )}
                                 </Box>
                             </Grid>
+
+                            {/* review title */}
                             <Grid xs={12} item>
                                 <Typography sx={{ fontWeight: '400' }} variant='body1'>
-                                    2) Write your review below.
+                                    2) Please enter the review title.
+                                </Typography>
+                                <TextField
+                                    sx={{ p: 1 }}
+                                    fullWidth
+                                    type='text'
+                                    size='small'
+                                    variant='outlined'
+                                    value={reviewData.data.review_title}
+                                    name='review_title'
+                                    onChange={handleValue}
+                                />
+                            </Grid>
+
+                            {/* You Tube URL*/}
+                            <Grid xs={12} item>
+                                <Typography sx={{ fontWeight: '400' }} variant='body1'>
+                                    3) Any you tube review URLs?
+                                </Typography>
+                                <TextField
+                                    sx={{ p: 1 }}
+                                    fullWidth
+                                    type='text'
+                                    size='small'
+                                    variant='outlined'
+                                    value={reviewData.data.yourTube_url}
+                                    name='yourTube_url'
+                                    onChange={handleValue}
+                                />
+                            </Grid>
+
+                            {/* review */}
+                            <Grid xs={12} item>
+                                <Typography sx={{ fontWeight: '400' }} variant='body1'>
+                                    4) Write your review below.
                                 </Typography>
                                 <Box p={1}>
                                     <TextareaAutosize
                                         minRows={5}
                                         maxRows={5}
                                         required
-                                        // minLength={50}
-                                        onChange={(e) => setReviewData(old => ({ ...old, data: { ...old.data, review: e.target.value } }))}
+                                        name='review'
+                                        onChange={handleValue}
                                         className='customTextArea'
                                         placeholder="Write something beautiful..."
                                     />
                                 </Box>
 
                             </Grid>
-                            <Grid item xs={12} p={1}>
-                                <Button disabled={reviewData.isLoading} type='submit' startIcon={reviewData.isLoading ? <CircularProgress size={15} /> : <TurnedInIcon />} sx={{ float: 'right' }} variant='outlined'>Submit</Button>
+
+                            {/* Name */}
+                            <Grid xs={12} item>
+                                <Typography sx={{ fontWeight: '400' }} variant='body1'>
+                                    5) Name you like to show on review (ex : Rahul)?
+                                </Typography>
+                                <TextField
+                                    sx={{ p: 1 }}
+                                    fullWidth
+                                    type='text'
+                                    size='small'
+                                    variant='outlined'
+                                    value={reviewData.data.reviewer_name}
+                                    name='reviewer_name'
+                                    onChange={handleValue}
+
+                                />
+                            </Grid>
+
+                            {/* Email */}
+                            <Grid xs={12} item>
+                                <Typography sx={{ fontWeight: '400' }} variant='body1'>
+                                    6) Enter your email address please.
+                                </Typography>
+                                <TextField
+                                    sx={{ p: 1 }}
+                                    fullWidth
+                                    type='email'
+                                    size='small'
+                                    variant='outlined'
+                                    value={reviewData.data.reviewer_email}
+                                    name='reviewer_email'
+                                    onChange={handleValue}
+                                />
                             </Grid>
                         </Grid>
-                    </Box>
-                </Fade>
-            </Modal>
-        )
-    }
-
-    return (
-        <Grid container className="moreInfo">
-            <ReviewBox />
-            <Grid item xs={12}>
-                <Typography sx={{ fontWeight: 500 }} variant="h4">
-                    Customer Reviews
-                </Typography>
-            </Grid>
-            <Grid item xs={12} className='reviewContainer'>
-                <Grid container sx = {{gap : '20px'}}>
-                {reviews.length > 0 ? reviews.map((row) => {
-                    return <Grid item xs = {12}>
-                        <Grid container className='review'>
-                        <Grid xs={12} className='cusDetails'>
-                            <img src={row.customer.length > 0 ? row.customer[0].profile_image  : avatar} alt='profile' />
-                            <Typography variant='h5'>{row.customer.length > 0 ? row.customer[0].username : 'Anonymous User'}</Typography>
+                        <Grid item xs={12} p={1}>
+                            <Button disabled={reviewData.isLoading} type='submit' startIcon={reviewData.isLoading ? <CircularProgress size={15} /> : <TurnedInIcon />} sx={{ float: 'right' }} variant='outlined'>Submit</Button>
                         </Grid>
-                        <Grid xs={12} pt={1}>
-                            <Rating
-                                value={row.rating}
-                                precision={0.5}
-                                readOnly
-                                size='large'
-                                emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-                            />
-                        </Grid>
-                        <Grid xs={12}><Typography variant='button'>Posted On {row.date.split('T')[0]}</Typography></Grid>
-                        <Grid xs={12}><Typography variant='h6'><q>{row.review}</q></Typography></Grid>
                     </Grid>
-                    </Grid>
-                }) :
-                    <Typography variant='h6'>
-                        Be first to write a review for it...
-                    </Typography>
-                }
-                </Grid>
-            </Grid>
-            <Grid item sx={{ padding: '1%' }} xs={12}>
-                <Button startIcon={<RateReviewIcon />} size='large' onClick={() => setReviewState(open => ({ open: true }))} variant='contained'>Write Review</Button>
-            </Grid>
-        </Grid>
-    );
+                </Box>
+            </Fade>
+        </Modal>
+    )
 }
 
 export default Review;

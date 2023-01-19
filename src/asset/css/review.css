@@ -35,3 +35,17 @@
     width: 50px;
     border-radius: 100%;
 }
+
+.review_name {
+    flex-grow: 1;
+}
+
+.reviewedImagesContainer {
+    padding: 2%;
+    gap: 10px;
+}
+
+.reviewedImages>img {
+    width: 100%;
+    height: 100%;
+}

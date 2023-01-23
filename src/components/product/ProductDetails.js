@@ -60,7 +60,7 @@ export default function ProductDetails(props) {
   const [imageIndex, setIndex] = useState(0); // use for updating the images
   const [ratting, setRatting] = useState(2);
   // const [expanded, setExpanded] = useState("panel1");
-  const [value, setValue] = useState(0);
+  const [variant, setVariant] = useState([]);
 
   // useParams search parameters
   const { SKU, title, category } = useParams();
@@ -79,21 +79,27 @@ export default function ProductDetails(props) {
 
 
   async function getData(filters) {
-    await getProductDetails(SKU)
-      .then((response) => {
-        setData(response.data)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
 
-    await getRelatedProduct({ product_title: title, category_name: category })
-      .then((response) => {
-        setRelatedProducts(response.data)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    try {
+
+      let productDetails = await getProductDetails(SKU)
+
+      setData(productDetails.data.data)
+
+      setVariant(productDetails.data.variant)
+
+      let related = await getRelatedProduct({ product_title: title, category_name: category })
+
+      setRelatedProducts(related.data)
+
+    } catch (err) {
+      console.log(err)
+      dispatch(setAlert({
+        variant: 'error',
+        message: 'Something went wrong !!!',
+        open: true
+      }))
+    }
   }
 
 
@@ -213,6 +219,50 @@ export default function ProductDetails(props) {
     }
   }
 
+  // function for variant section 
+
+  function Variant() {
+    return (
+      <>
+        <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
+          Variants
+        </Typography>
+        <Divider />
+        <Box className='Variants' mt={2}>
+
+          {/* // size   */}
+          {variant.size.length > 0 && <Typography variant='button'>Dimension</Typography>}
+          {variant.size.length > 0 &&
+            <Box className='size'>
+              {variant.size.map(s => <Button
+                component={Link}
+                to={`/details/${s.SKU}/${s.title}/${s.category}`}
+                size={'small'} variant='outlined'>{s.size}</Button>)}
+            </Box>}
+
+          {/* material  */}
+          {variant.material.length > 0 && <Typography variant='button'>Material</Typography>}
+          {variant.material.length > 0 && <Box className='size materialBox'>
+
+            {variant.material.map(s => <Button
+              component={Link}
+              to={`/details/${s.SKU}/${s.title}/${s.category}`}
+              size={'small'} variant='outlined' className='item'>{s.material}</Button>)}
+          </Box>}
+
+          {/* range */}
+          {variant.range.length > 0 && <Typography variant='button'>Range</Typography>}
+          {variant.range.length > 0 && <Box className=' size rang'>
+            {variant.range.map(s => <Button
+              component={Link}
+              to={`/details/${s.SKU}/${s.title}/${s.category}`}
+              size={'small'} variant='outlined'>{s.range}</Button>)}
+          </Box>}
+
+        </Box>
+      </>
+    )
+  }
 
   return (
     <>
@@ -290,10 +340,10 @@ export default function ProductDetails(props) {
                       }}
                     />
                     {/* // wishlist */}
-                    <Box className="wishlist">
+                    {/* <Box className="wishlist">
                       <FavoriteBorderIcon />
                       <Typography variant="h6">Add To Wishlist</Typography>
-                    </Box>
+                    </Box> */}
                   </Box>
                   {/* Price */}
                   <Box className="priceSec">
@@ -337,7 +387,7 @@ export default function ProductDetails(props) {
                       Range<Typography sx={{ float: "right" }} variant="body1">{data.range}</Typography>
                     </Typography> */}
                   </Stack>
-                  {/* Part Of collection */}
+                  {/* Polish */}
                   <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
                     Polish
                   </Typography>
@@ -369,7 +419,10 @@ export default function ProductDetails(props) {
                       {"None"}
                     </MenuItem>
                   </TextField>
-                  {/* <Divider /> */}
+                  {/* Variants  */}
+                  {variant.show && <Variant />}
+                  {/* Variants ends  */}
+
                   {/* Affiliate Vendors */}
                   <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
                     Also Shop From

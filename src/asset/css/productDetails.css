@@ -167,6 +167,21 @@
     text-align: center;
 }
 
+.size {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 1% 0% 1% 0%;
+}
+
+.item {
+    padding: 0.5% 1% 0.5% 1%;
+    color: #721f0a;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+}
+
 @media (max-width: 850px) {
     .imageSec {
         position: relative;

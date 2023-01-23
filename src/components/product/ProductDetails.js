@@ -237,7 +237,8 @@ export default function ProductDetails(props) {
               {variant.size.map(s => <Button
                 component={Link}
                 to={`/details/${s.SKU}/${s.title}/${s.category}`}
-                size={'small'} variant='outlined'>{s.size}</Button>)}
+                size={'small'}
+                variant={SKU == s.SKU ? 'contained' : 'outlined'}>{s.size}</Button>)}
             </Box>}
 
           {/* material  */}
@@ -247,7 +248,7 @@ export default function ProductDetails(props) {
             {variant.material.map(s => <Button
               component={Link}
               to={`/details/${s.SKU}/${s.title}/${s.category}`}
-              size={'small'} variant='outlined' className='item'>{s.material}</Button>)}
+              size={'small'} variant={SKU == s.SKU ? 'contained' : 'outlined'} className='item'>{s.material}</Button>)}
           </Box>}
 
           {/* range */}
@@ -256,7 +257,7 @@ export default function ProductDetails(props) {
             {variant.range.map(s => <Button
               component={Link}
               to={`/details/${s.SKU}/${s.title}/${s.category}`}
-              size={'small'} variant='outlined'>{s.range}</Button>)}
+              size={'small'} variant={SKU == s.SKU ? 'contained' : 'outlined'}>{s.range}</Button>)}
           </Box>}
 
         </Box>
@@ -313,7 +314,7 @@ export default function ProductDetails(props) {
             <Grid item xs={12} className="contentSec" md={6}>
               <Grid container>
                 <Grid item xs={12} >
-                  <Breadcrumbs aria-label="breadcrumb">
+                  <Breadcrumbs className='bradCrumbs' aria-label="breadcrumb">
                     <Link color="primary" to="/">
                       Home
                     </Link>

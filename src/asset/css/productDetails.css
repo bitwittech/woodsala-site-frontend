@@ -22,7 +22,8 @@
     padding: 0% 2%;
 }
 
-.contentSec a {
+.bradCrumbs a {
+    text-decoration: none;
     color: #883c29;
 }
 
@@ -176,7 +177,6 @@
 
 .item {
     padding: 0.5% 1% 0.5% 1%;
-    color: #721f0a;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
     overflow: hidden !important;

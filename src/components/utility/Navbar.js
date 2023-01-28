@@ -18,14 +18,14 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemButton
+  ListItemButton,
 } from "@mui/material";
 
-import { Link as Redirect } from 'react-router-dom'
+import { Link as Redirect } from "react-router-dom";
 
 // icon
 import FacebookOutlinedIcon from "../../asset/images/navbar/facebook.png";
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 import TwitterIcon from "../../asset/images/navbar/twitter.png";
 import InstagramIcon from "../../asset/images/navbar/instagram.png";
@@ -34,13 +34,13 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 // import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import LogoutIcon from '@mui/icons-material/Logout';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from "@mui/icons-material/Logout";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 // import MenuOpenTwoToneIcon from "@mui/icons-material/MenuOpenTwoTone";
 // import CloseIcon from "@mui/icons-material/Close";
-import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
-import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
+import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
+import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 // image
 import logo from "../../asset/images/logo.webp";
 import home from "../../asset/images/hamburger/home.png";
@@ -59,29 +59,41 @@ import exclusive from "../../asset/images/hamburger/exclusive.png";
 // css
 import "../../asset/css/navbar.css";
 
-// // store  
+// // store
 // import { Store } from '../../store/Context'
 // import { LogBox, Auth, Notify } from '../../store/Types'
 
-// services 
-import { addWshList, getSearchList, getWishList, addCartItem, getCartItem} from '../../service/service'
+// services
+import {
+  addWshList,
+  getSearchList,
+  getWishList,
+  addCartItem,
+  getCartItem,
+} from "../../service/service";
 
 // Redux
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 
 // Action
-import { setAlert, setAuth, setLoginModal, setCart, setList } from '../../Redux/action/action'
+import {
+  setAlert,
+  setAuth,
+  setLoginModal,
+  setCart,
+  setList,
+} from "../../Redux/action/action";
 
 export default function Navbar(props) {
-  // store 
+  // store
   // const { state, dispatch } = Store();
 
   // redux dispatch
   const dispatch = useDispatch();
-  // state 
-  const {auth, cart, wishlist} = useSelector(state => state);
+  // state
+  const { auth, cart, wishlist } = useSelector((state) => state);
 
-  // stats for ham burgher icon 
+  // stats for ham burgher icon
   const [Ham, setHam] = useState(false);
   const [anchor, setAnchorEl] = useState(null);
   const [show, setShow] = useState({
@@ -94,70 +106,70 @@ export default function Navbar(props) {
   // state for search
   const [search, setSearch] = useState({
     searchList: [],
-    searchParams: undefined
-  })
+    searchParams: undefined,
+  });
 
-    // use Effect
-    useMemo(() => {
-
-      if (auth.isAuth) {
-        if (wishlist.items.length > 0) {
-          Promise.all(wishlist.items.map(async row => await addWshList({
-            CID: auth.CID,
-            product_id: row.product_id,
-            quantity: row.quantity,
-          })))
-            .then(() => {
-              getWishList(auth.CID)
-                .then((response) => {
-                  if (response.data.length > 0)
-                    dispatch(setList({ items: response.data }))
-                })
-            })
-        }
-        else {
-          getWishList(auth.CID)
-            .then((response) => {
-              if (response.data.length > 0)
-                dispatch(setList({ items: response.data }))
-            })
-        }
-
-        // for cart 
-        if (cart.items.length > 0) {
-          Promise.all(cart.items.map(async row => await addCartItem({
-            CID: auth.CID,
-            product_id: row.product_id,
-            quantity: row.quantity,
-          })))
-            .then(() => {
-              getCartItem(auth.CID)
-                .then((response) => {
-                  if (response.data.length > 0)
-                    dispatch(setCart({ items: response.data }))
-                })
-            })
-        }
-        else {
-          getCartItem(auth.CID)
-            .then((response) => {
-              if (response.data.length > 0)
-                dispatch(setCart({ items: response.data }))
-            })
-        }
-
-
+  // use Effect
+  useMemo(() => {
+    if (auth.isAuth) {
+      if (wishlist.items.length > 0) {
+        Promise.all(
+          wishlist.items.map(
+            async (row) =>
+              await addWshList({
+                CID: auth.CID,
+                product_id: row.product_id,
+                quantity: row.quantity,
+              })
+          )
+        ).then(() => {
+          getWishList(auth.CID).then((response) => {
+            if (response.data.length > 0)
+              dispatch(setList({ items: response.data }));
+          });
+        });
+      } else {
+        getWishList(auth.CID).then((response) => {
+          if (response.data.length > 0)
+            dispatch(setList({ items: response.data }));
+        });
       }
-  
-  
-    }, [auth.isAuth])
-  
+
+      // for cart
+      if (cart.items.length > 0) {
+        Promise.all(
+          cart.items.map(
+            async (row) =>
+              await addCartItem({
+                CID: auth.CID,
+                product_id: row.product_id,
+                quantity: row.quantity,
+              })
+          )
+        ).then(() => {
+          getCartItem(auth.CID).then((response) => {
+            if (response.data.length > 0)
+              dispatch(setCart({ items: response.data }));
+          });
+        });
+      } else {
+        getCartItem(auth.CID).then((response) => {
+          if (response.data.length > 0)
+            dispatch(setCart({ items: response.data }));
+        });
+      }
+    }
+  }, [auth.isAuth]);
 
   const handleProfileIconClick = (event) => {
-    auth.isAuth ? setAnchorEl(event.currentTarget) : dispatch(setLoginModal({
-      open: true,
-      type: 'logIn'
-    }))
+    auth.isAuth
+      ? setAnchorEl(event.currentTarget)
+      : dispatch(
+          setLoginModal({
+            open: true,
+            type: "logIn",
+          })
+        );
   };
 
   // close menu
@@ -166,16 +178,15 @@ export default function Navbar(props) {
   };
 
   const navBarComponent = [
-    '/',
-    '/product/Bajot',
-    '/product/Animal Figurine',
-    '/product/Coaster',
-    '/product/Wall Decor',
-    '/product/Chair',
-    '/product/Candle Holder',
-    '/product/Clock',
-    '/product',
-
+    "/",
+    "/product/Bajot",
+    "/product/Animal Figurine",
+    "/product/Coaster",
+    "/product/Wall Decor",
+    "/product/Chair",
+    "/product/Candle Holder",
+    "/product/Clock",
+    "/product",
   ];
   const navBarImage = [
     home,
@@ -190,15 +201,16 @@ export default function Navbar(props) {
   ];
 
   const navBarLabel = [
-    'Home',
-    'Bajot',
-    'Animal Figurine',
-    'Coaster',
-    'Wall Decor',
-    'Chair',
-    'Candle Holder',
-    'Clock',
-    'Browse All',];
+    "Home",
+    "Bajot",
+    "Animal Figurine",
+    "Coaster",
+    "Wall Decor",
+    "Chair",
+    "Candle Holder",
+    "Clock",
+    "Browse All",
+  ];
 
   // for nav route
   const handleChange = (e, newVal) => {
@@ -206,43 +218,42 @@ export default function Navbar(props) {
     // window.location.reload()
   };
 
-
   // for profile view
   const handleLog = () => {
-    auth.isAuth &&
-      props.history('/profile')
-
+    auth.isAuth && props.history("/profile");
 
     return handleMenuClose();
+  };
 
-  }
-
-  // for logout 
+  // for logout
   const handleLogOut = async () => {
     localStorage.clear();
 
-    dispatch(setAlert({
-      variant: 'success',
-      message: 'Logging Out !!!',
-      open: true
-    }))
+    dispatch(
+      setAlert({
+        variant: "success",
+        message: "Logging Out !!!",
+        open: true,
+      })
+    );
 
-    await dispatch(setAuth({
-      isAuth: false,
-      CID: undefined,
-      email: undefined,
-      username: undefined,
-      token: undefined
-    }))
-    await dispatch(setCart({ items: [] }))
+    await dispatch(
+      setAuth({
+        isAuth: false,
+        CID: undefined,
+        email: undefined,
+        username: undefined,
+        token: undefined,
+      })
+    );
+    await dispatch(setCart({ items: [] }));
 
     handleMenuClose();
 
-    return window.location.href = '/'
+    return (window.location.href = "/");
+  };
 
-  }
-
-  // menu box 
+  // menu box
   function MenuBox() {
     return (
       <Menu
@@ -276,98 +287,100 @@ export default function Navbar(props) {
           // (res.data)
           setSearch({
             searchParams: e.target.value,
-            searchList: res.data || []
+            searchList: res.data || [],
           });
         })
         .catch((err) => {
           setSearch({
             searchParams: undefined,
-            searchList: []
-          })
-            ('error for Navbar', err);
-        })
-    }, 3000)
+            searchList: [],
+          })("error for Navbar", err);
+        });
+    }, 3000);
 
-    return () => clearTimeout(delayDebounceFn)
-  }
+    return () => clearTimeout(delayDebounceFn);
+  };
 
-  // firing search 
+  // firing search
   const fireSearchQuery = (e) => {
-    if (e.key === 'Enter') { return props.history(`/product/${e.target.value}/${e.target.value}`) }
+    if (e.key === "Enter") {
+      return props.history(`/product/${e.target.value}/${e.target.value}`);
+    }
 
     //  return props.history
-  }
-  //  all link 
+  };
+  //  all link
   const linkObject = {
     furniture: [
-      { link: '/product', label: 'Bedroom Set' },
-      { link: '/product/Bed', label: 'Bed' },
-      { link: '/product/Cabinet', label: 'Cabinet' },
-      { link: '/product/Chair', label: 'Chair' },
-      { link: '/product', label: 'Dining Set' },
-      { link: '/product', label: "Drawer's Chest" },
-      { link: '/product/Dressing Table', label: 'Dressing Table' },
-      { link: '/product', label: 'Fruits & Vegetable' },
-      { link: '/product/Table', label: 'Table' },
-      { link: '/product/Sofa', label: 'Sofa' },
-      { link: '/product/Swing', label: 'Swing (Jhula)' },
+      { link: "/product", label: "Bedroom Set" },
+      { link: "/product/Bed", label: "Bed" },
+      { link: "/product/Cabinet", label: "Cabinet" },
+      { link: "/product/Chair", label: "Chair" },
+      { link: "/product", label: "Dining Set" },
+      { link: "/product", label: "Drawer's Chest" },
+      { link: "/product/Dressing Table", label: "Dressing Table" },
+      { link: "/product", label: "Fruits & Vegetable" },
+      { link: "/product/Table", label: "Table" },
+      { link: "/product/Sofa", label: "Sofa" },
+      { link: "/product/Swing", label: "Swing (Jhula)" },
     ],
     kitchen: [
-      { link: '/product', label: 'Bowl' },
-      { link: '/product/Coaster', label: 'Coaster' },
-      { link: '/product', label: 'Chopping Board' },
-      { link: '/product', label: 'Glass' },
-      { link: '/product', label: 'Grinder' },
-      { link: '/product', label: 'Rolling Pin' },
-      { link: '/product', label: 'Tray' },
-      { link: '/product', label: 'Spatula' },
+      { link: "/product", label: "Bowl" },
+      { link: "/product/Coaster", label: "Coaster" },
+      { link: "/product", label: "Chopping Board" },
+      { link: "/product", label: "Glass" },
+      { link: "/product", label: "Grinder" },
+      { link: "/product", label: "Rolling Pin" },
+      { link: "/product", label: "Tray" },
+      { link: "/product", label: "Spatula" },
     ],
     gifting: [
-      { link: '/product/Animal Figurine', label: 'Animal Figure' },
-      { link: '/product/Clock', label: 'Clock' },
-      { link: '/product/Candle Holder', label: 'Candle Holder' },
-      { link: '/product', label: 'Collectibles' },
-      { link: '/product/Wall Decor', label: 'Wall Decor' },
-      { link: '/product', label: 'Desk Organizer' },
-      { link: '/product', label: 'Hook & Holder' },
-      { link: '/product', label: 'Rack' },
-      { link: '/product', label: 'Mirror' },
+      { link: "/product/Animal Figurine", label: "Animal Figure" },
+      { link: "/product/Clock", label: "Clock" },
+      { link: "/product/Candle Holder", label: "Candle Holder" },
+      { link: "/product", label: "Collectibles" },
+      { link: "/product/Wall Decor", label: "Wall Decor" },
+      { link: "/product", label: "Desk Organizer" },
+      { link: "/product", label: "Hook & Holder" },
+      { link: "/product", label: "Rack" },
+      { link: "/product", label: "Mirror" },
     ],
     exclusive: [
-      { link: '/product/Bajot', label: 'Bajot' },
-      { link: '/product', label: 'Mirror' },
-      { link: '/product', label: 'Silver Furniture' },
-      { link: '/product/Stool', label: 'Wooden Stool' },
-      { link: '/product/Box', label: 'Box (Sanduk)' }
+      { link: "/product/Bajot", label: "Bajot" },
+      { link: "/product", label: "Mirror" },
+      { link: "/product", label: "Silver Furniture" },
+      { link: "/product/Stool", label: "Wooden Stool" },
+      { link: "/product/Box", label: "Box (Sanduk)" },
     ],
     useful: [
-      { link: '/product/Stool', label: 'Stool' },
-      { link: '/product/Rack', label: 'Rack' }
+      { link: "/product/Stool", label: "Stool" },
+      { link: "/product/Rack", label: "Rack" },
     ],
     traditional: [
-      { link: '/product/Temple', label: 'Temple' },
-      { link: '/product/Traditional Decor', label: 'Traditional Decor' }
+      { link: "/product/Temple", label: "Temple" },
+      { link: "/product/Traditional Decor", label: "Traditional Decor" },
     ],
-    company: [
-      { link: '/product', label: 'ex' }
-    ],
-  }
+    company: [{ link: "/product", label: "ex" }],
+  };
 
   // show and hide of dropdown
   function handleDropdown(tab) {
-    return setShow(old => ({ ...old, [tab]: !old[tab] }))
+    return setShow((old) => ({ ...old, [tab]: !old[tab] }));
   }
   // generate label link under dropdown
   function generate(tab = undefined) {
-    return <ListItem disablePadding className='listItem'>
-      {tab && linkObject[tab].map((row) => <ListItemButton fullWidth component={Redirect} to={row.link}> <ListItemText
-        primary={row.label}
-      /></ListItemButton>)
-      }
-    </ListItem>
-
+    return (
+      <ListItem disablePadding className="listItem">
+        {tab &&
+          linkObject[tab].map((row) => (
+            <ListItemButton fullWidth component={Redirect} to={row.link}>
+              {" "}
+              <ListItemText primary={row.label} />
+            </ListItemButton>
+          ))}
+      </ListItem>
+    );
   }
-
 
   return (
     <>
@@ -384,20 +397,37 @@ export default function Navbar(props) {
             </Grid>
             <Grid item xs={12} md={6} />
             <Grid item xs={12} md={3} className="center icons">
-              <IconButton target='_blank' href='https://www.facebook.com/onlinewoodsala' component={Link} color="secondary" size="small">
+              <IconButton
+                target="_blank"
+                href="https://www.facebook.com/onlinewoodsala"
+                component={Link}
+                color="secondary"
+                size="small"
+              >
                 <img src={FacebookOutlinedIcon} alt="" />
               </IconButton>
-              <IconButton target='_blank' component={Link} href='https://twitter.com/onlinewoodsala' color="secondary" size="small">
+              <IconButton
+                target="_blank"
+                component={Link}
+                href="https://twitter.com/onlinewoodsala"
+                color="secondary"
+                size="small"
+              >
                 <img src={TwitterIcon} alt="" />
               </IconButton>
-              <IconButton target='_blank' color="secondary" component={Link} href='https://www.instagram.com/woodsala/' size="small">
+              <IconButton
+                target="_blank"
+                color="secondary"
+                component={Link}
+                href="https://www.instagram.com/woodsala/"
+                size="small"
+              >
                 <img src={InstagramIcon} alt="" />
               </IconButton>
             </Grid>
           </Grid>
         </Grid>
         {/* Ends Black Top bar */}
-
 
         {/* Brown Middle bar  */}
         <Grid item xs={12} className="secondBar">
@@ -424,14 +454,20 @@ export default function Navbar(props) {
         {/* hamburger active of 800px  */}
         <Grid item xs={12} className="hamburgerContainer">
           <Grid container>
-            <Grid sx={{ justifyContent: 'center', display: 'flex' }} item xs={12} className="hamburgerButton">
-              <IconButton onClick={() => {
-                setHam(true);
-              }} color="primary" size="large">
-                < ExpandLessOutlinedIcon
-                  sx={{ fontSize: 25 }}
-
-                />
+            <Grid
+              sx={{ justifyContent: "center", display: "flex" }}
+              item
+              xs={12}
+              className="hamburgerButton"
+            >
+              <IconButton
+                onClick={() => {
+                  setHam(true);
+                }}
+                color="primary"
+                size="large"
+              >
+                <ExpandLessOutlinedIcon sx={{ fontSize: 25 }} />
               </IconButton>
               <Drawer
                 className="hamburgerPanel"
@@ -448,13 +484,10 @@ export default function Navbar(props) {
                     setHam(false);
                   }}
                 >
-                  <ExpandMoreOutlinedIcon
-                    sx={{ fontSize: 25 }}
-
-                  />
+                  <ExpandMoreOutlinedIcon sx={{ fontSize: 25 }} />
                 </IconButton>
 
-                <Grid item xs={12} className='hamburgerPanel'>
+                <Grid item xs={12} className="hamburgerPanel">
                   <Tabs
                     orientation="vertical"
                     scrollButtons
@@ -466,21 +499,22 @@ export default function Navbar(props) {
                       window.location.pathname
                     }
                     color="primary"
-
                   >
-                    {
-                      navBarLabel.map((tag, index) => <Tab key={index}
+                    {navBarLabel.map((tag, index) => (
+                      <Tab
+                        key={index}
                         wrapped
                         label={tag}
-                        icon={<img alt='home' src={navBarImage[index]} />}
+                        icon={<img alt="home" src={navBarImage[index]} />}
                         iconPosition="start"
                         component={Link}
                         value={navBarComponent[index]}
                         to={navBarComponent[index]}
-                        onClick={() => { setHam(false) }}
-                      />)
-                    }
-
+                        onClick={() => {
+                          setHam(false);
+                        }}
+                      />
+                    ))}
                   </Tabs>
                 </Grid>
               </Drawer>
@@ -489,30 +523,43 @@ export default function Navbar(props) {
         </Grid>
         {/* hamburger ends */}
 
-
         {/* main-1 search bar Tab */}
         <Grid item xs={12}>
           <Grid container spacing={1} className="main-1">
             <Grid item xs={12} md={3} className="center">
-              <img src={logo} style={{ cursor: 'pointer' }} onClick={() => { props.history('/') }} alt="logo.png"></img>
+              <img
+                src={logo}
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  props.history("/");
+                }}
+                alt="logo.png"
+              ></img>
             </Grid>
             <Grid item xs={10} md={6} className="center searchBar">
               <Autocomplete
                 disablePortal
-                size='small'
+                size="small"
                 fullWidth
-                // autoComplete 
+                // autoComplete
+                noOptionsText={"Search..."}
                 autoHighlight
                 onKeyPress={fireSearchQuery}
                 clearOnEscape
                 id="combo-box-demo"
-                options={search.searchList.map((row) => { return row.product_title })}
+                options={search.searchList.map((row) => {
+                  return row.product_title;
+                })}
                 // sx={{ width: 300 }}
-                renderInput={(params) => <TextField onKeyUpCapture={handleSearch}
-                  // value = {search.searchParams || ''} 
-                  // onChange = {} 
-                  {...params}
-                  label="Search" />}
+                renderInput={(params) => (
+                  <TextField
+                    onKeyUpCapture={handleSearch}
+                    // value = {search.searchParams || ''}
+                    // onChange = {}
+                    {...params}
+                    label="Search"
+                  />
+                )}
               />
               {/* <TextField
                 id="input-with-icon-textfield"
@@ -539,16 +586,19 @@ export default function Navbar(props) {
                 <PersonOutlineOutlinedIcon />
               </IconButton>
               <MenuBox></MenuBox>
-              <IconButton 
-               onClick={() => {
-                props.history("/wishlist");
-              }}
-              color="primary">
-              {window.location.pathname === "/wishlist" ? 
-              <FavoriteIcon /> :
-                                <Badge badgeContent={wishlist.items.length} color="primary">
-                                <FavoriteBorderOutlinedIcon />
-                              </Badge>}
+              <IconButton
+                onClick={() => {
+                  props.history("/wishlist");
+                }}
+                color="primary"
+              >
+                {window.location.pathname === "/wishlist" ? (
+                  <FavoriteIcon />
+                ) : (
+                  <Badge badgeContent={wishlist.items.length} color="primary">
+                    <FavoriteBorderOutlinedIcon />
+                  </Badge>
+                )}
               </IconButton>
               <IconButton
                 color="primary"
@@ -596,87 +646,124 @@ export default function Navbar(props) {
         </Grid> */}
         {/* ends main-2 link container */}
         <Grid item xs={12} className="main-2">
-          <Grid container className='dropdown-wrapper' >
-            <Grid item >
-              <Button component={Redirect} to='/' className="btn">Home</Button>
+          <Grid container className="dropdown-wrapper">
+            <Grid item>
+              <Button component={Redirect} to="/" className="btn">
+                Home
+              </Button>
             </Grid>
-            <Grid item >
-              <Box onMouseOver={() => handleDropdown('furniture')}
-                onMouseOut={() => handleDropdown('furniture')}
+            <Grid item>
+              <Box
+                onMouseOver={() => handleDropdown("furniture")}
+                onMouseOut={() => handleDropdown("furniture")}
               >
-                <Button className="btn"  >Furniture</Button>
-                <List sx={{ display: show.furniture ? 'block' : 'none' }} dense={true} className='listBox'>
-                  {generate('furniture')}
+                <Button className="btn">Furniture</Button>
+                <List
+                  sx={{ display: show.furniture ? "block" : "none" }}
+                  dense={true}
+                  className="listBox"
+                >
+                  {generate("furniture")}
                 </List>
               </Box>
             </Grid>
-            <Grid item >
-              <Box onMouseOver={() => handleDropdown('kitchen')}
-                onMouseOut={() => handleDropdown('kitchen')}
+            <Grid item>
+              <Box
+                onMouseOver={() => handleDropdown("kitchen")}
+                onMouseOut={() => handleDropdown("kitchen")}
               >
-                <Button className="btn"  >Kitchen Item's</Button>
-                <List sx={{ display: show.kitchen ? 'block' : 'none' }} dense={true} className='listBox'>
-                  {generate('kitchen')}
+                <Button className="btn">Kitchen Item's</Button>
+                <List
+                  sx={{ display: show.kitchen ? "block" : "none" }}
+                  dense={true}
+                  className="listBox"
+                >
+                  {generate("kitchen")}
                 </List>
               </Box>
             </Grid>
-            <Grid item >
-              <Box onMouseOver={() => handleDropdown('gifting')}
-                onMouseOut={() => handleDropdown('gifting')}
+            <Grid item>
+              <Box
+                onMouseOver={() => handleDropdown("gifting")}
+                onMouseOut={() => handleDropdown("gifting")}
               >
-                <Button className="btn"  >Gifting</Button>
-                <List sx={{ display: show.gifting ? 'block' : 'none' }} dense={true} className='listBox'>
-                  {generate('gifting')}
+                <Button className="btn">Gifting</Button>
+                <List
+                  sx={{ display: show.gifting ? "block" : "none" }}
+                  dense={true}
+                  className="listBox"
+                >
+                  {generate("gifting")}
                 </List>
               </Box>
             </Grid>
-            <Grid item >
-              <Box onMouseOver={() => handleDropdown('exclusive')}
-                onMouseOut={() => handleDropdown('exclusive')}
+            <Grid item>
+              <Box
+                onMouseOver={() => handleDropdown("exclusive")}
+                onMouseOut={() => handleDropdown("exclusive")}
               >
-                <Button className="btn"  >Exclusive</Button>
-                <List sx={{ display: show.exclusive ? 'block' : 'none' }} dense={true} className='listBox'>
-                  {generate('exclusive')}
+                <Button className="btn">Exclusive</Button>
+                <List
+                  sx={{ display: show.exclusive ? "block" : "none" }}
+                  dense={true}
+                  className="listBox"
+                >
+                  {generate("exclusive")}
                 </List>
               </Box>
             </Grid>
-            <Grid item >
-              <Box onMouseOver={() => handleDropdown('useful')}
-                onMouseOut={() => handleDropdown('useful')}
+            <Grid item>
+              <Box
+                onMouseOver={() => handleDropdown("useful")}
+                onMouseOut={() => handleDropdown("useful")}
               >
-                <Button className="btn"  >Useful Products</Button>
-                <List sx={{ display: show.useful ? 'block' : 'none' }} dense={true} className='listBox'>
-                  {generate('useful')}
+                <Button className="btn">Useful Products</Button>
+                <List
+                  sx={{ display: show.useful ? "block" : "none" }}
+                  dense={true}
+                  className="listBox"
+                >
+                  {generate("useful")}
                 </List>
               </Box>
             </Grid>
-            <Grid item >
-              <Box onMouseOver={() => handleDropdown('traditional')}
-                onMouseOut={() => handleDropdown('traditional')}
+            <Grid item>
+              <Box
+                onMouseOver={() => handleDropdown("traditional")}
+                onMouseOut={() => handleDropdown("traditional")}
               >
-                <Button className="btn"  >Traditional</Button>
-                <List sx={{ display: show.traditional ? 'block' : 'none' }} dense={true} className='listBox'>
-                  {generate('traditional')}
+                <Button className="btn">Traditional</Button>
+                <List
+                  sx={{ display: show.traditional ? "block" : "none" }}
+                  dense={true}
+                  className="listBox"
+                >
+                  {generate("traditional")}
                 </List>
               </Box>
             </Grid>
-            <Grid item >
-              <Box onMouseOver={() => handleDropdown('company')}
-                onMouseOut={() => handleDropdown('company')}
+            <Grid item>
+              <Box
+                onMouseOver={() => handleDropdown("company")}
+                onMouseOut={() => handleDropdown("company")}
               >
-                <Button className="btn"  >Company</Button>
-                <List sx={{ display: show.company ? 'block' : 'none' }} dense={true} className='listBox'>
-                  {generate('company')}
+                <Button className="btn">Company</Button>
+                <List
+                  sx={{ display: show.company ? "block" : "none" }}
+                  dense={true}
+                  className="listBox"
+                >
+                  {generate("company")}
                 </List>
               </Box>
             </Grid>
-            <Grid item >
-              <Button component={Redirect} to='/product' className="btn"  >Browse All</Button>
+            <Grid item>
+              <Button component={Redirect} to="/product" className="btn">
+                Browse All
+              </Button>
             </Grid>
           </Grid>
         </Grid>
-
-
       </Grid>
     </>
   );

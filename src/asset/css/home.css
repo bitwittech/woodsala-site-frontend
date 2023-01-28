@@ -279,9 +279,6 @@ img {
                                             ======================================================================= */
 
 @media screen and (max-width: 800px) {
-    html {
-        font-size: 70% !important;
-    }
     .banner {
         margin-bottom: 15%;
     }
@@ -331,9 +328,6 @@ img {
     .banner-text {
         left: 1%;
     }
-    html {
-        font-size: 65% !important;
-    }
     .underline {
         margin-bottom: 8% !important;
     }
@@ -346,9 +340,6 @@ img {
 }
 
 @media screen and (max-width: 400px) {
-    html {
-        font-size: 50% !important;
-    }
     .text-3 {
         display: none;
     }

@@ -92,7 +92,8 @@
 .shopFrom {
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 30px;
     align-items: center;
 }
 
@@ -106,6 +107,10 @@
 
 .moreInfo {
     padding: 2% 5%;
+}
+
+.moreInfo a {
+    text-decoration: none;
 }
 
 .shopFrom {

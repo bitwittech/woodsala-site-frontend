@@ -1,15 +1,15 @@
 // Old Page ==============
 
 import React, { useState, useMemo } from "react";
-import { Link, useParams } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { Link, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 import Carousel from "react-multi-carousel";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import defaultIMG from "../../asset/images/defaultProduct.svg";
-import Review from '../user/Review'
-import amazon from '../../asset/images/productPage/amazon.svg';
-import flipkart from '../../asset/images/productPage/flipkart.svg';
-import jioMart from '../../asset/images/productPage/JioMart.png';
+import Review from "../user/Review";
+import amazon from "../../asset/images/productPage/amazon.png";
+import flipkart from "../../asset/images/productPage/flipkart.png";
+import jioMart from "../../asset/images/productPage/JioMart.png";
 
 // css
 import "../../asset/css/productDetails.css";
@@ -37,21 +37,21 @@ import {
 } from "@mui/material";
 import { Helmet } from "react-helmet";
 
+// APis function
+import {
+  getProductDetails,
+  addCartItem,
+  getRelatedProduct,
+} from "../../service/service";
 
-
-// APis function 
-import { getProductDetails, addCartItem, getRelatedProduct } from '../../service/service'
-
-
-// redux 
-import { useDispatch, useSelector } from 'react-redux';
+// redux
+import { useDispatch, useSelector } from "react-redux";
 // action
-import { addItem, removeItem, setAlert } from '../../Redux/action/action'
+import { addItem, removeItem, setAlert } from "../../Redux/action/action";
 
 export default function ProductDetails(props) {
-
   // state
-  const state = useSelector(state => state);
+  const state = useSelector((state) => state);
 
   //redux
   const dispatch = useDispatch();
@@ -65,53 +65,50 @@ export default function ProductDetails(props) {
   // useParams search parameters
   const { SKU, title, category } = useParams();
 
-  // state for data 
-  const [data, setData] = useState(null)
-  const [relatedProducts, setRelatedProducts] = useState([])
+  // state for data
+  const [data, setData] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
-
-  // for getting the product 
+  // for getting the product
   useMemo(() => {
-    setData(null)
-    setRelatedProducts([])
-    getData()
+    setData(null);
+    setRelatedProducts([]);
+    getData();
   }, [SKU, title, category]);
 
-
   async function getData(filters) {
-
     try {
+      let productDetails = await getProductDetails(SKU);
 
-      let productDetails = await getProductDetails(SKU)
+      setData(productDetails.data.data);
 
-      setData(productDetails.data.data)
+      setVariant(productDetails.data.variant);
 
-      setVariant(productDetails.data.variant)
+      let related = await getRelatedProduct({
+        product_title: title,
+        category_name: category,
+      });
 
-      let related = await getRelatedProduct({ product_title: title, category_name: category })
-
-      setRelatedProducts(related.data)
-
+      setRelatedProducts(related.data);
     } catch (err) {
-      console.log(err)
-      dispatch(setAlert({
-        variant: 'error',
-        message: 'Something went wrong !!!',
-        open: true
-      }))
+      console.log(err);
+      dispatch(
+        setAlert({
+          variant: "error",
+          message: "Something went wrong !!!",
+          open: true,
+        })
+      );
     }
   }
-
 
   // const handleChange = (panel) => (event, newExpanded) => {
   //   setExpanded(newExpanded ? panel : false);
   // };
 
-
   // const handleChangeTab = (event, newValue) => {
   //   setValue(newValue);
   // };
-
 
   const responsive = {
     midDesktop: {
@@ -161,14 +158,13 @@ export default function ProductDetails(props) {
   function a11yProps(index) {
     return {
       id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`,
     };
   }
 
-  // function for adding the product to cart 
+  // function for adding the product to cart
   const addToCart = async () => {
-
-    // server side 
+    // server side
     if (state.auth.isAuth) {
       await addCartItem({
         CID: state.auth.CID,
@@ -176,50 +172,57 @@ export default function ProductDetails(props) {
         quantity: data.quantity || 1,
       })
         .then((response) => {
-          // for client side 
+          // for client side
           dispatch(removeItem(data.SKU));
 
-          dispatch(addItem({
-            product_id: data.SKU,
-            quantity: data.quantity,
-            CID: state.auth.CID
-          }));
+          dispatch(
+            addItem({
+              product_id: data.SKU,
+              quantity: data.quantity,
+              CID: state.auth.CID,
+            })
+          );
 
-          return dispatch(setAlert({
-            variant: 'success',
-            message: response.data.message,
-            open: true
-          }))
+          return dispatch(
+            setAlert({
+              variant: "success",
+              message: response.data.message,
+              open: true,
+            })
+          );
         })
         .catch((err) => {
-          return dispatch(setAlert({
-            variant: 'error',
-            message: 'Something Went Wrong !!!',
-            open: true
-          }))
-        })
-    }
-    else {
-      // for client side 
+          return dispatch(
+            setAlert({
+              variant: "error",
+              message: "Something Went Wrong !!!",
+              open: true,
+            })
+          );
+        });
+    } else {
+      // for client side
       dispatch(removeItem(data.SKU));
 
-      dispatch(addItem({
-        product_id: data.SKU,
-        quantity: data.quantity,
-        CID: 'Not Logged In'
-      }));
+      dispatch(
+        addItem({
+          product_id: data.SKU,
+          quantity: data.quantity,
+          CID: "Not Logged In",
+        })
+      );
 
-
-      return dispatch(setAlert({
-        variant: 'success',
-        message: 'Item added to the cart !!!',
-        open: true
-      }))
-
+      return dispatch(
+        setAlert({
+          variant: "success",
+          message: "Item added to the cart !!!",
+          open: true,
+        })
+      );
     }
-  }
+  };
 
-  // function for variant section 
+  // function for variant section
 
   function Variant() {
     return (
@@ -228,41 +231,67 @@ export default function ProductDetails(props) {
           Variants
         </Typography>
         <Divider />
-        <Box className='Variants' mt={2}>
-
+        <Box className="Variants" mt={2}>
           {/* // size   */}
-          {variant.size.length > 0 && <Typography variant='button'>Dimension</Typography>}
-          {variant.size.length > 0 &&
-            <Box className='size'>
-              {variant.size.map(s => <Button
-                component={Link}
-                to={`/details/${s.SKU}/${s.title}/${s.category}`}
-                size={'small'}
-                variant={SKU == s.SKU ? 'contained' : 'outlined'}>{s.size}</Button>)}
-            </Box>}
+          {variant.size.length > 0 && (
+            <Typography variant="button">Dimension</Typography>
+          )}
+          {variant.size.length > 0 && (
+            <Box className="size">
+              {variant.size.map((s) => (
+                <Button
+                  component={Link}
+                  to={`/details/${s.SKU}/${s.title}/${s.category}`}
+                  size={"small"}
+                  variant={SKU == s.SKU ? "contained" : "outlined"}
+                >
+                  {s.size}
+                </Button>
+              ))}
+            </Box>
+          )}
 
           {/* material  */}
-          {variant.material.length > 0 && <Typography variant='button'>Material</Typography>}
-          {variant.material.length > 0 && <Box className='size materialBox'>
-
-            {variant.material.map(s => <Button
-              component={Link}
-              to={`/details/${s.SKU}/${s.title}/${s.category}`}
-              size={'small'} variant={SKU == s.SKU ? 'contained' : 'outlined'} className='item'>{s.material}</Button>)}
-          </Box>}
+          {variant.material.length > 0 && (
+            <Typography variant="button">Material</Typography>
+          )}
+          {variant.material.length > 0 && (
+            <Box className="size materialBox">
+              {variant.material.map((s) => (
+                <Button
+                  component={Link}
+                  to={`/details/${s.SKU}/${s.title}/${s.category}`}
+                  size={"small"}
+                  variant={SKU == s.SKU ? "contained" : "outlined"}
+                  className="item"
+                >
+                  {s.material}
+                </Button>
+              ))}
+            </Box>
+          )}
 
           {/* range */}
-          {variant.range.length > 0 && <Typography variant='button'>Range</Typography>}
-          {variant.range.length > 0 && <Box className=' size rang'>
-            {variant.range.map(s => <Button
-              component={Link}
-              to={`/details/${s.SKU}/${s.title}/${s.category}`}
-              size={'small'} variant={SKU == s.SKU ? 'contained' : 'outlined'}>{s.range}</Button>)}
-          </Box>}
-
+          {variant.range.length > 0 && (
+            <Typography variant="button">Range</Typography>
+          )}
+          {variant.range.length > 0 && (
+            <Box className=" size rang">
+              {variant.range.map((s) => (
+                <Button
+                  component={Link}
+                  to={`/details/${s.SKU}/${s.title}/${s.category}`}
+                  size={"small"}
+                  variant={SKU == s.SKU ? "contained" : "outlined"}
+                >
+                  {s.range}
+                </Button>
+              ))}
+            </Box>
+          )}
         </Box>
       </>
-    )
+    );
   }
 
   return (
@@ -270,19 +299,26 @@ export default function ProductDetails(props) {
       {/* helmet tag  */}
       <Helmet>
         <title>{`Product || ${title}`}</title>
-        <meta name="description" content="This page contains product details. And all the information about the particular product" />
+        <meta
+          name="description"
+          content="This page contains product details. And all the information about the particular product"
+        />
       </Helmet>
       {/* helmet tag ends  */}
-      {data ?
+      {data ? (
         <>
           {/* main section  */}
           <Grid container className="mainSec">
             {/* Image sec */}
             <Grid item className="imageSec" xs={12} md={6}>
               <Grid container>
-                <Grid item xs={8} sx={{
-                  margin: 'auto'
-                }}>
+                <Grid
+                  item
+                  xs={8}
+                  sx={{
+                    margin: "auto",
+                  }}
+                >
                   <img
                     className="showImage"
                     src={data.product_image[imageIndex]}
@@ -313,24 +349,30 @@ export default function ProductDetails(props) {
             {/* details sec  */}
             <Grid item xs={12} className="contentSec" md={6}>
               <Grid container>
-                <Grid item xs={12} >
-                  <Breadcrumbs className='bradCrumbs' aria-label="breadcrumb">
+                <Grid item xs={12}>
+                  <Breadcrumbs className="bradCrumbs" aria-label="breadcrumb">
                     <Link color="primary" to="/">
                       Home
                     </Link>
                     <Link color="primary" to="/product">
                       Product
                     </Link>
-                    {data.category_name && <Typography color="text.primary">{data.category_name}</Typography>}
-                    {data.sub_category_name && <Typography color="text.primary">{data.sub_category_name}</Typography>}
+                    {data.category_name && (
+                      <Typography color="text.primary">
+                        {data.category_name}
+                      </Typography>
+                    )}
+                    {data.sub_category_name && (
+                      <Typography color="text.primary">
+                        {data.sub_category_name}
+                      </Typography>
+                    )}
                   </Breadcrumbs>
                   <Typography sx={{ fontWeight: 350 }} variant="h3">
                     {/* product title */}
                     {data.product_title}
                   </Typography>
-                  <Typography variant="h5">
-                    {data.SKU}
-                  </Typography>
+                  <Typography variant="h5">{data.SKU}</Typography>
                   <Box className="ratting">
                     <Rating
                       readOnly
@@ -349,10 +391,27 @@ export default function ProductDetails(props) {
                   {/* Price */}
                   <Box className="priceSec">
                     <Typography variant="h4">
-                      <strike>{data.showroom_price ? (data.showroom_price).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' }) : (0).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</strike>
+                      <strike>
+                        {data.showroom_price
+                          ? data.showroom_price.toLocaleString("us-Rs", {
+                              style: "currency",
+                              currency: "INR",
+                            })
+                          : (0).toLocaleString("us-Rs", {
+                              style: "currency",
+                              currency: "INR",
+                            })}
+                      </strike>
                     </Typography>
-                    <Typography variant="h4" sx={{ fontWeight: 'bolder' }}>
-                      {data.selling_price && (data.selling_price - (data.selling_price / 100) * data.discount_limit).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}
+                    <Typography variant="h4" sx={{ fontWeight: "bolder" }}>
+                      {data.selling_price &&
+                        (
+                          data.selling_price -
+                          (data.selling_price / 100) * data.discount_limit
+                        ).toLocaleString("us-Rs", {
+                          style: "currency",
+                          currency: "INR",
+                        })}
                     </Typography>
                     <Typography sx={{ color: "#FD0606" }} variant="h6">
                       {/* discount */}
@@ -369,14 +428,28 @@ export default function ProductDetails(props) {
                   <Stack sx={{ paddingTop: "2%" }}>
                     <Typography variant="body1">
                       Size (Inch)
-                      <Typography sx={{ float: "right" }} variant="body1">{data.length_main} L x {data.height} H x {data.breadth} B</Typography>
+                      <Typography sx={{ float: "right" }} variant="body1">
+                        {data.length_main} L x {data.height} H x {data.breadth}{" "}
+                        B
+                      </Typography>
                     </Typography>
                     <Typography variant="body1">
                       Material
-                      <Typography sx={{ float: "right" }} variant="body1">{data.primary_material}</Typography>
+                      <Typography sx={{ float: "right" }} variant="body1">
+                        {data.primary_material.join()}
+                      </Typography>
                     </Typography>
                     <Typography variant="body1">
-                      Delivery By<Typography sx={{ float: "right" }} variant="body1">{data.manufacturing_time + data.polish_time} Days</Typography>
+                      Polish
+                      <Typography sx={{ float: "right" }} variant="body1">
+                        {data.polish.join()}
+                      </Typography>
+                    </Typography>
+                    <Typography variant="body1">
+                      Delivery By
+                      <Typography sx={{ float: "right" }} variant="body1">
+                        {data.manufacturing_time + data.polish_time} Days
+                      </Typography>
                     </Typography>
                     {/* <Typography variant="body1">
                       Manufacturing Time<Typography sx={{ float: "right" }} variant="body1">{data.manufacturing_time}</Typography>
@@ -389,7 +462,7 @@ export default function ProductDetails(props) {
                     </Typography> */}
                   </Stack>
                   {/* Polish */}
-                  <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
+                  {/* <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
                     Polish
                   </Typography>
                   <Divider />
@@ -419,23 +492,11 @@ export default function ProductDetails(props) {
                     <MenuItem key={"none"} value="None">
                       {"None"}
                     </MenuItem>
-                  </TextField>
+                  </TextField> */}
                   {/* Variants  */}
                   {variant.show && <Variant />}
                   {/* Variants ends  */}
 
-                  {/* Affiliate Vendors */}
-                  <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
-                    Also Shop From
-                  </Typography>
-                  <Divider />
-                  <Stack className='shopFrom' >
-                    <img className='vendorIcon' src={amazon} alt='amazon_icon' />
-                    |
-                    <img className='vendorIcon' src={flipkart} alt='flipkart_icon' />
-                    |
-                    <img className='vendorIcon' src={jioMart} alt='jio_icon' />
-                  </Stack>
                   {/* <Typography sx={{ fontWeight: 400, mt: 1 }} variant="h6">
                     Price Details
                   </Typography>
@@ -481,13 +542,15 @@ export default function ProductDetails(props) {
                     <TextField
                       size="small"
                       fullWidth
-                      sx={{ width: "50%" }}
+                      sx={{ width: "20%" }}
                       id="standard-multiline-static"
                       label="Quantity"
                       type="number"
                       variant="outlined"
                       value={data.quantity || 1}
-                      onChange={(e) => setData({ ...data, quantity: e.target.value })}
+                      onChange={(e) =>
+                        setData({ ...data, quantity: e.target.value })
+                      }
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">QTY</InputAdornment>
@@ -496,29 +559,50 @@ export default function ProductDetails(props) {
                     />
                     <Button
                       fullWidth
-                      size={'large'}
-
+                      size={"large"}
                       variant="outlined"
-                      onClick={() => addToCart(data)} >
+                      onClick={() => addToCart(data)}
+                    >
                       Add To Cart
                     </Button>
                     <Button
                       fullWidth
-                      size={'large'}
+                      size={"large"}
                       variant="contained"
                       onClick={() => {
-                        addToCart(data); window.location.href = '/cart'
-                      }} >
+                        addToCart(data);
+                        window.location.href = "/cart";
+                      }}
+                    >
                       Buy Now
                     </Button>
                   </Box>
+                  {/* Affiliate Vendors */}
+                  <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
+                    Also Shop From
+                  </Typography>
+                  <Divider />
+                  <Stack className="shopFrom">
+                    <img
+                      className="vendorIcon"
+                      src={amazon}
+                      alt="amazon_icon"
+                    />
+                    |
+                    <img
+                      className="vendorIcon"
+                      src={flipkart}
+                      alt="flipkart_icon"
+                    />
+                    |
+                    <img className="vendorIcon" src={jioMart} alt="jio_icon" />
+                  </Stack>
                 </Grid>
               </Grid>
             </Grid>
             {/* details sec ends */}
           </Grid>
           {/* main section Ends */}
-
 
           {/* More Information */}
 
@@ -641,7 +725,11 @@ export default function ProductDetails(props) {
 
           </Grid> */}
         </>
-        : <Box sx={{ display: 'block', margin: 'auto', width: 'max-content' }}><CircularProgress /></Box>}
+      ) : (
+        <Box sx={{ display: "block", margin: "auto", width: "max-content" }}>
+          <CircularProgress />
+        </Box>
+      )}
       {/* More Information ends */}
 
       {/* Related Products */}
@@ -666,7 +754,10 @@ export default function ProductDetails(props) {
                 <Card
                   component={Link}
                   to={`/details/${article.SKU}/${article.product_title}/${article.category_name}`}
-                  className="card" key={index} sx={{ boxShadow: 2 }}>
+                  className="card"
+                  key={index}
+                  sx={{ boxShadow: 2 }}
+                >
                   <CardActionArea>
                     <CardMedia
                       className="cardMedia"
@@ -676,20 +767,52 @@ export default function ProductDetails(props) {
                       alt="Product_image"
                     />
                     <CardContent>
-                      <Typography className='productTitle' sx={{ fontWeight: 'bolder' }} variant="h6" component="div">
+                      <Typography
+                        className="productTitle"
+                        sx={{ fontWeight: "bolder" }}
+                        variant="h6"
+                        component="div"
+                      >
                         {article.product_title}
                       </Typography>
-                      <Typography sx={{ mt: 1 }} className='productTitle' variant="body1" component="div">
+                      <Typography
+                        sx={{ mt: 1 }}
+                        className="productTitle"
+                        variant="body1"
+                        component="div"
+                      >
                         {article.product_description}
                       </Typography>
-                      <Typography sx={{ mt: 1 }} variant="body1" >
+                      <Typography sx={{ mt: 1 }} variant="body1">
                         ({article.discount_limit}% OFF)
                       </Typography>
                       <Typography variant="h6" color="text.secondary">
-                        <del>{article.selling_price ? (article.selling_price).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' }) : '0'.toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}</del>
+                        <del>
+                          {article.selling_price
+                            ? article.selling_price.toLocaleString("us-Rs", {
+                                style: "currency",
+                                currency: "INR",
+                              })
+                            : "0".toLocaleString("us-Rs", {
+                                style: "currency",
+                                currency: "INR",
+                              })}
+                        </del>
                       </Typography>
-                      <Typography variant="h6" sx={{ fontWeight: 'bolder' }} color="text.secondary">
-                        {article.selling_price && (article.selling_price - (article.selling_price / 100) * article.discount_limit).toLocaleString('us-Rs', { style: 'currency', currency: 'INR' })}
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bolder" }}
+                        color="text.secondary"
+                      >
+                        {article.selling_price &&
+                          (
+                            article.selling_price -
+                            (article.selling_price / 100) *
+                              article.discount_limit
+                          ).toLocaleString("us-Rs", {
+                            style: "currency",
+                            currency: "INR",
+                          })}
                       </Typography>
                     </CardContent>
                   </CardActionArea>
@@ -697,7 +820,6 @@ export default function ProductDetails(props) {
               );
             })}
           </Carousel>
-
         </Grid>
       </Grid>
 
@@ -710,102 +832,99 @@ export default function ProductDetails(props) {
   );
 }
 
+// const specification = [
+//   'product_title',
+//   'category_name',
+//   'sub_category_name',
+//   'primary_material',
+//   'length_main',
+//   'breadth',
+//   'height',
+//   'weight',
+//   'polish_name',
+//   'assembly_required',
+//   'assembly_part',
+//   'selling_price',
+//   'showroom_price',
+//   'discount_limit',
+//   'show_on_mobile',
+//   'range',
+// ]
 
+// const image = [
+//   'featured_image',
+//   'mannequin_image',
+//   'specification_image',
+// ]
 
+// const feature = [
+//   "rotating_seats",
+//   "eatable_oil_polish",
+//   "no_chemical",
+//   "weaving",
+//   "knife",
+//   "not_suitable_for_Micro_Dish",
+//   "tilt_top",
+//   "inside_compartments",
+//   "stackable",
+//   "ceramic_drawers",
+//   "ceramic_tiles",
+// ]
 
-  // const specification = [
-  //   'product_title',
-  //   'category_name',
-  //   'sub_category_name',
-  //   'primary_material',
-  //   'length_main',
-  //   'breadth',
-  //   'height',
-  //   'weight',
-  //   'polish_name',
-  //   'assembly_required',
-  //   'assembly_part',
-  //   'selling_price',
-  //   'showroom_price',
-  //   'discount_limit',
-  //   'show_on_mobile',
-  //   'range',
-  // ]
+// const miscellanous = [
+//   "weight_capacity",
+//   "joints",
+//   "drawer",
+//   "drawer_count",
+//   "back_style",
+// ]
 
-  // const image = [
-  //   'featured_image',
-  //   'mannequin_image',
-  //   'specification_image',
-  // ]
+// const inventory = [
+//   'warehouse',
+//   'bangalore_stock',
+//   'jodhpur_stock',
+//   'selling_points',
+//   'polish_time',
+//   'manufacturing_time',
+//   'returnDays',
+//   'COD',
+//   'returnable',
+//   'package_length',
+//   'package_height',
+//   'package_breadth',
+//   'quantity',
+//   'unit',
+// ]
 
-  // const feature = [
-  //   "rotating_seats",
-  //   "eatable_oil_polish",
-  //   "no_chemical",
-  //   "weaving",
-  //   "knife",
-  //   "not_suitable_for_Micro_Dish",
-  //   "tilt_top",
-  //   "inside_compartments",
-  //   "stackable",
-  //   "ceramic_drawers",
-  //   "ceramic_tiles",
-  // ]
+// const seo = [
+//   'product_description',
+//   'seo_title',
+//   'seo_description',
+//   'seo_keyword',
+// ]
 
-  // const miscellanous = [
-  //   "weight_capacity",
-  //   "joints",
-  //   "drawer",
-  //   "drawer_count",
-  //   "back_style",
-  // ]
-
-  // const inventory = [
-  //   'warehouse',
-  //   'bangalore_stock',
-  //   'jodhpur_stock',
-  //   'selling_points',
-  //   'polish_time',
-  //   'manufacturing_time',
-  //   'returnDays',
-  //   'COD',
-  //   'returnable',
-  //   'package_length',
-  //   'package_height',
-  //   'package_breadth',
-  //   'quantity',
-  //   'unit',
-  // ]
-
-  // const seo = [
-  //   'product_description',
-  //   'seo_title',
-  //   'seo_description',
-  //   'seo_keyword',
-  // ]
-
-  // const extra = [
-  //   'hinge_name',
-  //   'knob_name',
-  //   'textile_name',
-  //   'textile_type',
-  //   'door_name',
-  //   'fitting_name',
-  //   'top_size',
-  //   'dial_size',
-  //   'seating_size_width',
-  //   'seating_size_depth',
-  //   'seating_size_height',
-  //   'fabric',
-  //   'fabric_name',
-  //   'mirror',
-  //   'mirror_length',
-  //   'mirror_width',
-  //   'silver',
-  //   'silver_weight',
-  //   'wheel',
-  //   'trolley',
-  //   'trolley_material',
-  //   'tax_rate',
-  //   'legs'
-  // ]
+// const extra = [
+//   'hinge_name',
+//   'knob_name',
+//   'textile_name',
+//   'textile_type',
+//   'door_name',
+//   'fitting_name',
+//   'top_size',
+//   'dial_size',
+//   'seating_size_width',
+//   'seating_size_depth',
+//   'seating_size_height',
+//   'fabric',
+//   'fabric_name',
+//   'mirror',
+//   'mirror_length',
+//   'mirror_width',
+//   'silver',
+//   'silver_weight',
+//   'wheel',
+//   'trolley',
+//   'trolley_material',
+//   'tax_rate',
+//   'legs'
+// ]

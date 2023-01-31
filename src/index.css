@@ -58,23 +58,31 @@
         margin-top: 20%;
     }
     
-    @media screen and (width <= 500px ) {
-        .alert {
-            font-size: 1.5rem !important;
-        }
-        body {
-            font-size: 90% !important;
+ 
+    
+    @media screen and (width >= 1900px) {
+        html {
+            font-size: 100% !important;
         }
     }
     
     @media screen and (width <= 1400px) {
-        body {
+        html {
             font-size: 85% !important;
         }
     }
     
     @media screen and (width <= 800px) {
-        body {
+        html {
             font-size: 80% !important;
+        }
+    }
+
+    @media screen and (width <= 500px ) {
+        .alert {
+            font-size: 1.5rem !important;
+        }
+        html {
+            font-size: x-small !important;
         }
     }

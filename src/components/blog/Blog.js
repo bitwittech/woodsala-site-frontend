@@ -119,7 +119,6 @@ export default function BlogContent({history}) {
             <br></br>
             <img
             src = {data.card_image}
-            className  = 'banner-img'
             alt = 'banner blog'
           />
             <br></br>

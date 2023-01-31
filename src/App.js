@@ -25,6 +25,8 @@ const SnakBar = lazy(() => import("./components/utility/SnakBar"))
 const NotFound = lazy(() => import("./components/utility/NotFound"))
 const Thanks = lazy(() => import("./components/utility/Thanks"))
 const Verify = lazy(() => import("./components/utility/Verify"))
+
+// components
 const Cart = lazy(() => import("./components/cart/Cart"))
 const Wishlist = lazy(() => import("./components/cart/Wishlist"))
 const Checkout = lazy(() => import("./components/cart/Checkout"))
@@ -34,6 +36,8 @@ const ProductList = lazy(() => import("./components/product/ProductList"))
 const EntryPoint = lazy(() => import("./components/home/EntryPoint"))
 const Profile = lazy(() => import("./components/user/Profile"))
 const Catagories = lazy(() => import("./components/product/Catagories"))
+const Blog = lazy(() => import("./components/blog/Blog"))
+const BlogHome = lazy(() => import("./components/blog/BlogHome"))
 
 
 // global theme
@@ -95,6 +99,11 @@ function App() {
           <Route path="/product/:category_name/:product_title" element={<ProductList history={history} />}></Route>
           <Route path="/product/:category_name" element={<ProductList history={history} />}></Route>
           <Route path="/product" element={<ProductList history={history} />}></Route>
+
+          {/* // blog routes */}
+          <Route path="/blog" element={<BlogHome history={history} />}></Route>
+          <Route path="/blog/:blog_id" element={<Blog history={history} />}></Route>
+
         </Routes>
         {window.location.pathname !== '/verify' && <Footer />}
       </>

@@ -277,3 +277,28 @@ export const getWishList = async (data) => {
 }
 
 // ========================== Ends Wishlist CURD =================
+
+// ==========================  Blog CURD =================
+
+// getBlogHome
+
+export const getBlogHome = async () => {
+  return await axios.get(`${API}/getBlogHome`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+};
+
+// getBlog description
+
+export const getBlog = async (data) => {
+  return await axios.get(`${API}/getBlog?uuid=${data}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+};
+
+// ========================== Ends Blog  CURD =================
+

@@ -36,6 +36,7 @@ function ImageUploader({ state, setData }) {
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/*": [],
+      "video/*": [],
     },
     onDrop: (acceptedFiles) => {
       setData((old) => {
@@ -43,9 +44,9 @@ function ImageUploader({ state, setData }) {
           ...old,
           data: {
             ...old.data,
-            review_images: acceptedFiles.map((file) =>
+            review_images: [...old.data.review_images, ...acceptedFiles.map((file) =>
               Object.assign(file, { preview: URL.createObjectURL(file) })
-            ),
+            )]
           },
         };
       });

@@ -17,10 +17,10 @@
         font-family: 'Maven Pro', sans-serif;
         /* font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace; */
     }
-    
+/*     
     html {
-        font-size: 90% !important;
-    }
+        font-size: 80% !important;
+    } */
     /* // utility alert */
     
     .alert {
@@ -58,23 +58,23 @@
         margin-top: 20%;
     }
     
-    @media screen and (max-width: 500px) {
+    @media screen and (width <= 500px ) {
         .alert {
             font-size: 1.5rem !important;
         }
-        html {
-            font-size: 120% !important;
+        body {
+            font-size: 90% !important;
         }
     }
     
-    @media screen and (min-width: 1400px) {
-        html {
-            font-size: 120% !important;
+    @media screen and (width <= 1400px) {
+        body {
+            font-size: 85% !important;
         }
     }
     
-    @media screen and (max-width: 800px) {
-        html {
-            font-size: 70% !important;
+    @media screen and (width <= 800px) {
+        body {
+            font-size: 80% !important;
         }
     }

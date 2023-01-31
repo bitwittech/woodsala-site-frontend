@@ -1156,7 +1156,7 @@ export default function ProductList(props) {
                     sx={{ boxShadow: 2, maxHeight: "100%", mb: 3 }}
                   >
                     <Grid container>
-                      {item.discount_limit > 0 && (
+                      {/* {item.discount_limit > 0 && (
                         <Grid className="discount" item xs={12}>
                           <Box>
                             <Typography
@@ -1167,7 +1167,7 @@ export default function ProductList(props) {
                             </Typography>
                           </Box>
                         </Grid>
-                      )}
+                      )} */}
                       <Grid
                         item
                         xs={12}

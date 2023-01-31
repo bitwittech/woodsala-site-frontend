@@ -64,7 +64,7 @@ function Review(props) {
         product_id={props.product_id}
       />
       <Grid item xs={12}>
-        <Typography sx={{ fontWeight: 500 }} variant="h4">
+        <Typography sx={{ fontWeight: 500 }} variant="h5">
           Customer Reviews
         </Typography>
       </Grid>
@@ -127,6 +127,19 @@ function Review(props) {
                             <Grid className={"reviewedImages"} item xs={2.5}>
                               <img src={image} alt={`review Images ${index}`} />
                             </Grid>
+                          ))}
+                        </Grid>
+                      </Grid>
+                    )}
+                    {row.review_videos.length > 0 && (
+                      <Grid mt={1} item xs={12}>
+                        <Typography variant="h5">Review Videos</Typography>
+                        <Grid container className="reviewedImagesContainer">
+                          {row.review_videos.map((image, index) => (
+                            <Grid className={"reviewedImages"} item xs={2.5}>
+                                 
+                            <video src={image} width="100" height="100" controls="controls" autoplay="true" />
+                              </Grid>
                           ))}
                         </Grid>
                       </Grid>
@@ -433,6 +446,7 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
                 <TextField
                   sx={{ p: 1 }}
                   fullWidth
+                  required
                   type="email"
                   size="small"
                   variant="outlined"

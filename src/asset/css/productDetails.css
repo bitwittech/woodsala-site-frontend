@@ -187,6 +187,24 @@
     overflow: hidden !important;
 }
 
+.stickCart {
+    position: fixed;
+    display: flex;
+    width: 100%;
+    bottom: -20%;
+    background-color:white;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 1%;
+    transition: all 1000ms;
+}
+
+.stickCart:hover {
+    background-color: wheat;
+}
+
 @media (max-width: 850px) {
     .imageSec {
         position: relative;

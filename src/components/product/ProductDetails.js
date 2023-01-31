@@ -1,6 +1,6 @@
 // Old Page ==============
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import Carousel from "react-multi-carousel";
@@ -155,12 +155,12 @@ export default function ProductDetails(props) {
     value: PropTypes.number.isRequired,
   };
 
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
+  // function a11yProps(index) {
+  //   return {
+  //     id: `simple-tab-${index}`,
+  //     "aria-controls": `simple-tabpanel-${index}`,
+  //   };
+  // }
 
   // function for adding the product to cart
   const addToCart = async () => {
@@ -169,7 +169,7 @@ export default function ProductDetails(props) {
       await addCartItem({
         CID: state.auth.CID,
         product_id: data.SKU,
-        quantity: data.quantity || 1,
+        quantity: data.qty || 1,
       })
         .then((response) => {
           // for client side
@@ -178,7 +178,7 @@ export default function ProductDetails(props) {
           dispatch(
             addItem({
               product_id: data.SKU,
-              quantity: data.quantity,
+              quantity: data.qty,
               CID: state.auth.CID,
             })
           );
@@ -207,7 +207,7 @@ export default function ProductDetails(props) {
       dispatch(
         addItem({
           product_id: data.SKU,
-          quantity: data.quantity,
+          quantity: data.qty,
           CID: "Not Logged In",
         })
       );
@@ -223,7 +223,6 @@ export default function ProductDetails(props) {
   };
 
   // function for variant section
-
   function Variant() {
     return (
       <>
@@ -294,6 +293,64 @@ export default function ProductDetails(props) {
     );
   }
 
+  const [showSticky, setShowSticky] = useState(false);
+
+  useMemo(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [window.scrollY]);
+
+  function handleScroll() {
+    const winScroll =
+      document.body.scrollTop || document.documentElement.scrollTop;
+    if (winScroll >= 800) setShowSticky(true);
+    else setShowSticky(false);
+  }
+
+  function StickyAddToCart({data,setData}) {
+    return (
+      <>
+       {data && <Box
+          className="stickCart"
+          sx={{
+            bottom: showSticky ? "0% !important" : "-20% !important",
+          }}
+        >
+          <Box sx={{ width: "50px" }}>
+            <img
+              style={{ width: "100%" }}
+              alt={"product_image"}
+              src={data.product_image[0] || defaultIMG}
+            ></img>
+          </Box>
+          <Typography variant="h6">{data.product_title}</Typography>
+          <TextField
+            size="small"
+            sx={{ flexBasis: "1" }}
+            id="standard-multiline-static"
+            label="Quantity"
+            type="number"
+            variant="outlined"
+            value={data.qty || 1}
+            onChange={(e) => setData({ ...data, qty: e.target.value })}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">QTY</InputAdornment>
+              ),
+            }}
+          />
+          <Button
+            size={"small"}
+            variant="contained"
+            onClick={() => addToCart(data)}
+          >
+            Add To Cart
+          </Button>
+        </Box>}
+      </>
+    );
+  }
+
   return (
     <>
       {/* helmet tag  */}
@@ -350,6 +407,7 @@ export default function ProductDetails(props) {
             <Grid item xs={12} className="contentSec" md={6}>
               <Grid container>
                 <Grid item xs={12}>
+                  {/* // link  */}
                   <Breadcrumbs className="bradCrumbs" aria-label="breadcrumb">
                     <Link color="primary" to="/">
                       Home
@@ -368,11 +426,13 @@ export default function ProductDetails(props) {
                       </Typography>
                     )}
                   </Breadcrumbs>
-                  <Typography sx={{ fontWeight: 350 }} variant="h3">
-                    {/* product title */}
+                  {/* product title */}
+                  <Typography sx={{ fontWeight: 350 }} variant="h4">
                     {data.product_title}
                   </Typography>
+                  {/* SKU */}
                   <Typography variant="h5">{data.SKU}</Typography>
+                  {/* ratting  */}
                   <Box className="ratting">
                     <Rating
                       readOnly
@@ -390,7 +450,7 @@ export default function ProductDetails(props) {
                   </Box>
                   {/* Price */}
                   <Box className="priceSec">
-                    <Typography variant="h4">
+                    {/* <Typography variant="h4">
                       <strike>
                         {data.showroom_price
                           ? data.showroom_price.toLocaleString("us-Rs", {
@@ -402,8 +462,8 @@ export default function ProductDetails(props) {
                               currency: "INR",
                             })}
                       </strike>
-                    </Typography>
-                    <Typography variant="h4" sx={{ fontWeight: "bolder" }}>
+                    </Typography> */}
+                    <Typography variant="h5" sx={{ fontWeight: "bolder" }}>
                       {data.selling_price &&
                         (
                           data.selling_price -
@@ -413,14 +473,14 @@ export default function ProductDetails(props) {
                           currency: "INR",
                         })}
                     </Typography>
-                    <Typography sx={{ color: "#FD0606" }} variant="h6">
+                    {/* <Typography sx={{ color: "#FD0606" }} variant="h6"> */}
                       {/* discount */}
-                      {data.discount_limit > 0 && `${data.discount_limit}% Off`}
-                    </Typography>
+                      {/* {data.discount_limit > 0 && `${data.discount_limit}% Off`} */}
+                    {/* </Typography> */}
                   </Box>
                 </Grid>
+                {/* Specifications */}
                 <Grid className="pd" item xs={12}>
-                  {/* Specifications */}
                   <Typography sx={{ fontWeight: 400 }} variant="h6">
                     Specifications
                   </Typography>
@@ -443,6 +503,12 @@ export default function ProductDetails(props) {
                       Polish
                       <Typography sx={{ float: "right" }} variant="body1">
                         {data.polish.join()}
+                      </Typography>
+                    </Typography>
+                    <Typography variant="body1">
+                      Quantity
+                      <Typography sx={{ float: "right" }} variant="body1">
+                        {data.quantity} {data.unit}
                       </Typography>
                     </Typography>
                     <Typography variant="body1">
@@ -538,6 +604,7 @@ export default function ProductDetails(props) {
                       Package Breadth (Inch)<Typography sx={{ float: "right" }} variant="body1">{data.package_breadth}</Typography>
                     </Typography>
                   </Stack> */}
+                  {/* // Buttons  */}
                   <Box className="cartButtons">
                     <TextField
                       size="small"
@@ -547,9 +614,9 @@ export default function ProductDetails(props) {
                       label="Quantity"
                       type="number"
                       variant="outlined"
-                      value={data.quantity || 1}
+                      value={data.qty || 1}
                       onChange={(e) =>
-                        setData({ ...data, quantity: e.target.value })
+                        setData({ ...data, qty: e.target.value })
                       }
                       InputProps={{
                         startAdornment: (
@@ -577,6 +644,8 @@ export default function ProductDetails(props) {
                       Buy Now
                     </Button>
                   </Box>
+                  {/* // Buttons ends  */}
+
                   {/* Affiliate Vendors */}
                   <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
                     Also Shop From
@@ -603,127 +672,6 @@ export default function ProductDetails(props) {
             {/* details sec ends */}
           </Grid>
           {/* main section Ends */}
-
-          {/* More Information */}
-
-          {/* <Grid container className="moreInfo" >
-            <Grid item xs={12}>
-              <Typography sx={{ fontWeight: 500 }} variant="h5">
-                MORE INFORMATION
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography sx={{ fontWeight: 100, padding: "1% 0%" }} component='span' variant="body1">
-                Explore full product details here !!!
-              </Typography>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Box sx={{ width: '100%' }}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                  <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
-                    <Tab label="Specification" {...a11yProps(0)} />
-                    <Tab label="Image" {...a11yProps(1)} />
-                    <Tab label="Features" {...a11yProps(2)} />
-                    <Tab label="Miscellaneous" {...a11yProps(3)} />
-                    <Tab label="Inventory & Shipping" {...a11yProps(4)} />
-                    <Tab label="SEO" {...a11yProps(5)} />
-                    <Tab label="Extra Details" {...a11yProps(6)} />
-                  </Tabs>
-                </Box>
-                <TabPanel value={value} index={0}>
-                  <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
-                    {specification.map((item) => {
-                      return <>
-                        <Typography variant="body1">
-                          {item}<Typography sx={{ float: "right" }} variant="body1">{data[item]}</Typography>
-                        </Typography>
-                        <Divider />
-                      </>
-                    })}
-                  </Stack>
-                </TabPanel>
-                <TabPanel value={value} index={1}>
-                  <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
-                    {image.map((item) => {
-                      return <>
-                        <Typography variant="h6">
-                          {item.toUpperCase()}<img src={data[item]} sx={{ float: "right" }} />
-                        </Typography>
-                        <Divider sx={{ mb: 2 }} />
-                      </>
-                    })}
-                  </Stack>
-                </TabPanel>
-                <TabPanel value={value} index={2}>
-                  <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
-                    {feature.map((item) => {
-                      return <>
-                        <Typography variant="body1">
-                          {item}<Typography sx={{ float: "right", color: data[item] ? 'green' : 'red' }}
-                            variant="body1">{data[item] ? 'true' : 'false'}</Typography>
-                        </Typography>
-                        <Divider />
-                      </>
-                    })}
-                  </Stack>
-                </TabPanel>
-                <TabPanel value={value} index={3}>
-                  <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
-                    {miscellanous.map((item) => {
-                      return <>
-                        <Typography variant="body1">
-                          {item}<Typography sx={{ float: "right" }}
-                            variant="body1">{data[item]}</Typography>
-                        </Typography>
-                        <Divider />
-                      </>
-                    })}
-                  </Stack>
-                </TabPanel>
-                <TabPanel value={value} index={4}>
-                  <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
-                    {inventory.map((item) => {
-                      return <>
-                        <Typography variant="body1">
-                          {item}<Typography sx={{ float: "right" }}
-                            variant="body1">{data[item]}</Typography>
-                        </Typography>
-                        <Divider />
-                      </>
-                    })}
-                  </Stack>
-                </TabPanel>
-                <TabPanel value={value} index={5}>
-                  <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
-                    {seo.map((item) => {
-                      return <>
-                        <Typography variant="body1">
-                          {item}<Typography sx={{ float: "right" }}
-                            variant="body1">{data[item]}</Typography>
-                        </Typography>
-                        <Divider />
-                      </>
-                    })}
-                  </Stack>
-                </TabPanel>
-                <TabPanel value={value} index={6}>
-                  <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
-                    {extra.map((item) => {
-                      return <>
-                        <Typography variant="body1">
-                          {item}<Typography sx={{ float: "right" }}
-                            variant="body1">{data[item]}</Typography>
-                        </Typography>
-                        <Divider />
-                      </>
-                    })}
-                  </Stack>
-                </TabPanel>
-              </Box>
-            </Grid>
-
-          </Grid> */}
         </>
       ) : (
         <Box sx={{ display: "block", margin: "auto", width: "max-content" }}>
@@ -736,7 +684,7 @@ export default function ProductDetails(props) {
 
       <Grid container className="moreInfo">
         <Grid item xs={12}>
-          <Typography sx={{ fontWeight: 500 }} variant="h4">
+          <Typography sx={{ fontWeight: 500 }} variant="h5">
             Related Products
           </Typography>
         </Grid>
@@ -751,7 +699,7 @@ export default function ProductDetails(props) {
           >
             {relatedProducts.map((article, index) => {
               return (
-                <Card
+              article.SKU !== data.SKU &&  <Card
                   component={Link}
                   to={`/details/${article.SKU}/${article.product_title}/${article.category_name}`}
                   className="card"
@@ -769,7 +717,7 @@ export default function ProductDetails(props) {
                     <CardContent>
                       <Typography
                         className="productTitle"
-                        sx={{ fontWeight: "bolder" }}
+                        // sx={{ fontWeight: "bolder" }}
                         variant="h6"
                         component="div"
                       >
@@ -778,12 +726,12 @@ export default function ProductDetails(props) {
                       <Typography
                         sx={{ mt: 1 }}
                         className="productTitle"
-                        variant="body1"
+                        variant="body2"
                         component="div"
                       >
                         {article.product_description}
                       </Typography>
-                      <Typography sx={{ mt: 1 }} variant="body1">
+                      {/* <Typography sx={{ mt: 1 }} variant="body1">
                         ({article.discount_limit}% OFF)
                       </Typography>
                       <Typography variant="h6" color="text.secondary">
@@ -798,10 +746,10 @@ export default function ProductDetails(props) {
                                 currency: "INR",
                               })}
                         </del>
-                      </Typography>
+                      </Typography> */}
                       <Typography
                         variant="h6"
-                        sx={{ fontWeight: "bolder" }}
+                        sx={{ fontWeight: "bold" }}
                         color="text.secondary"
                       >
                         {article.selling_price &&
@@ -828,9 +776,171 @@ export default function ProductDetails(props) {
       {/* Review Section */}
       <Review product_id={SKU} />
       {/* Review Section EnDs */}
+
+      {/* Sticky Add to Cart */}
+      {data && <Box
+          className="stickCart"
+          sx={{
+            bottom: showSticky ? "0% !important" : "-20% !important",
+          }}
+        >
+          <Box sx={{ width: "50px" }}>
+            <img
+              style={{ width: "100%" }}
+              alt={"product_image"}
+              src={data.product_image[0] || defaultIMG}
+            ></img>
+          </Box>
+          <Typography variant="h6">{data.product_title}</Typography>
+          <TextField
+            size="small"
+            sx={{ flexBasis: "1" }}
+            id="standard-multiline-static"
+            label="Quantity"
+            type="number"
+            variant="outlined"
+            value={data.qty || 1}
+            onChange={(e) => setData({ ...data, qty: e.target.value })}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">QTY</InputAdornment>
+              ),
+            }}
+          />
+          <Button
+            size={"small"}
+            variant="contained"
+            onClick={() => addToCart(data)}
+          >
+            Add To Cart
+          </Button>
+        </Box>}
+      {/* Sticky Add to Cart ends */}
     </>
   );
 }
+
+// {/* // ======================== Not is use for now */}
+//         {/* More Information */}
+
+//         {/* <Grid container className="moreInfo" >
+//           <Grid item xs={12}>
+//             <Typography sx={{ fontWeight: 500 }} variant="h5">
+//               MORE INFORMATION
+//             </Typography>
+//           </Grid>
+//           <Grid item xs={12}>
+//             <Typography sx={{ fontWeight: 100, padding: "1% 0%" }} component='span' variant="body1">
+//               Explore full product details here !!!
+//             </Typography>
+//           </Grid>
+
+//           <Grid item xs={12}>
+//             <Box sx={{ width: '100%' }}>
+//               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+//                 <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
+//                   <Tab label="Specification" {...a11yProps(0)} />
+//                   <Tab label="Image" {...a11yProps(1)} />
+//                   <Tab label="Features" {...a11yProps(2)} />
+//                   <Tab label="Miscellaneous" {...a11yProps(3)} />
+//                   <Tab label="Inventory & Shipping" {...a11yProps(4)} />
+//                   <Tab label="SEO" {...a11yProps(5)} />
+//                   <Tab label="Extra Details" {...a11yProps(6)} />
+//                 </Tabs>
+//               </Box>
+//               <TabPanel value={value} index={0}>
+//                 <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
+//                   {specification.map((item) => {
+//                     return <>
+//                       <Typography variant="body1">
+//                         {item}<Typography sx={{ float: "right" }} variant="body1">{data[item]}</Typography>
+//                       </Typography>
+//                       <Divider />
+//                     </>
+//                   })}
+//                 </Stack>
+//               </TabPanel>
+//               <TabPanel value={value} index={1}>
+//                 <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
+//                   {image.map((item) => {
+//                     return <>
+//                       <Typography variant="h6">
+//                         {item.toUpperCase()}<img src={data[item]} sx={{ float: "right" }} />
+//                       </Typography>
+//                       <Divider sx={{ mb: 2 }} />
+//                     </>
+//                   })}
+//                 </Stack>
+//               </TabPanel>
+//               <TabPanel value={value} index={2}>
+//                 <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
+//                   {feature.map((item) => {
+//                     return <>
+//                       <Typography variant="body1">
+//                         {item}<Typography sx={{ float: "right", color: data[item] ? 'green' : 'red' }}
+//                           variant="body1">{data[item] ? 'true' : 'false'}</Typography>
+//                       </Typography>
+//                       <Divider />
+//                     </>
+//                   })}
+//                 </Stack>
+//               </TabPanel>
+//               <TabPanel value={value} index={3}>
+//                 <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
+//                   {miscellanous.map((item) => {
+//                     return <>
+//                       <Typography variant="body1">
+//                         {item}<Typography sx={{ float: "right" }}
+//                           variant="body1">{data[item]}</Typography>
+//                       </Typography>
+//                       <Divider />
+//                     </>
+//                   })}
+//                 </Stack>
+//               </TabPanel>
+//               <TabPanel value={value} index={4}>
+//                 <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
+//                   {inventory.map((item) => {
+//                     return <>
+//                       <Typography variant="body1">
+//                         {item}<Typography sx={{ float: "right" }}
+//                           variant="body1">{data[item]}</Typography>
+//                       </Typography>
+//                       <Divider />
+//                     </>
+//                   })}
+//                 </Stack>
+//               </TabPanel>
+//               <TabPanel value={value} index={5}>
+//                 <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
+//                   {seo.map((item) => {
+//                     return <>
+//                       <Typography variant="body1">
+//                         {item}<Typography sx={{ float: "right" }}
+//                           variant="body1">{data[item]}</Typography>
+//                       </Typography>
+//                       <Divider />
+//                     </>
+//                   })}
+//                 </Stack>
+//               </TabPanel>
+//               <TabPanel value={value} index={6}>
+//                 <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
+//                   {extra.map((item) => {
+//                     return <>
+//                       <Typography variant="body1">
+//                         {item}<Typography sx={{ float: "right" }}
+//                           variant="body1">{data[item]}</Typography>
+//                       </Typography>
+//                       <Divider />
+//                     </>
+//                   })}
+//                 </Stack>
+//               </TabPanel>
+//             </Box>
+//           </Grid>
+
+//         </Grid> */}
 
 // const specification = [
 //   'product_title',

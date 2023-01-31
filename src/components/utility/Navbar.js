@@ -214,6 +214,7 @@ export default function Navbar(props) {
 
   // for nav route
   const handleChange = (e, newVal) => {
+    setHam(false);
     props.history(newVal);
     // window.location.reload()
   };
@@ -432,7 +433,11 @@ export default function Navbar(props) {
         {/* Brown Middle bar  */}
         <Grid item xs={12} className="secondBar">
           <Box>
-            <Typography variant="body1">Blog Post &nbsp;&nbsp;</Typography>
+            <Typography
+             onClick={() => {
+              props.history("/blog");
+            }}
+            variant="body1">Blog Post &nbsp;&nbsp;</Typography>
             <Typography variant="body1">
               Review At Google &nbsp;&nbsp;
             </Typography>

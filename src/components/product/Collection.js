@@ -22,7 +22,7 @@ import coster from "../../asset/images/category/coster.jpg";
 import animalFigure from "../../asset/images/category/animalFigure.jpg";
 import wall from "../../asset/images/category/wallDecor.jpg";
 
-const Catagories = () => {
+const Collection = () => {
 
 
       const items = [
@@ -50,12 +50,12 @@ const Catagories = () => {
     return (<>
      {/* helmet tag  */}
      <Helmet>
-    <title>Categories</title>
+    <title>Collection</title>
     <meta name="description" content="This page contains list of vaiouse type stuff provided by Woodsala." />
     <meta name="keywords" content="category,wooden furniture category,online furniture category,which furniture store is the cheapest,search furniture category" />
     </Helmet>
     {/* helmet tag ends  */}
-        <title>Categories</title>
+        <title>Collection</title>
         {/* {(meta)} */}
         {/* Main Container */}
         <Grid container sx={{ padding: "1%",gap : '50px' }}>
@@ -87,4 +87,4 @@ const Catagories = () => {
     </>);
 }
 
-export default Catagories;
+export default Collection;

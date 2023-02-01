@@ -1127,7 +1127,7 @@ export default function ProductList(props) {
         {/* Hamburger for Filter ends */}
 
         {items.length < 1 && (
-          <Grid item xs={12} md={10}>
+          <Grid item xs={12} md={9.5}>
             <NoItemFound />
           </Grid>
         )}
@@ -1263,10 +1263,12 @@ export default function ProductList(props) {
                             variant="h5"
                           >
                             {" "}
-                            {(
+                            {
+                            (
                               item.selling_price -
-                              (item.selling_price / 100) * item.discount_limit
-                            ).toLocaleString("us-Rs", {
+                              (item.selling_price / 100) * (item.categories.discount_limit && item.categories.discount_limit > 0  ? item.discount_limit < item.categories.discount_limit ? item.discount_limit : item.categories.discount_limit : item.discount_limit )
+                            )
+                            .toLocaleString("us-Rs", {
                               style: "currency",
                               currency: "INR",
                             })}

@@ -80,7 +80,7 @@ export default function ProductDetails(props) {
     try {
       let productDetails = await getProductDetails(SKU);
 
-      setData(productDetails.data.data);
+      setData(productDetails.data.data[0]);
 
       setVariant(productDetails.data.variant);
 
@@ -307,49 +307,49 @@ export default function ProductDetails(props) {
     else setShowSticky(false);
   }
 
-  function StickyAddToCart({data,setData}) {
-    return (
-      <>
-       {data && <Box
-          className="stickCart"
-          sx={{
-            bottom: showSticky ? "0% !important" : "-20% !important",
-          }}
-        >
-          <Box sx={{ width: "50px" }}>
-            <img
-              style={{ width: "100%" }}
-              alt={"product_image"}
-              src={data.product_image[0] || defaultIMG}
-            ></img>
-          </Box>
-          <Typography variant="h6">{data.product_title}</Typography>
-          <TextField
-            size="small"
-            sx={{ flexBasis: "1" }}
-            id="standard-multiline-static"
-            label="Quantity"
-            type="number"
-            variant="outlined"
-            value={data.qty || 1}
-            onChange={(e) => setData({ ...data, qty: e.target.value })}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">QTY</InputAdornment>
-              ),
-            }}
-          />
-          <Button
-            size={"small"}
-            variant="contained"
-            onClick={() => addToCart(data)}
-          >
-            Add To Cart
-          </Button>
-        </Box>}
-      </>
-    );
-  }
+  // function StickyAddToCart({data,setData}) {
+  //   return (
+  //     <>
+  //      {data && <Box
+  //         className="stickCart"
+  //         sx={{
+  //           bottom: showSticky ? "0% !important" : "-20% !important",
+  //         }}
+  //       >
+  //         <Box sx={{ width: "50px" }}>
+  //           <img
+  //             style={{ width: "100%" }}
+  //             alt={"product_image"}
+  //             src={data.product_image[0] || defaultIMG}
+  //           ></img>
+  //         </Box>
+  //         <Typography variant="h6">{data.product_title}</Typography>
+  //         <TextField
+  //           size="small"
+  //           sx={{ flexBasis: "1" }}
+  //           id="standard-multiline-static"
+  //           label="Quantity"
+  //           type="number"
+  //           variant="outlined"
+  //           value={data.qty || 1}
+  //           onChange={(e) => setData({ ...data, qty: e.target.value })}
+  //           InputProps={{
+  //             startAdornment: (
+  //               <InputAdornment position="start">QTY</InputAdornment>
+  //             ),
+  //           }}
+  //         />
+  //         <Button
+  //           size={"small"}
+  //           variant="contained"
+  //           onClick={() => addToCart(data)}
+  //         >
+  //           Add To Cart
+  //         </Button>
+  //       </Box>}
+  //     </>
+  //   );
+  // }
 
   return (
     <>
@@ -412,6 +412,9 @@ export default function ProductDetails(props) {
                     <Link color="primary" to="/">
                       Home
                     </Link>
+                    <Link color="primary" to="/collection">
+                      Collection
+                    </Link>
                     <Link color="primary" to="/product">
                       Product
                     </Link>
@@ -420,7 +423,7 @@ export default function ProductDetails(props) {
                         {data.category_name}
                       </Typography>
                     )}
-                    {data.sub_category_name && (
+                    {data.sub_category_name !== 'None' && (
                       <Typography color="text.primary">
                         {data.sub_category_name}
                       </Typography>
@@ -450,10 +453,10 @@ export default function ProductDetails(props) {
                   </Box>
                   {/* Price */}
                   <Box className="priceSec">
-                    {/* <Typography variant="h4">
+                    <Typography variant="h6">
                       <strike>
-                        {data.showroom_price
-                          ? data.showroom_price.toLocaleString("us-Rs", {
+                        {data.selling_price
+                          ? data.selling_price.toLocaleString("us-Rs", {
                               style: "currency",
                               currency: "INR",
                             })
@@ -462,12 +465,12 @@ export default function ProductDetails(props) {
                               currency: "INR",
                             })}
                       </strike>
-                    </Typography> */}
+                    </Typography>
                     <Typography variant="h5" sx={{ fontWeight: "bolder" }}>
                       {data.selling_price &&
                         (
                           data.selling_price -
-                          (data.selling_price / 100) * data.discount_limit
+                          (data.selling_price / 100) * (data.categories.discount_limit && data.categories.discount_limit > 0  ? data.discount_limit < data.categories.discount_limit ? data.discount_limit : data.categories.discount_limit : data.discount_limit )
                         ).toLocaleString("us-Rs", {
                           style: "currency",
                           currency: "INR",

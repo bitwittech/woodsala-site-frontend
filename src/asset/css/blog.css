@@ -35,7 +35,7 @@
 }
 
 .content img{
-    width : 80%;
+    width : 70%;
 }
 
 img {
@@ -62,6 +62,35 @@ img {
     /* Firefox */
 }
 
+.youMyAlsoLike{
+    padding : 2% 1% 1% 1%;
+    margin : 2%;
+}
+
+.cardContainer {
+    display : flex;
+    gap : 1.5rem;
+    padding : 4% 3% 0% 3%;
+    flex-wrap : wrap;
+    align-item : center;
+}
+.cardContainerHome{
+    display : flex;
+    gap : 1.5rem;
+    padding : 0% 3% 0% 3%;
+    flex-wrap : wrap;
+    align-item : center;
+}
+
+.likeCard{
+    display : flex;
+    flex-direction : column ; 
+    max-width : 280px;
+    align-item : center;
+}
+
+
+
 @media (max-width:907px) {
     .TOC {
         display: none;
@@ -69,6 +98,20 @@ img {
     .content {
         width: 100% !important;
     }
+}
+@media (max-width:670px) {
+    .cardContainer {
+        justify-content : center;
+    }
+    .cardMedia{
+        width : 70%;
+    }
+
+    .likeCard{
+        flex-direction : row ; 
+        max-width : 400px;
+    }
+
 }
 
 /* // blog home CSS============================== */
@@ -87,11 +130,6 @@ img {
     position: absolute;
 }
 
-.cardContainer {
-    padding : 4% 3% 0% 3%;
-    flex-wrap : wrap;
-    align-item : center;
-}
 
 .MuiCardMedia-img {
     object-fit: fill !important;

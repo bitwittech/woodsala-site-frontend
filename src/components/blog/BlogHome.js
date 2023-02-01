@@ -7,7 +7,8 @@ import {
   CardMedia,
   CardContent,
   CardActions,
-  Button
+  Button,
+  Box
 } from "@mui/material";
 import { Helmet } from "react-helmet";
 
@@ -30,41 +31,37 @@ export default function Blog({history}) {
 
     useEffect(()=>{
       Aos.init({duration : 1000})
-
-      getBlogHome().then((data) =>{
-        setCardData(data.data)
-
-      })
-
-
+      fetchData();
     },[])
 
+    async function fetchData(){
+      const data = await getBlogHome();
+      if (data) setCardData(data.data)
+
+    }
   // function for rendering the cards
-
-
-  function cardGenrator(card) {
+  function CardGenrator({card}) {
     return (
     <Grid item data-aos = 'fade-up' sx = {12} md = {3} >
-      <Card sx={{ maxWidth: 345 }} onClick = {()=> {  history(`/blog/${card.uuid}`)}}>
+      <Card  className = {'likeCard'} onClick = {()=> {  history(`/blog/${card.uuid}`)}}>
         <CardActionArea>
           <CardMedia
             component="img"
-            height = '200'
             className = 'cardMedia'
             image= {card.card_image || defaultIMG}
             alt={card.title}
           />
+        </CardActionArea>
+        <CardActions sx = {{flexDirection : 'column'}}>
           <CardContent>
-            <Typography component={'span'} gutterBottom variant="h5" >
+            <Typography  gutterBottom variant="h6" >
               {card.title}
             </Typography>
-            <Typography component={'span'} variant="body2" color="text.secondary">
+            {/* <Typography component={'span'} variant="body2" color="text.secondary">
               {card.card_description}
-              </Typography>
+              </Typography> */}
           </CardContent>
-        </CardActionArea>
-        <CardActions>
-          <Button size="small" color="primary">
+          <Button fullWidth  size="mideum" color="primary">
             Read More
           </Button>
         </CardActions>
@@ -72,6 +69,7 @@ export default function Blog({history}) {
       </Grid>
     );
   }
+
 
   return (
     <>
@@ -100,24 +98,15 @@ export default function Blog({history}) {
 
       {/* Card Section */}
 
-      <Grid container className = 'cardContainer' spacing = {8}>
-      
-      {
-          cardData.map((card)=>{
-            return  cardGenrator(card)
-        })
-      }
-      </Grid>
+      <Box className = 'youMyAlsoLike' >
+          <Box className = 'cardContainerHome'>
+          {cardData.length > 0 && cardData.map((card,index)=><CardGenrator key = {index} card = {card}/>)}
+          </Box>
+      </Box>
 
       {/* Ends Card Section */}
 
-      
-      {/* Footer */}
-
-      {/* <Footer/> */}
-
-      {/* Footer Ends*/}
-
+  
       
     </>
   );

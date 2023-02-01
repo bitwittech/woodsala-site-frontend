@@ -35,7 +35,7 @@ const ContactUs = lazy(() => import("./components/aboutUs/ContactUs"))
 const ProductList = lazy(() => import("./components/product/ProductList"))
 const EntryPoint = lazy(() => import("./components/home/EntryPoint"))
 const Profile = lazy(() => import("./components/user/Profile"))
-const Catagories = lazy(() => import("./components/product/Catagories"))
+const Collection = lazy(() => import("./components/product/Collection"))
 const Blog = lazy(() => import("./components/blog/Blog"))
 const BlogHome = lazy(() => import("./components/blog/BlogHome"))
 
@@ -83,16 +83,16 @@ function App() {
           {/* // main routes  */}
           <Route path="/" element={<Home history={history} />}></Route>
           <Route path="/verify" element={<Verify history={history} />}></Route>
-          <Route path="/categories" element={<Catagories history={history} />}></Route>
 
           {/* // page routes  */}
-          <Route path="/home" element={<Home history={history} />}></Route>
           <Route path="/cart" element={<Cart history={history} />}></Route>
-          <Route path="/wishlist" element={<Wishlist history={history} />}></Route>
           <Route path="/checkout" element={<Checkout />}></Route>
-          <Route path="/details/:SKU/:title/:category" element={<ProductDetails history={history} />}></Route>
           <Route path="/contact" element={<ContactUs />}></Route>
+          <Route path="/collection" element={<Collection history={history} />}></Route>
+          <Route path="/details/:SKU/:title/:category" element={<ProductDetails history={history} />}></Route>
+          <Route path="/home" element={<Home history={history} />}></Route>
           <Route path="/profile" element={<Profile />}></Route>
+          <Route path="/wishlist" element={<Wishlist history={history} />}></Route>
 
           {/* // filter and Product page route */}
           <Route path="/product/:category_name/:product_title/:selling_price" element={<ProductList history={history} />}></Route>

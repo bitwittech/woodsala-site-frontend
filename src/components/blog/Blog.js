@@ -10,9 +10,17 @@ import {
   ListItemIcon,
   ListItemText,
   IconButton,
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Button,
+  Box
 } from "@mui/material";
 import ReactHtmlParser from "react-html-parser";
 import Footer from "../utility/Footer";
+import Aos from 'aos';
 
 import { Image } from 'mui-image'
 //logo
@@ -21,8 +29,9 @@ import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
 import KeyboardBackspaceSharpIcon from "@mui/icons-material/KeyboardBackspaceSharp";
 //css
 import "../../asset/css/blog.css";
+import defaultIMG from "../../asset/images/defaultProduct.svg";
 
-import {getBlog} from '../../service/service'
+import {getBlog, getBlogHome} from '../../service/service'
 
 // imports for TOC
 
@@ -37,16 +46,55 @@ export default function BlogContent({history}) {
 
   const [data,setData] = useState([])
 
-    // useParams search parameters
-    const { blog_id } = useParams();
+  // useParams search parameters
+  const { blog_id } = useParams();
 
   useEffect(()=>{
-    getBlog(blog_id)
-    .then((data)=>{
-      //console.log(data)
-      setData(data.data)
-    })
-  },[])
+    Aos.init({duration : 1000})
+  fetchData();
+  },[blog_id])
+
+  async function fetchData  (){
+
+    const list = await getBlogHome();
+    if(list) setCardData(list.data)
+
+    const content = await getBlog(blog_id);
+    if(content) setData(content.data)
+  }
+
+
+  const [cardData,setCardData] = useState([]);
+  // function for rendering the cards
+  function CardGenrator({card}) {
+    return (
+    <Grid item data-aos = 'fade-up' sx = {12} md = {3} >
+      <Card  className = {'likeCard'} onClick = {()=> {  history(`/blog/${card.uuid}`)}}>
+        <CardActionArea>
+          <CardMedia
+            component="img"
+            className = 'cardMedia'
+            image= {card.card_image || defaultIMG}
+            alt={card.title}
+          />
+        </CardActionArea>
+        <CardActions sx = {{flexDirection : 'column'}}>
+          <CardContent>
+            <Typography  gutterBottom variant="h6" >
+              {card.title}
+            </Typography>
+            {/* <Typography component={'span'} variant="body2" color="text.secondary">
+              {card.card_description}
+              </Typography> */}
+          </CardContent>
+          <Button fullWidth  size="mideum" color="primary">
+            Read More
+          </Button>
+        </CardActions>
+      </Card>
+      </Grid>
+    );
+  }
 
   const toc = [];
 
@@ -76,7 +124,7 @@ export default function BlogContent({history}) {
   return (
     <>
        <Helmet>
-        <title>{`Blog Content`}</title>
+        <title>{data.title || `Blog Content`}</title>
         <meta
           name="description"
           content="This page contains product details. And all the information about the particular product"
@@ -87,7 +135,7 @@ export default function BlogContent({history}) {
 
       <Grid container className="Banner">
         <Grid item xs={12}>
-          <Typography variant="h1">Blog</Typography>
+          <Typography variant="h2">Read Somthing Beautiful</Typography>
         </Grid>
       </Grid>
 
@@ -115,7 +163,7 @@ export default function BlogContent({history}) {
 
         {/* Content Box */}
         {data && <Grid item xs={11.5} md={9.5} className="content">
-            <Typography component={'span'} variant= 'h4'>{data.title}</Typography>
+            <Typography variant= 'h5' sx = {{textAlign : 'center'}}>{data.title}</Typography>
             <br></br>
             <img
             src = {data.card_image}
@@ -127,9 +175,30 @@ export default function BlogContent({history}) {
             
         </Grid>}
         {/* Content Box Ends */}
-      </Grid>
 
+      </Grid>
       {/* Ends Read Box */}
+
+
+    {/* back to blog  */}
+    <Box  sx = {{display : 'flex', justifyContent : 'center'}} mt= {2} >
+      <Button  variant = 'contained' startIcon = {<KeyboardBackspaceSharpIcon/>} onClick = {()=>history('/blog')}> 
+      Back To Blog </Button>
+    </Box>
+    {/* back to blog  */}
+       
+   {/* you may also like also  */}
+
+
+      <Box className = 'youMyAlsoLike' >
+          <Typography variant = {'h4'}>You May Also Like</Typography>
+          <Box className = 'cardContainer'>
+          {cardData.length > 0 && cardData.map((card,index)=><CardGenrator key = {index} card = {card}/>)}
+          </Box>
+      </Box>
+
+   {/* you may also like also ands  */}
+
       
     </>
   );

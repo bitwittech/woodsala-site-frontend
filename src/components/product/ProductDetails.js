@@ -470,7 +470,7 @@ export default function ProductDetails(props) {
                       {data.selling_price &&
                         (
                           data.selling_price -
-                          (data.selling_price / 100) * (data.categories.discount_limit && data.categories.discount_limit > 0  ? data.discount_limit < data.categories.discount_limit ? data.discount_limit : data.categories.discount_limit : data.discount_limit )
+                          (data.selling_price / 100) * (data.categories[0].discount_limit && data.categories[0].discount_limit > 0  ? data.discount_limit < data.categories[0].discount_limit ? data.discount_limit : data.categories[0].discount_limit : data.discount_limit )
                         ).toLocaleString("us-Rs", {
                           style: "currency",
                           currency: "INR",

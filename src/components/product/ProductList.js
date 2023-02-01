@@ -1266,7 +1266,7 @@ export default function ProductList(props) {
                             {
                             (
                               item.selling_price -
-                              (item.selling_price / 100) * (item.categories.discount_limit && item.categories.discount_limit > 0  ? item.discount_limit < item.categories.discount_limit ? item.discount_limit : item.categories.discount_limit : item.discount_limit )
+                              (item.selling_price / 100) * (item.categories[0].discount_limit && item.categories[0].discount_limit > 0  ? item.discount_limit < item.categories[0].discount_limit ? item.discount_limit : item.categories[0].discount_limit : item.discount_limit )
                             )
                             .toLocaleString("us-Rs", {
                               style: "currency",

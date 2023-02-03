@@ -80,7 +80,7 @@ export default function ProductDetails(props) {
     try {
       let productDetails = await getProductDetails(SKU);
 
-      setData(productDetails.data.data[0]);
+      setData(productDetails.data.data);
 
       setVariant(productDetails.data.variant);
 

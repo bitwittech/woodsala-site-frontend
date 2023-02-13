@@ -351,6 +351,43 @@ export default function ProductDetails(props) {
   //   );
   // }
 
+  function Price({ item }) {
+    const [value, setValue] = useState(0);
+
+    function setPrice() {
+      if (item.categories.length > 0) {
+        if (
+          item.categories[0].discount_limit &&
+          item.categories[0].discount_limit > 0 &&
+          item.categories[0].discount_limit < item.discount_limit
+        )
+          // checking every possible value
+          return setValue(
+            item.selling_price -
+              (item.selling_price / 100) * item.categories[0].discount_limit
+          );
+        else
+          return setValue(
+            item.selling_price -
+              (item.selling_price / 100) * item.discount_limit
+          );
+      }
+    }
+
+    useEffect(() => {
+      setPrice();
+    }, [item]);
+
+    return (
+      <>
+        {value.toLocaleString("us-Rs", {
+          style: "currency",
+          currency: "INR",
+        })}
+      </>
+    );
+  }
+
   return (
     <>
       {/* helmet tag  */}
@@ -423,7 +460,7 @@ export default function ProductDetails(props) {
                         {data.category_name}
                       </Typography>
                     )}
-                    {data.sub_category_name !== 'None' && (
+                    {data.sub_category_name !== "None" && (
                       <Typography color="text.primary">
                         {data.sub_category_name}
                       </Typography>
@@ -467,18 +504,11 @@ export default function ProductDetails(props) {
                       </strike>
                     </Typography>
                     <Typography variant="h5" sx={{ fontWeight: "bolder" }}>
-                      {data.selling_price &&
-                        (
-                          data.selling_price -
-                          (data.selling_price / 100) * (data.categories[0].discount_limit && data.categories[0].discount_limit > 0  ? data.discount_limit < data.categories[0].discount_limit ? data.discount_limit : data.categories[0].discount_limit : data.discount_limit )
-                        ).toLocaleString("us-Rs", {
-                          style: "currency",
-                          currency: "INR",
-                        })}
+                      <Price item={data} />
                     </Typography>
                     {/* <Typography sx={{ color: "#FD0606" }} variant="h6"> */}
-                      {/* discount */}
-                      {/* {data.discount_limit > 0 && `${data.discount_limit}% Off`} */}
+                    {/* discount */}
+                    {/* {data.discount_limit > 0 && `${data.discount_limit}% Off`} */}
                     {/* </Typography> */}
                   </Box>
                 </Grid>
@@ -702,39 +732,40 @@ export default function ProductDetails(props) {
           >
             {relatedProducts.map((article, index) => {
               return (
-              article.SKU !== data.SKU &&  <Card
-                  component={Link}
-                  to={`/details/${article.SKU}/${article.product_title}/${article.category_name}`}
-                  className="card"
-                  key={index}
-                  sx={{ boxShadow: 2 }}
-                >
-                  <CardActionArea>
-                    <CardMedia
-                      className="cardMedia"
-                      component="img"
-                      height="200"
-                      image={article.product_image[0] || defaultIMG}
-                      alt="Product_image"
-                    />
-                    <CardContent>
-                      <Typography
-                        className="productTitle"
-                        // sx={{ fontWeight: "bolder" }}
-                        variant="h6"
-                        component="div"
-                      >
-                        {article.product_title}
-                      </Typography>
-                      <Typography
-                        sx={{ mt: 1 }}
-                        className="productTitle"
-                        variant="body2"
-                        component="div"
-                      >
-                        {article.product_description}
-                      </Typography>
-                      {/* <Typography sx={{ mt: 1 }} variant="body1">
+                article.SKU !== data.SKU && (
+                  <Card
+                    component={Link}
+                    to={`/details/${article.SKU}/${article.product_title}/${article.category_name}`}
+                    className="card"
+                    key={index}
+                    sx={{ boxShadow: 2 }}
+                  >
+                    <CardActionArea>
+                      <CardMedia
+                        className="cardMedia"
+                        component="img"
+                        height="200"
+                        image={article.product_image[0] || defaultIMG}
+                        alt="Product_image"
+                      />
+                      <CardContent>
+                        <Typography
+                          className="productTitle"
+                          // sx={{ fontWeight: "bolder" }}
+                          variant="h6"
+                          component="div"
+                        >
+                          {article.product_title}
+                        </Typography>
+                        <Typography
+                          sx={{ mt: 1 }}
+                          className="productTitle"
+                          variant="body2"
+                          component="div"
+                        >
+                          {article.product_description}
+                        </Typography>
+                        {/* <Typography sx={{ mt: 1 }} variant="body1">
                         ({article.discount_limit}% OFF)
                       </Typography>
                       <Typography variant="h6" color="text.secondary">
@@ -750,24 +781,25 @@ export default function ProductDetails(props) {
                               })}
                         </del>
                       </Typography> */}
-                      <Typography
-                        variant="h6"
-                        sx={{ fontWeight: "bold" }}
-                        color="text.secondary"
-                      >
-                        {article.selling_price &&
-                          (
-                            article.selling_price -
-                            (article.selling_price / 100) *
-                              article.discount_limit
-                          ).toLocaleString("us-Rs", {
-                            style: "currency",
-                            currency: "INR",
-                          })}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold" }}
+                          color="text.secondary"
+                        >
+                          {article.selling_price &&
+                            (
+                              article.selling_price -
+                              (article.selling_price / 100) *
+                                article.discount_limit
+                            ).toLocaleString("us-Rs", {
+                              style: "currency",
+                              currency: "INR",
+                            })}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                )
               );
             })}
           </Carousel>
@@ -781,7 +813,8 @@ export default function ProductDetails(props) {
       {/* Review Section EnDs */}
 
       {/* Sticky Add to Cart */}
-      {data && <Box
+      {data && (
+        <Box
           className="stickCart"
           sx={{
             bottom: showSticky ? "0% !important" : "-20% !important",
@@ -817,7 +850,8 @@ export default function ProductDetails(props) {
           >
             Add To Cart
           </Button>
-        </Box>}
+        </Box>
+      )}
       {/* Sticky Add to Cart ends */}
     </>
   );

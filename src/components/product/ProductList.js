@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
@@ -458,6 +458,43 @@ export default function ProductList(props) {
         })
       );
     }
+  }
+
+  function Price({ item }) {
+    const [value, setValue] = useState(0);
+
+    function setPrice() {
+      if (item.categories.length > 0) {
+        if (
+          item.categories[0].discount_limit &&
+          item.categories[0].discount_limit > 0 &&
+          item.categories[0].discount_limit < item.discount_limit
+        )
+          // checking every possible value
+          return setValue(
+            item.selling_price -
+              (item.selling_price / 100) * item.categories[0].discount_limit
+          );
+        else
+          return setValue(
+            item.selling_price -
+              (item.selling_price / 100) * item.discount_limit
+          );
+      }
+    }
+
+    useEffect(() => {
+      setPrice();
+    }, [item]);
+
+    return (
+      <>
+        {value.toLocaleString("us-Rs", {
+          style: "currency",
+          currency: "INR",
+        })}
+      </>
+    );
   }
 
   return (
@@ -1173,7 +1210,9 @@ export default function ProductList(props) {
                         xs={12}
                         onClick={() =>
                           history(
-                            `/details/${item.SKU}/${item.product_title}/${item.category_name}`
+                            `/details/${item.SKU}/${
+                              item.product_title || "No Title"
+                            }/${item.category_name}`
                           )
                         }
                       >
@@ -1262,16 +1301,7 @@ export default function ProductList(props) {
                             sx={{ fontWeight: "bolder" }}
                             variant="h5"
                           >
-                            {" "}
-                            {
-                            (
-                              item.selling_price -
-                              (item.selling_price / 100) * (item.categories[0].discount_limit && item.categories[0].discount_limit > 0  ? item.discount_limit < item.categories[0].discount_limit ? item.discount_limit : item.categories[0].discount_limit : item.discount_limit )
-                            )
-                            .toLocaleString("us-Rs", {
-                              style: "currency",
-                              currency: "INR",
-                            })}
+                            <Price item={item} />
                           </Typography>
                         </Box>
                       </Grid>

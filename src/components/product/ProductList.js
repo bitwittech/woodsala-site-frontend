@@ -460,43 +460,6 @@ export default function ProductList(props) {
     }
   }
 
-  function Price({ item }) {
-    const [value, setValue] = useState(0);
-
-    function setPrice() {
-      if (item.categories.length > 0) {
-        if (
-          item.categories[0].discount_limit &&
-          item.categories[0].discount_limit > 0 &&
-          item.categories[0].discount_limit < item.discount_limit
-        )
-          // checking every possible value
-          return setValue(
-            item.selling_price -
-              (item.selling_price / 100) * item.categories[0].discount_limit
-          );
-        else
-          return setValue(
-            item.selling_price -
-              (item.selling_price / 100) * item.discount_limit
-          );
-      }
-    }
-
-    useEffect(() => {
-      setPrice();
-    }, [item]);
-
-    return (
-      <>
-        {value.toLocaleString("us-Rs", {
-          style: "currency",
-          currency: "INR",
-        })}
-      </>
-    );
-  }
-
   return (
     <>
       {/* helmet tag  */}
@@ -1314,6 +1277,42 @@ export default function ProductList(props) {
         </Grid>
       </Grid>
       {/* Main Container Ends */}
+    </>
+  );
+}
+
+function Price({ item }) {
+  const [value, setValue] = useState(0);
+
+  function setPrice() {
+    if (item.categories.length > 0) {
+      if (
+        item.categories[0].discount_limit &&
+        item.categories[0].discount_limit > 0 &&
+        item.categories[0].discount_limit < item.discount_limit
+      )
+        // checking every possible value
+        return setValue(
+          item.selling_price -
+            (item.selling_price / 100) * item.categories[0].discount_limit
+        );
+      else
+        return setValue(
+          item.selling_price - (item.selling_price / 100) * item.discount_limit
+        );
+    }
+  }
+
+  useEffect(() => {
+    setPrice();
+  }, [item]);
+
+  return (
+    <>
+      {value.toLocaleString("us-Rs", {
+        style: "currency",
+        currency: "INR",
+      })}
     </>
   );
 }

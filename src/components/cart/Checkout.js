@@ -431,7 +431,7 @@ async function displayRazorpay(e) {
                   size="small"
                 />
 
-               {state.auth.isAuth ? <TextField sx={{ mt: 2 }}
+               {state.auth.isAuth && data.address.length > 0 ? <TextField sx={{ mt: 2 }}
                   size="small"
                   fullWidth
                   // required

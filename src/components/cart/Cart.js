@@ -99,18 +99,21 @@ const Cart = (props) => {
     console.log(state.cart.items)
     getDetails(JSON.stringify(state.cart.items.map((item) => { return item.product_id })))
       .then((response) => {
-        console.log(state.cart.items)
+        // console.log(state.cart.items)
+        // console.log(response)
         setRow(
           response.data.map((dataSet, index) => {
+            let discount = dataSet[0].categories.length > 0 && (dataSet[0].discount_limit < dataSet[0].categories[0].discount_limit ? dataSet[0].discount_limit : dataSet[0].categories[0].discount_limit)
+            console.log(dataSet[0].discount_limit,dataSet[0].categories[0].discount_limit)
             return {
               id: index + 1,
-              SKU: dataSet.SKU,
-              product: dataSet.featured_image || dataSet.product_image[0],
-              product_name: dataSet.product_title,
-              price: state.cart.items.filter((data) => { return data.product_id === dataSet.SKU })[0].quantity * dataSet.selling_price,
-              qty: state.cart.items.filter((data) => { return data.product_id === dataSet.SKU })[0].quantity,
-              total: state.cart.items.filter((data) => { return data.product_id === dataSet.SKU })[0].quantity * dataSet.selling_price - (state.cart.items.filter((data) => { return data.product_id === dataSet.SKU })[0].quantity * dataSet.selling_price)/100*dataSet.discount_limit,
-              action: dataSet.SKU
+              SKU: dataSet[0].SKU,
+              product: dataSet[0].featured_image || dataSet[0].product_image[0],
+              product_name: dataSet[0].product_title,
+              price: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price,
+              qty: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity,
+              total: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price - (state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price)/100*discount,
+              action: dataSet[0].SKU
             }
           })
         )

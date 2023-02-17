@@ -490,19 +490,22 @@ export default function ProductDetails(props) {
                   </Box>
                   {/* Price */}
                   <Box className="priceSec">
-                    <Typography variant="h6">
-                      <strike>
-                        {data.selling_price
-                          ? data.selling_price.toLocaleString("us-Rs", {
-                              style: "currency",
-                              currency: "INR",
-                            })
-                          : (0).toLocaleString("us-Rs", {
-                              style: "currency",
-                              currency: "INR",
-                            })}
-                      </strike>
-                    </Typography>
+                    {data.discount_limit !== 0 &&
+                      data.categories.discount_limit !== 0 && (
+                        <Typography variant="h6">
+                          <strike>
+                            {data.selling_price
+                              ? data.selling_price.toLocaleString("us-Rs", {
+                                  style: "currency",
+                                  currency: "INR",
+                                })
+                              : (0).toLocaleString("us-Rs", {
+                                  style: "currency",
+                                  currency: "INR",
+                                })}
+                          </strike>
+                        </Typography>
+                      )}
                     <Typography variant="h5" sx={{ fontWeight: "bolder" }}>
                       <Price item={data} />
                     </Typography>

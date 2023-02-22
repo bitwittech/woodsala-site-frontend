@@ -20,7 +20,7 @@ import TurnedInIcon from "@mui/icons-material/TurnedIn";
 import CancelIcon from "@mui/icons-material/Cancel";
 import avatar from "../../asset/images/profile/avatar.svg";
 // APIS import
-import { addReview, listReview } from "../../service/service";
+import { addReview, listReview, verifyReview } from "../../service/service";
 
 // state
 import { useDispatch, useSelector } from "react-redux";
@@ -137,9 +137,14 @@ function Review(props) {
                         <Grid container className="reviewedImagesContainer">
                           {row.review_videos.map((image, index) => (
                             <Grid className={"reviewedImages"} item xs={2.5}>
-                                 
-                            <video src={image} width="100" height="100" controls="controls" autoplay="true" />
-                              </Grid>
+                              <video
+                                src={image}
+                                width="100"
+                                height="100"
+                                controls="controls"
+                                autoplay="true"
+                              />
+                            </Grid>
                           ))}
                         </Grid>
                       </Grid>
@@ -188,6 +193,7 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
   };
 
   const [hover, setHover] = React.useState(-1);
+
   const [reviewData, setReviewData] = useState({
     isLoading: false,
     data: {
@@ -201,6 +207,7 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
       reviewer_email: "",
       review_images: [],
     },
+    button: "verify",
   });
 
   function handleValue(e) {
@@ -219,7 +226,7 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
     e.preventDefault();
     setReviewData((old) => ({ ...old, isLoading: true }));
 
-    console.log(reviewData.data);
+    console.log(reviewData);
 
     const FD = new FormData();
 
@@ -241,7 +248,19 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
         FD.append("review_images", [])
       );
 
+    if (parseInt(reviewData.data.otp) !== reviewData.check) {
+      setReviewData((old) => ({ ...old, isLoading: false }));
+      return dispatch(
+        setAlert({
+          open: true,
+          message: "Sorry Incorrect Otp?",
+          variant: "error",
+        })
+      );
+    }
+
     const response = await addReview(FD);
+    // const response = await verifyReview(FD);
 
     if (response) {
       setReviewState((old) => ({
@@ -269,6 +288,44 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
     }
   }
 
+  async function verifyEmail(e) {
+    e.preventDefault();
+
+    setReviewData((old) => ({ ...old, isLoading: true }));
+    const FD = new FormData();
+    FD.append("reviewer_name", reviewData.data.reviewer_name);
+    FD.append("reviewer_email", reviewData.data.reviewer_email);
+
+    const response = await verifyReview(FD);
+
+    if (response) {
+      setReviewData((old) => ({
+        ...old,
+        isLoading: false,
+        button: "emailSent",
+        check: response.data.otp,
+      }));
+
+      dispatch(
+        setAlert({
+          open: true,
+          variant: "success",
+          message: response.data.message,
+        })
+      );
+      // handleClose();
+    } else {
+      dispatch(
+        setAlert({
+          open: true,
+          variant: "error",
+          message: "Something Went Wrong !!!",
+        })
+      );
+      setReviewData((old) => ({ ...old, isLoading: false }));
+    }
+  }
+
   function handleClose() {
     setReviewData({
       isLoading: false,
@@ -283,8 +340,13 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
         reviewer_email: "",
         review_images: [],
       },
+      button: "verify",
     });
     setReviewState((old) => ({ ...old, open: false }));
+  }
+
+  function changeEmailAddress() {
+    setReviewData((old) => ({ ...old, button: "verify", check: 0 }));
   }
 
   return (
@@ -306,7 +368,9 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
             component={"form"}
             sx={{ gap: "5px", justifyContent: "center" }}
             method="post"
-            onSubmit={handleSubmit}
+            onSubmit={
+              reviewData.button === "verify" ? verifyEmail : handleSubmit
+            }
           >
             <Grid
               item
@@ -440,20 +504,48 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
 
               {/* Email */}
               <Grid xs={12} item>
-                <Typography sx={{ fontWeight: "400" }} variant="body1">
-                  6) Enter your email address please.
-                </Typography>
-                <TextField
-                  sx={{ p: 1 }}
-                  fullWidth
-                  required
-                  type="email"
-                  size="small"
-                  variant="outlined"
-                  value={reviewData.data.reviewer_email}
-                  name="reviewer_email"
-                  onChange={handleValue}
-                />
+                {reviewData.button === "emailSent" ? (
+                  <>
+                    <Typography sx={{ fontWeight: "400" }} variant="body1">
+                      6) Please enter the OTP for verification.
+                    </Typography>
+                    <TextField
+                      sx={{ p: 1 }}
+                      fullWidth
+                      required
+                      type="number"
+                      size="small"
+                      variant="outlined"
+                      value={reviewData.data.otp}
+                      name="otp"
+                      onChange={handleValue}
+                    />
+                    <Typography
+                      component={Button}
+                      variant="caption"
+                      onClick={changeEmailAddress}
+                    >
+                      Want to edit email Address?
+                    </Typography>
+                  </>
+                ) : (
+                  <>
+                    <Typography sx={{ fontWeight: "400" }} variant="body1">
+                      6) Enter your email address please.
+                    </Typography>
+                    <TextField
+                      sx={{ p: 1 }}
+                      fullWidth
+                      required
+                      type="email"
+                      size="small"
+                      variant="outlined"
+                      value={reviewData.data.reviewer_email}
+                      name="reviewer_email"
+                      onChange={handleValue}
+                    />
+                  </>
+                )}
               </Grid>
             </Grid>
             <Grid item xs={12} p={1}>
@@ -470,7 +562,7 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
                 sx={{ float: "right" }}
                 variant="outlined"
               >
-                Submit
+                {reviewData.button === "verify" ? "Verify" : "Submit"}
               </Button>
             </Grid>
           </Grid>

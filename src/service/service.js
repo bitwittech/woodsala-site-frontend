@@ -114,6 +114,16 @@ export const addReview = async (data) => {
   );
 }
 
+export const verifyReview = async (data) => {
+  return await axios.post(`${API}/verifyReview`, data,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }
+  );
+}
+
 // get listReview for display  
 export const listReview = async (data) => {
   return await axios.get(`${API}/listReview?product_id=${data}`);

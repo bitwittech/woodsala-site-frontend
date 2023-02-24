@@ -295,3 +295,17 @@ export const getBlog = async (data) => {
 };
 
 // ========================== Ends Blog  CURD =================
+
+// ========================== Contact  CURD =================
+
+// getBlog description
+
+export const addContact = async (data) => {
+  return await axios.post(`${API}/addContact`, data, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+};
+
+// ========================== Ends COntact  CURD =================

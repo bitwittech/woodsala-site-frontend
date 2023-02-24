@@ -1,9 +1,9 @@
 .footerContainer {
     margin-top: 5%;
     justify-content: center;
-    align-items: center;
+    /* align-items: center; */
     /* background-image: linear-gradient(rgba(247, 198, 142, 0.377), rgba(250, 208, 150, 0.384)), url('../images/footer/footerEnd.jpg'); */
-    background-image: linear-gradient(rgba(247, 198, 142, 0.377), rgba(250, 208, 150, 0.384));
+    background-image: linear-gradient(rgb(247, 247, 247), rgb(235, 235, 235));
     background-size: cover;
     height: fit-content;
     background-position: center;
@@ -29,11 +29,22 @@
 .socialIcons {
     padding: 2%;
     align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
 }
 
 .socialIcons img {
     width: auto;
+}
+
+.payIcons {
+    padding: 1%;
+    gap: 1rem;
+}
+
+.payIcons img {
+    width: 50px;
+    height: 30px;
 }
 
 @media screen and (max-width :800px) {

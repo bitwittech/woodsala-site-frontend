@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 
 //mui
-import { MenuItem,Grid, Box, Typography, TextField, Stack, Button, TextareaAutosize } from "@mui/material";
+import {
+  MenuItem,
+  Grid,
+  Box,
+  Typography,
+  TextField,
+  Stack,
+  Button,
+  TextareaAutosize,
+  CircularProgress,
+} from "@mui/material";
 // css
 import "../../asset/css/contactUs.css";
 //icon
@@ -9,22 +19,144 @@ import HomeIcon from "@mui/icons-material/Home";
 import EmailIcon from "@mui/icons-material/Email";
 import CallRoundedIcon from "@mui/icons-material/CallRounded";
 import { Helmet } from "react-helmet";
+import { addContact, verifyReview } from "../../service/service";
+import SendIcon from "@mui/icons-material/Send";
+
+// redux
+import { useDispatch } from "react-redux";
+import { setAlert } from "../../Redux/action/action";
 
 export default function ContactUs() {
-
   const subject = [
-    "Order", "General", "Pre-Sales", "Post Sales", "Customization","Others"
-  ]
+    "Order",
+    "General",
+    "Pre-Sales",
+    "Post Sales",
+    "Customization",
+    "Others",
+  ];
+
+  const dispatch = useDispatch();
+  const [data, setData] = useState({
+    isLoading: false,
+    button: "verify",
+    images: [],
+  });
+
+  function handleChange(e) {
+    if (e.target.files)
+      setData((old) => ({
+        ...old,
+        [e.target.name]: Object.values(e.target.files),
+      }));
+    else setData((old) => ({ ...old, [e.target.name]: e.target.value }));
+  }
+
+  async function handleSubmit(e) {
+    try {
+      e.preventDefault();
+      console.log(data);
+
+      const FD = new FormData();
+      console.log(data.images);
+
+      if (data.images.length > 0) {
+        data.images.map((file) => {
+          return FD.append("images", file);
+        });
+      }
+
+      FD.append("reason", data.reason);
+      FD.append("email", data.email);
+      FD.append("customer_name", data.customer_name);
+      FD.append("mobile_no", data.mobile_no);
+      FD.append("message", data.message);
+
+      data.reason === "Order" && FD.append("order_no", data.order_no);
+
+      if (data.check !== parseInt(data.otp)) {
+        dispatch(
+          setAlert({
+            open: true,
+            variant: "error",
+            message: "Received Otp is incorrect?",
+          })
+        );
+      } else {
+        setData((old) => ({ ...old, isLoading: true }));
+        let res = await addContact(FD);
+
+        if (res) {
+          setData((old) => ({
+            images: [],
+            isLoading: false,
+            button: "verify",
+          }));
+          dispatch(
+            setAlert({
+              open: true,
+              variant: "success",
+              message: res.data.message,
+            })
+          );
+        }
+      }
+    } catch (error) {}
+  }
+
+  async function handleVerify(e) {
+    e.preventDefault();
+
+    setData((old) => ({ ...old, isLoading: true }));
+    const FD = new FormData();
+    FD.append("reviewer_name", data.customer_name);
+    FD.append("reviewer_email", data.email);
+
+    const response = await verifyReview(FD);
+
+    if (response) {
+      setData((old) => ({
+        ...old,
+        isLoading: false,
+        button: "emailSent",
+        check: response.data.otp,
+      }));
+
+      dispatch(
+        setAlert({
+          open: true,
+          variant: "success",
+          message: response.data.message,
+        })
+      );
+      // handleClose();
+    } else {
+      dispatch(
+        setAlert({
+          open: true,
+          variant: "error",
+          message: "Something Went Wrong !!!",
+        })
+      );
+      setData((old) => ({ ...old, isLoading: false }));
+    }
+  }
 
   return (
     <>
       {/* helmet tag  */}
-     <Helmet>
-    <title>Contact Us</title>
-    <meta name="description" content="This Page contains all catact details for Woodsala." />
-    <meta name="keywords" content="contact us,contact Woodsala,react out woodsala,how to connect with woodsala,search catact woodsala" />
-    </Helmet>
-    {/* helmet tag ends  */}
+      <Helmet>
+        <title>Contact Us</title>
+        <meta
+          name="description"
+          content="This Page contains all catact details for Woodsala."
+        />
+        <meta
+          name="keywords"
+          content="contact us,contact Woodsala,react out woodsala,how to connect with woodsala,search catact woodsala"
+        />
+      </Helmet>
+      {/* helmet tag ends  */}
 
       {/* Banner */}
       <Grid container className="Banner">
@@ -39,61 +171,124 @@ export default function ContactUs() {
         <Grid item xs={12}>
           <Typography variant="h5">Leave A Message</Typography>
         </Grid>
-        <Grid xs={12} md={7.5} item >
-         <form className = 'contactForm'>
-          <TextField
-          id="outlined-select-currency"
-          select
-          fullWidth
-          size="small"
-          label="Select"
-          helperText="Please select your currency"
-        >
-          {subject.map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
-            </MenuItem>
-          ))}
-        </TextField>
-        
-          <TextField
-          fullWidth
-          size="small"
-          label = 'Name'
-          type = 'text'
-          name = 'customer_name'
-        />
-          <TextField
-          fullWidth
-          size="small"
-          label = 'Email'
-          type = 'email'
-          name = 'email'
-        />
-          <TextField
-          fullWidth
-          size="small"
-          label = 'Mobile'
-          type = 'text'
-          name = 'mobile_no'
-        />
-         <TextareaAutosize
-         minRows={5}
-         maxRows={5}
-          fullWidth
-          placeholder="Message..."
-          type = 'text'
-          className="messageBox"
-          name = 'customer_name'
-        />
-        <label for = 'upload'>Upload Image If you have any </label>
-    <Button sx = {{float : 'left', width : '150px'}} component = 'label' id = 'upload'  variant="outlined" >
-  Upload
-  <input hidden accept="image/*" multiple type="file" />
-</Button>
-<Button sx = {{margin : 'auto', width : '150px'}} variant = 'contained'>Send</Button>
-         
-         </form>
+        <Grid xs={12} md={7.5} item>
+          <form
+            method="post"
+            encType="multipart/form-data"
+            onSubmit={data.button !== "verify" ? handleSubmit : handleVerify}
+            className="contactForm"
+          >
+            <TextField
+              id="outlined-select-currency"
+              select
+              fullWidth
+              size="small"
+              name="reason"
+              required
+              label="Select Purpose"
+              helperText="Please select your purpose"
+              onChange={handleChange}
+              value={data.reason || ""}
+            >
+              {subject.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            {data.reason === "Order" && (
+              <TextField
+                fullWidth
+                size="small"
+                required
+                label="Order Number"
+                type="text"
+                name="order_no"
+                onChange={handleChange}
+                value={data.order_no || ""}
+              />
+            )}
+
+            <TextField
+              fullWidth
+              size="small"
+              label="Name"
+              type="text"
+              name="customer_name"
+              onChange={handleChange}
+              value={data.customer_name || ""}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              label="Email"
+              type="email"
+              required
+              name="email"
+              onChange={handleChange}
+              value={data.email || ""}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              label="Mobile"
+              type="text"
+              name="mobile_no"
+              onChange={handleChange}
+              value={data.mobile_no || ""}
+            />
+            <TextareaAutosize
+              minRows={5}
+              maxRows={5}
+              fullWidth
+              onChange={handleChange}
+              value={data.message || ""}
+              type="text"
+              className="messageBox"
+              name="message"
+            />
+            <label for="upload">Upload Image If you have any </label>
+            <Button
+              sx={{ float: "left", width: "150px" }}
+              component="label"
+              id="upload"
+              variant="outlined"
+            >
+              Upload
+              <input
+                hidden
+                onChange={handleChange}
+                name="images"
+                accept="image/*"
+                multiple
+                type="file"
+              />
+            </Button>
+
+            {data.button !== "verify" && (
+              <TextField
+                fullWidth
+                size="small"
+                required
+                label="OTP"
+                type="number"
+                name="otp"
+                onChange={handleChange}
+                value={data.otp || ""}
+              />
+            )}
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ width: "fit-Content", margin: "auto" }}
+              disabled={data.isLoading}
+              startIcon={data.isLoading && <CircularProgress size={20} />}
+              endIcon={!data.isLoading && <SendIcon />}
+            >
+              {data.button !== "verify" ? "Send" : "Verify"}
+            </Button>
+          </form>
         </Grid>
 
         <Grid xs={12} md={4} item className="sideBox">
@@ -140,7 +335,7 @@ export default function ContactUs() {
             loading={"lazy"}
             referrerpolicy={"no-referrer-when-downgrade"}
           ></iframe>
-          </Grid>
+        </Grid>
       </Grid>
       {/* Map  Ends */}
     </>

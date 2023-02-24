@@ -230,7 +230,7 @@ function ReplyBox({ ID, setReviews, reviews }) {
     const FD = new FormData();
     FD.append(
       "reply",
-      JSON.stringify([{ message: e.target.reply.value, time: getTime() }])
+      JSON.stringify([{ message: e.target.reply.value, time: getTime(), date : new Date() }])
     );
     FD.append("_id", ID);
     console.log("i am in ");

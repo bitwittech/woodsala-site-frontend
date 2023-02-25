@@ -62,10 +62,11 @@
 
 .reply {
     display: flex;
+    margin-top: 1%;
     justify-content: space-between;
     border-radius: 15px;
     align-items: center;
-    padding: 2%;
+    padding: 1%;
     border: 1px solid rgba(201, 201, 201, 0.61);
 }
 

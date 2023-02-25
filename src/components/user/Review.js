@@ -21,7 +21,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import avatar from "../../asset/images/profile/avatar.svg";
 // APIS import
 import {
-  addReply,
+  // addReply,
   addReview,
   listReview,
   verifyReview,
@@ -45,25 +45,6 @@ const style = {
   p: 2,
   outline: "none",
 };
-
-// getting current data
-function getTime() {
-  const currentDate = new Date();
-  const date =
-    currentDate.getDate() +
-    "/" +
-    (currentDate.getMonth() + 1) +
-    "/" +
-    currentDate.getFullYear() +
-    " @ " +
-    currentDate.getHours() +
-    ":" +
-    currentDate.getMinutes() +
-    ":" +
-    currentDate.getSeconds();
-
-  return date;
-}
 
 function Review(props) {
   const [reviews, setReviews] = useState([]);
@@ -139,10 +120,17 @@ function Review(props) {
                       </Typography>
                     </Grid>
                     <Grid xs={12}>
-                      <Conversation
+                      <Typography variant=""></Typography>
+                      {/* <Conversation
                         customer={row.review}
                         admin={row.admin_reply}
-                      />
+                      /> */}
+                      <Box className={"reply"}>
+                        <Typography variant="body1">{row.review}</Typography>
+                        {/* <Typography className variant="caption">
+                          Posted On : {chat.time}
+                        </Typography> */}
+                      </Box>
                     </Grid>
                     {row.review_images.length > 0 && (
                       <Grid mt={1} item xs={12}>
@@ -174,13 +162,13 @@ function Review(props) {
                         </Grid>
                       </Grid>
                     )}
-                    <Grid xs={12}>
+                    {/* <Grid xs={12}>
                       <ReplyBox
                         ID={row._id}
                         setReviews={setReviews}
                         reviews={reviews}
                       />
-                    </Grid>
+                    </Grid> */}
                   </Grid>
                 </Grid>
               );
@@ -203,81 +191,6 @@ function Review(props) {
         </Button>
       </Grid>
     </Grid>
-  );
-}
-
-function Conversation({ customer, admin }) {
-  return (
-    <Box className="conversationBox">
-      {[...customer, ...admin]
-        .sort((a, b) => a.time - b.time)
-        .map((chat, index) => (
-          <Box key={index} className={"reply"}>
-            <Typography variant="body1">{chat.message}</Typography>
-            <Typography className variant="caption">
-              Posted On : {chat.time}
-            </Typography>
-          </Box>
-        ))}
-    </Box>
-  );
-}
-
-// reply box
-function ReplyBox({ ID, setReviews, reviews }) {
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const FD = new FormData();
-    FD.append(
-      "reply",
-      JSON.stringify([{ message: e.target.reply.value, time: getTime(), date : new Date() }])
-    );
-    FD.append("_id", ID);
-    console.log("i am in ");
-    let res = await addReply(FD);
-
-    if (res.status === 200) {
-      console.log(reviews);
-      setReviews(
-        reviews.map((row) => {
-          if (row._id === ID) {
-            row.review = [
-              ...row.review,
-              { message: e.target.reply.value, time: getTime() },
-            ];
-          }
-          return row;
-        })
-      );
-    }
-
-    console.log(res);
-  }
-
-  return (
-    <form
-      onSubmit={handleSubmit}
-      action=""
-      method="post"
-      className={"replyBox"}
-    >
-      <TextField
-        size="small"
-        fullWidth
-        name="reply"
-        variant="outlined"
-        label={"Reply..."}
-        type="text"
-      />
-      <Button
-        size="small"
-        variant="outlined"
-        type="submit"
-        endIcon={<SendIcon />}
-      >
-        Send
-      </Button>
-    </form>
   );
 }
 
@@ -339,16 +252,13 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
 
     FD.append("CID", reviewData.data.CID);
     FD.append("rating", reviewData.data.rating);
-    FD.append(
-      "review",
-      JSON.stringify([{ message: reviewData.data.review, time: getTime() }])
-    );
+    FD.append("review", reviewData.data.review);
     FD.append("product_id", reviewData.data.product_id);
     FD.append("review_title", reviewData.data.review_title);
     FD.append("yourTube_url", reviewData.data.yourTube_url);
     FD.append("reviewer_name", reviewData.data.reviewer_name);
     FD.append("reviewer_email", reviewData.data.reviewer_email);
-    FD.append("admin_review", []);
+    FD.append("admin_review", "");
 
     if (reviewData.data.review_images.length > 0)
       reviewData.data.review_images.map((file) =>
@@ -359,16 +269,16 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
         FD.append("review_images", [])
       );
 
-    if (parseInt(reviewData.data.otp) !== reviewData.check) {
-      setReviewData((old) => ({ ...old, isLoading: false }));
-      return dispatch(
-        setAlert({
-          open: true,
-          message: "Sorry Incorrect Otp?",
-          variant: "error",
-        })
-      );
-    }
+    // if (parseInt(reviewData.data.otp) !== reviewData.check) {
+    //   setReviewData((old) => ({ ...old, isLoading: false }));
+    //   return dispatch(
+    //     setAlert({
+    //       open: true,
+    //       message: "Sorry Incorrect Otp?",
+    //       variant: "error",
+    //     })
+    //   );
+    // }
 
     const response = await addReview(FD);
     // const response = await verifyReview(FD);
@@ -684,3 +594,99 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
 }
 
 export default Review;
+
+// commented
+
+// getting current data
+// function getTime() {
+//   const currentDate = new Date();
+//   const date =
+//     currentDate.getDate() +
+//     "/" +
+//     (currentDate.getMonth() + 1) +
+//     "/" +
+//     currentDate.getFullYear() +
+//     " @ " +
+//     currentDate.getHours() +
+//     ":" +
+//     currentDate.getMinutes() +
+//     ":" +
+//     currentDate.getSeconds();
+
+//   return date;
+// }
+
+// function Conversation({ customer, admin }) {
+//   return (
+//     <Box className="conversationBox">
+//       {[...customer, ...admin]
+//         .sort((a, b) => a.time - b.time)
+//         .map((chat, index) => (
+//           <Box key={index} className={"reply"}>
+//             <Typography variant="body1">{chat.message}</Typography>
+//             <Typography className variant="caption">
+//               Posted On : {chat.time}
+//             </Typography>
+//           </Box>
+//         ))}
+//     </Box>
+//   );
+// }
+
+// // reply box
+// function ReplyBox({ ID, setReviews, reviews }) {
+//   async function handleSubmit(e) {
+//     e.preventDefault();
+//     const FD = new FormData();
+//     FD.append(
+//       "reply",
+//       JSON.stringify([{ message: e.target.reply.value, time: getTime(), date : new Date() }])
+//     );
+//     FD.append("_id", ID);
+//     console.log("i am in ");
+//     let res = await addReply(FD);
+
+//     if (res.status === 200) {
+//       console.log(reviews);
+//       setReviews(
+//         reviews.map((row) => {
+//           if (row._id === ID) {
+//             row.review = [
+//               ...row.review,
+//               { message: e.target.reply.value, time: getTime() },
+//             ];
+//           }
+//           return row;
+//         })
+//       );
+//     }
+
+//     console.log(res);
+//   }
+
+//   return (
+//     <form
+//       onSubmit={handleSubmit}
+//       action=""
+//       method="post"
+//       className={"replyBox"}
+//     >
+//       <TextField
+//         size="small"
+//         fullWidth
+//         name="reply"
+//         variant="outlined"
+//         label={"Reply..."}
+//         type="text"
+//       />
+//       <Button
+//         size="small"
+//         variant="outlined"
+//         type="submit"
+//         endIcon={<SendIcon />}
+//       >
+//         Send
+//       </Button>
+//     </form>
+//   );
+// }

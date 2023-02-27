@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Menu,
   MenuItem,
@@ -8,25 +8,29 @@ import {
   TextField,
   Autocomplete,
   Tabs,
+  Link,
   Tab,
   Box,
   Drawer,
   ListItemIcon,
   Badge,
-  Link,
   Button,
   List,
   ListItem,
   ListItemText,
   ListItemButton,
+  Divider,
+  Collapse,
 } from "@mui/material";
 
-import { Link as Redirect } from "react-router-dom";
+import { Link as Jump } from "react-router-dom";
 
 // icon
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import FacebookOutlinedIcon from "../../asset/images/navbar/facebook.png";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-
+import ReorderIcon from "@mui/icons-material/Reorder";
 import TwitterIcon from "../../asset/images/navbar/twitter.png";
 import InstagramIcon from "../../asset/images/navbar/instagram.png";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
@@ -36,11 +40,11 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-
+import CancelIcon from "@mui/icons-material/Cancel";
 // import MenuOpenTwoToneIcon from "@mui/icons-material/MenuOpenTwoTone";
 // import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
-import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
+// import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 // image
 import logo from "../../asset/images/logo.webp";
 import home from "../../asset/images/hamburger/home.png";
@@ -175,48 +179,6 @@ export default function Navbar(props) {
   // close menu
   const handleMenuClose = () => {
     setAnchorEl(null);
-  };
-
-  const navBarComponent = [
-    "/",
-    "/product/Bajot",
-    "/product/Animal Figurine",
-    "/product/Coaster",
-    "/product/Wall Decor",
-    "/product/Chair",
-    "/product/Candle Holder",
-    "/product/Clock",
-    "/product",
-  ];
-  const navBarImage = [
-    home,
-    furniture,
-    kitchen,
-    gift,
-    exclusive,
-    useful,
-    trading,
-    company,
-    all,
-  ];
-
-  const navBarLabel = [
-    "Home",
-    "Bajot",
-    "Animal Figurine",
-    "Coaster",
-    "Wall Decor",
-    "Chair",
-    "Candle Holder",
-    "Clock",
-    "Browse All",
-  ];
-
-  // for nav route
-  const handleChange = (e, newVal) => {
-    setHam(false);
-    props.history(newVal);
-    // window.location.reload()
   };
 
   // for profile view
@@ -374,7 +336,7 @@ export default function Navbar(props) {
       <ListItem disablePadding className="listItem">
         {tab &&
           linkObject[tab].map((row) => (
-            <ListItemButton fullWidth component={Redirect} to={row.link}>
+            <ListItemButton fullWidth component={Link} to={row.link}>
               {" "}
               <ListItemText primary={row.label} />
             </ListItemButton>
@@ -434,10 +396,13 @@ export default function Navbar(props) {
         <Grid item xs={12} className="secondBar">
           <Box>
             <Typography
-             onClick={() => {
-              props.history("/blog");
-            }}
-            variant="body1">Blog Post &nbsp;&nbsp;</Typography>
+              onClick={() => {
+                props.history("/blog");
+              }}
+              variant="body1"
+            >
+              Blog Post &nbsp;&nbsp;
+            </Typography>
             <Typography variant="body1">
               Review At Google &nbsp;&nbsp;
             </Typography>
@@ -456,82 +421,11 @@ export default function Navbar(props) {
         </Grid>
         {/* ends  Brown Middle bar  */}
 
-        {/* hamburger active of 800px  */}
-        <Grid item xs={12} className="hamburgerContainer">
-          <Grid container>
-            <Grid
-              sx={{ justifyContent: "center", display: "flex" }}
-              item
-              xs={12}
-              className="hamburgerButton"
-            >
-              <IconButton
-                onClick={() => {
-                  setHam(true);
-                }}
-                color="primary"
-                size="large"
-              >
-                <ExpandLessOutlinedIcon sx={{ fontSize: 25 }} />
-              </IconButton>
-              <Drawer
-                className="hamburgerPanel"
-                anchor={"bottom"}
-                open={Ham}
-                onClose={() => {
-                  setHam(false);
-                }}
-              >
-                <IconButton
-                  sx={{ justifyContent: "center" }}
-                  color="primary"
-                  onClick={() => {
-                    setHam(false);
-                  }}
-                >
-                  <ExpandMoreOutlinedIcon sx={{ fontSize: 25 }} />
-                </IconButton>
-
-                <Grid item xs={12} className="hamburgerPanel">
-                  <Tabs
-                    orientation="vertical"
-                    scrollButtons
-                    allowScrollButtonsMobile
-                    aria-label="auto tabs example"
-                    onChange={handleChange}
-                    value={
-                      navBarComponent.includes(window.location.pathname) &&
-                      window.location.pathname
-                    }
-                    color="primary"
-                  >
-                    {navBarLabel.map((tag, index) => (
-                      <Tab
-                        key={index}
-                        wrapped
-                        label={tag}
-                        icon={<img alt="home" src={navBarImage[index]} />}
-                        iconPosition="start"
-                        component={Link}
-                        value={navBarComponent[index]}
-                        to={navBarComponent[index]}
-                        onClick={() => {
-                          setHam(false);
-                        }}
-                      />
-                    ))}
-                  </Tabs>
-                </Grid>
-              </Drawer>
-            </Grid>
-          </Grid>
-        </Grid>
-        {/* hamburger ends */}
-
         {/* main-1 search bar Tab */}
         <Grid item xs={12}>
           <Grid container spacing={1} className="main-1">
-            <Grid item xs={12} md={3} className="center">
+            {/* logo */}
+            <Grid item xs={2}>
               <img
                 src={logo}
                 style={{ cursor: "pointer" }}
@@ -541,12 +435,58 @@ export default function Navbar(props) {
                 alt="logo.png"
               ></img>
             </Grid>
-            <Grid item xs={10} md={6} className="center searchBar">
+
+            {/* button  */}
+            <Grid item xs={10} sx={{ gap: "10px" }} className="mobile">
+              <IconButton color="primary" onClick={handleProfileIconClick}>
+                <PersonOutlineOutlinedIcon />
+              </IconButton>
+              <MenuBox></MenuBox>
+              <IconButton
+                color="primary"
+                onClick={() => {
+                  props.history("/cart");
+                }}
+              >
+                {window.location.pathname === "/cart" ? (
+                  <ShoppingCartIcon />
+                ) : (
+                  <Badge badgeContent={cart.items.length} color="primary">
+                    <ShoppingCartOutlinedIcon />
+                  </Badge>
+                )}
+              </IconButton>
+              {/* <IconButton
+                onClick={() => {
+                  props.history("/wishlist");
+                }}
+                color="primary"
+              >
+                {window.location.pathname === "/wishlist" ? (
+                  <FavoriteIcon />
+                ) : (
+                  <Badge badgeContent={wishlist.items.length} color="primary">
+                    <FavoriteBorderOutlinedIcon />
+                  </Badge>
+                )}
+              </IconButton> */}
+
+              <IconButton
+                onClick={() => {
+                  setHam(true);
+                }}
+                color="primary"
+              >
+                <ReorderIcon sx={{ fontSize: 25 }} />
+              </IconButton>
+            </Grid>
+
+            {/* bar  */}
+            <Grid item xs={10} md={4} className="searchBar">
               <Autocomplete
-                disablePortal
+                freeSolo
                 size="small"
                 fullWidth
-                // autoComplete
                 noOptionsText={"Search..."}
                 autoHighlight
                 onKeyPress={fireSearchQuery}
@@ -586,42 +526,57 @@ export default function Navbar(props) {
                 }}
               /> */}
             </Grid>
-            <Grid item xs={12} md={3} className="center">
-              <IconButton color="primary" onClick={handleProfileIconClick}>
-                <PersonOutlineOutlinedIcon />
-              </IconButton>
-              <MenuBox></MenuBox>
-              <IconButton
-                onClick={() => {
-                  props.history("/wishlist");
-                }}
+            {/* button above 800px */}
+            <Grid item xs={12} md={6} sx={{ gap: "10px" }} className="right">
+              <Button
                 color="primary"
+                startIcon={<PersonOutlineOutlinedIcon />}
+                onClick={handleProfileIconClick}
               >
-                {window.location.pathname === "/wishlist" ? (
-                  <FavoriteIcon />
-                ) : (
-                  <Badge badgeContent={wishlist.items.length} color="primary">
-                    <FavoriteBorderOutlinedIcon />
-                  </Badge>
-                )}
-              </IconButton>
-              <IconButton
+                Account
+              </Button>
+              <MenuBox></MenuBox>
+
+              <Button
+                startIcon={
+                  window.location.pathname === "/cart" ? (
+                    <ShoppingCartIcon />
+                  ) : (
+                    <Badge badgeContent={cart.items.length} color="primary">
+                      <ShoppingCartOutlinedIcon />
+                    </Badge>
+                  )
+                }
                 color="primary"
                 onClick={() => {
                   props.history("/cart");
                 }}
               >
-                {window.location.pathname === "/cart" ? (
-                  <ShoppingCartIcon />
-                ) : (
-                  <Badge badgeContent={cart.items.length} color="primary">
-                    <ShoppingCartOutlinedIcon />
-                  </Badge>
-                )}
-              </IconButton>
+                Cart
+              </Button>
+              <Button
+                onClick={() => {
+                  props.history("/wishlist");
+                }}
+                color="primary"
+                startIcon={
+                  window.location.pathname === "/wishlist" ? (
+                    <FavoriteIcon />
+                  ) : (
+                    <Badge badgeContent={wishlist.items.length} color="primary">
+                      <FavoriteBorderOutlinedIcon />
+                    </Badge>
+                  )
+                }
+              >
+                Wishlist
+              </Button>
             </Grid>
+            {/* <Grid item xs={12}>
+            </Grid> */}
           </Grid>
         </Grid>
+
         {/* ends main-1 search bar Tab */}
 
         {/* main-2 link container */}
@@ -650,10 +605,10 @@ export default function Navbar(props) {
           </Tabs>
         </Grid> */}
         {/* ends main-2 link container */}
-        <Grid item xs={12} className="main-2">
+        <Grid item xs={10} className="main-2">
           <Grid container className="dropdown-wrapper">
             <Grid item>
-              <Button component={Redirect} to="/" className="btn">
+              <Button component={Link} to="/" className="btn">
                 Home
               </Button>
             </Grid>
@@ -763,13 +718,177 @@ export default function Navbar(props) {
               </Box>
             </Grid>
             <Grid item>
-              <Button component={Redirect} to="/product" className="btn">
+              <Button component={Link} to="/product" className="btn">
                 Browse All
               </Button>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
+      <HamBurgerMenu
+        setHam={setHam}
+        Ham={Ham}
+        history={props.history}
+        linkObject={linkObject}
+      />
+    </>
+  );
+}
+
+function HamBurgerMenu({ Ham, setHam, history, linkObject }) {
+  const [renderList, setList] = useState({ open: false, list: [] });
+  const navBarImage = [
+    home,
+    furniture,
+    kitchen,
+    gift,
+    exclusive,
+    useful,
+    trading,
+    company,
+    all,
+  ];
+
+  useEffect(() => {
+    setHam(false);
+  }, [window.location.pathname]);
+
+  const navBarLabel = [
+    "Home",
+    "Furniture",
+    "Kitchen Items",
+    "Gifting",
+    "Exclusive",
+    "Useful Products",
+    "Traditional",
+    "Company",
+    "Browse All",
+  ];
+
+  const handleClick = (tab) => {
+    // console.log(linkObject[tab.toLowerCase()]);
+    if (tab === "Kitchen Items") {
+      setList({
+        open: !renderList.open,
+        list: linkObject["kitchen"],
+        label: tab,
+      });
+    } else if (tab === "Home") {
+      history("/");
+    } else if (tab === "Browse All") {
+      history("/product");
+    } else if (tab === "Useful Products") {
+      setList({
+        open: !renderList.open,
+        list: linkObject["useful"],
+        label: tab,
+      });
+    } else {
+      setList({
+        open: !renderList.open,
+        list: linkObject[tab.toLowerCase()],
+        label: tab,
+      });
+    }
+  };
+
+  return (
+    <>
+      <Drawer
+        className="hamburgerPanel"
+        anchor={"right"}
+        open={Ham}
+        onClose={() => {
+          setHam(false);
+        }}
+      >
+        <IconButton
+          p={1}
+          color="primary"
+          onClick={() => {
+            setHam(false);
+          }}
+        >
+          <CancelIcon />
+        </IconButton>
+        <List>
+          {navBarLabel.map((text, index) => (
+            <>
+              <ListItem
+                key={text}
+                disablePadding
+                onClick={() => {
+                  handleClick(text);
+                }}
+              >
+                <ListItemButton>
+                  <ListItemIcon>
+                    <img alt="home" src={navBarImage[index]} />
+                  </ListItemIcon>
+                  <ListItemText sx={{ fontSize: "1.5rem" }} primary={text} />
+                  {text !== "Home" && text !== "Browse All" ? (
+                    renderList.open ? (
+                      <ExpandLess />
+                    ) : (
+                      <ExpandMore />
+                    )
+                  ) : (
+                    ""
+                  )}
+                </ListItemButton>
+              </ListItem>
+              {(text !== "Home" || text !== "Browse All") && (
+                <Collapse
+                  in={renderList.open && renderList.label === text}
+                  timeout="auto"
+                  unmountOnExit
+                >
+                  <List component="div" disablePadding>
+                    {renderList.list.map((row, index) => (
+                      <ListItemButton
+                        component={Link}
+                        to={row.link}
+                        key={index}
+                        sx={{ pl: 4 }}
+                      >
+                        <ListItemText primary={row.label} />
+                      </ListItemButton>
+                    ))}
+                  </List>
+                </Collapse>
+              )}
+            </>
+          ))}
+        </List>
+        {/* <Tabs
+        orientation="vertical"
+        scrollButtons
+        allowScrollButtonsMobile
+        aria-label="auto tabs example"
+        onChange={handleChange}
+        value={
+          navBarComponent.includes(window.location.pathname) &&
+          window.location.pathname
+        }
+        color="primary"
+      >
+        {navBarLabel.map((tag, index) => (
+          <Tab
+            key={index}
+            wrapped
+            label={tag}
+            icon={<img alt="home" src={navBarImage[index]} />}
+            iconPosition="start"
+            component={Link}
+            value={navBarComponent[index]}
+            to={navBarComponent[index]}
+            onClick={() => {
+              setHam(false);
+            }}
+          />
+        ))}
+      </Tabs> */}
+      </Drawer>
     </>
   );
 }

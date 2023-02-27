@@ -43,6 +43,7 @@ import {
   addCartItem,
   getRelatedProduct,
 } from "../../service/service";
+// import defaultIMG from "../../asset/images/defaultProduct.svg";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
@@ -288,6 +289,24 @@ export default function ProductDetails(props) {
               ))}
             </Box>
           )}
+          {/* fabric */}
+          {variant.fabric.length > 0 && (
+            <Typography variant="button">Range</Typography>
+          )}
+          {variant.fabric.length > 0 && (
+            <Box className=" size rang">
+              {variant.fabric.map((s) => (
+                <Button
+                  component={Link}
+                  to={`/details/${s.SKU}/${s.title}/${s.category}`}
+                  size={"small"}
+                  variant={SKU == s.SKU ? "contained" : "outlined"}
+                >
+                  {s.fabric}
+                </Button>
+              ))}
+            </Box>
+          )}
         </Box>
       </>
     );
@@ -415,26 +434,31 @@ export default function ProductDetails(props) {
                 >
                   <img
                     className="showImage"
-                    src={data.product_image[imageIndex]}
+                    src={data.product_image[imageIndex] || defaultIMG}
                     alt="image2"
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <Grid container className="preview" spacing={2}>
-                    {data.product_image.map((item, index) => {
-                      return (
-                        <Grid
-                          item
-                          xs={2}
-                          key={index}
-                          onClick={() => {
-                            setIndex(index);
-                          }}
-                        >
-                          <img src={item} className="showImage" alt="images" />
-                        </Grid>
-                      );
-                    })}
+                    {data.product_image.length > 0 &&
+                      data.product_image.map((item, index) => {
+                        return (
+                          <Grid
+                            item
+                            xs={2}
+                            key={index}
+                            onClick={() => {
+                              setIndex(index);
+                            }}
+                          >
+                            <img
+                              src={item}
+                              className="showImage"
+                              alt="images"
+                            />
+                          </Grid>
+                        );
+                      })}
                   </Grid>
                 </Grid>
               </Grid>

@@ -79,7 +79,7 @@ function App() {
         {window.location.pathname !== "/verify" && <Navbar history={history} />}
         <Routes>
           {/* Not found  */}
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<Home />} />
 
           {/* // main routes  */}
           <Route path="/" element={<Home history={history} />}></Route>

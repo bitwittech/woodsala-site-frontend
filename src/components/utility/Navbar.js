@@ -425,7 +425,7 @@ export default function Navbar(props) {
         <Grid item xs={12}>
           <Grid container spacing={1} className="main-1">
             {/* logo */}
-            <Grid item xs={2}>
+            <Grid item xs={2} className="logo">
               <img
                 src={logo}
                 style={{ cursor: "pointer" }}
@@ -608,7 +608,7 @@ export default function Navbar(props) {
         <Grid item xs={10} className="main-2">
           <Grid container className="dropdown-wrapper">
             <Grid item>
-              <Button component={Link} to="/" className="btn">
+              <Button onClick={() => props.history("/")} className="btn">
                 Home
               </Button>
             </Grid>
@@ -718,7 +718,7 @@ export default function Navbar(props) {
               </Box>
             </Grid>
             <Grid item>
-              <Button component={Link} to="/product" className="btn">
+              <Button onClick={() => props.history("/product")} className="btn">
                 Browse All
               </Button>
             </Grid>

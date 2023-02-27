@@ -16,7 +16,7 @@ import {
   Card,
   CardActionArea,
   CardActions,
-  Link
+  Link,
 } from "@mui/material";
 // Images
 import living from "../../asset/images/home/sofa_SBR.png";
@@ -152,20 +152,24 @@ export default function Home(props) {
   ];
 
   const SBF2 = [
-    { label: "Table", image: table, link: 'Table' },
-    { label: "Chair", image: chair, link: 'Chair' },
-    { label: "Furniture Means Wood", image: room, link: 'FruitCabinet' }
-  ]
+    { label: "Table", image: table, link: "Table" },
+    { label: "Chair", image: chair, link: "Chair" },
+    { label: "Furniture Means Wood", image: room, link: "FruitCabinet" },
+  ];
   const SBF = [
-    { label: "Dressing Table", image: dressingTable, link: 'Table' },
-    { label: "Cabinet", image: cabinet, link: 'Cabinet' },
-    { label: "Box", image: box, link: 'Box' },
-    { label: "Fruit & Vegetable Cabinet", image: fruitCabinet, link: 'FruitCabinet' },
-    { label: "Sofa", image: sofa, link: 'Sofa' },
-    { label: "Drawer's Cabinet", image: drawerChest, link: 'Drawer' },
-    { label: "Bed", image: bed, link: 'Bed' },
-    { label: "Swing (Jhula)", image: swing, link: 'Jhula' }
-  ]
+    { label: "Dressing Table", image: dressingTable, link: "Table" },
+    { label: "Cabinet", image: cabinet, link: "Cabinet" },
+    { label: "Box", image: box, link: "Box" },
+    {
+      label: "Fruit & Vegetable Cabinet",
+      image: fruitCabinet,
+      link: "FruitCabinet",
+    },
+    { label: "Sofa", image: sofa, link: "Sofa" },
+    { label: "Drawer's Cabinet", image: drawerChest, link: "Drawer" },
+    { label: "Bed", image: bed, link: "Bed" },
+    { label: "Swing (Jhula)", image: swing, link: "Jhula" },
+  ];
 
   const responsive = {
     desktop: {
@@ -212,12 +216,17 @@ export default function Home(props) {
   };
   return (
     <>
-
       {/* helmet tag  */}
       <Helmet>
         <title>Online Furniture Store | Buy Wooden Furniture Online</title>
-        <meta name="description" content="Woodsala is an online furniture store that provides customized furniture solutions for all your need. Buy premium quality wooden furniture at a reasonable price." />
-        <meta name="keywords" content="furniture,wooden furniture,online furniture,which furniture store is the cheapest,search furniture,table,bajot,gift,chair" />
+        <meta
+          name="description"
+          content="Woodsala is an online furniture store that provides customized furniture solutions for all your need. Buy premium quality wooden furniture at a reasonable price."
+        />
+        <meta
+          name="keywords"
+          content="furniture,wooden furniture,online furniture,which furniture store is the cheapest,search furniture,table,bajot,gift,chair"
+        />
       </Helmet>
       {/* helmet tag ends  */}
 
@@ -231,15 +240,20 @@ export default function Home(props) {
             We bet you can't find an identical piece, <br></br> any where in the
             world
           </Typography>
-          <Button onClick={() => { props.history('/product') }} sx={{ margin: "5px" }} small={"true"} variant="outlined">
+          <Button
+            onClick={() => {
+              props.history("/product");
+            }}
+            sx={{ margin: "5px" }}
+            small={"true"}
+            variant="outlined"
+          >
             Shop Now
           </Button>
         </Grid>
       </Grid>
 
       {/* Ends Banner  */}
-
-
 
       {/* Shop by room  */}
 
@@ -285,33 +299,41 @@ export default function Home(props) {
             Shop By Furniture
           </Typography>
         </Grid>
-        {
-          SBF.map((row) => <Grid item xs={12} className="image center-SBR" md={3.5}>
-            <img className="image" src={row.image}
-              style={{ maxHeight: '400px' }}
-              onClick={() => props.history(`/product/${row.link}`)} alt="living" />
+        {SBF.map((row) => (
+          <Grid item xs={12} className="image center-SBR" md={3.5}>
+            <img
+              className="image"
+              src={row.image}
+              style={{ maxHeight: "400px" }}
+              onClick={() => props.history(`/product/${row.link}`)}
+              alt="living"
+            />
             <Typography className="sub-heading" variant="h5">
               {row.label}
             </Typography>
-          </Grid>)
-
-        }
+          </Grid>
+        ))}
 
         <Grid item xs={12} className="image center-SBR" md={3.5}>
           <Grid container className="SBF">
-
-            {
-              SBF2.map((row, index) =>
-                <Grid item xs={12} key={index} md={index !== 2 && 5} className="image center-SBR">
-                  <img src={row.image}
-                    onClick={() => props.history(`/product/${row.link}`)} alt="bedroom" />
-                  <Typography className="sub-heading" variant="h6">
-                    {row.label}
-                  </Typography>
-                </Grid>)
-
-            }
-
+            {SBF2.map((row, index) => (
+              <Grid
+                item
+                xs={12}
+                key={index}
+                md={index !== 2 && 5}
+                className="image center-SBR"
+              >
+                <img
+                  src={row.image}
+                  onClick={() => props.history(`/product/${row.link}`)}
+                  alt="bedroom"
+                />
+                <Typography className="sub-heading" variant="h6">
+                  {row.label}
+                </Typography>
+              </Grid>
+            ))}
           </Grid>
         </Grid>
       </Grid>
@@ -385,7 +407,11 @@ export default function Home(props) {
               >
                 {items.map((data, i) => {
                   return (
-                    <Card key={i} className="card" sx={{ maxWidth: 300, boxShadow: 0 }}>
+                    <Card
+                      key={i}
+                      className="card"
+                      sx={{ maxWidth: 300, boxShadow: 0 }}
+                    >
                       <CardActionArea>
                         <CardMedia
                           className="cardMedia"
@@ -396,7 +422,11 @@ export default function Home(props) {
                         />
                       </CardActionArea>
                       <CardActions className="center-TC">
-                        <Typography sx={{ float: "start" }} className="sub-heading" variant="h6">
+                        <Typography
+                          sx={{ float: "start" }}
+                          className="sub-heading"
+                          variant="h6"
+                        >
                           {data.name}
                         </Typography>
                         <Button
@@ -421,13 +451,8 @@ export default function Home(props) {
 
       {/* Video */}
 
-      <Grid container id='video' className="video">
-        <Grid
-          item
-          xs={12}
-          className="video-text"
-          variant="h4"
-        >
+      <Grid container id="video" className="video">
+        <Grid item xs={12} className="video-text" variant="h4">
           <Typography className="heading" variant="h4">
             Watch This Video
           </Typography>
@@ -493,11 +518,7 @@ export default function Home(props) {
 
       {/* Let Customers Speak for us */}
       <Grid container className="customer">
-        <Grid
-          item
-          xs={12}
-          className=" video-text"
-        >
+        <Grid item xs={12} className=" video-text">
           <Typography className="heading underline" variant="h4">
             Customers Testimonial
           </Typography>
@@ -512,7 +533,11 @@ export default function Home(props) {
           >
             {customer.map((article, index) => {
               return (
-                <Card key={index} className="card" sx={{ maxWidth: 400, boxShadow: 3 }}>
+                <Card
+                  key={index}
+                  className="card"
+                  sx={{ maxWidth: 400, boxShadow: 3 }}
+                >
                   <CardActionArea>
                     <CardMedia
                       className="cardMedia"
@@ -534,7 +559,6 @@ export default function Home(props) {
               );
             })}
           </Carousel>
-
         </Grid>
       </Grid>
 

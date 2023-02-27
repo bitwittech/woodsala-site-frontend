@@ -183,11 +183,12 @@ img {
     /* height: 50%; */
 }
 
-.banner-text {
+
+/* .banner-text {
     position: relative;
     top: 25%;
     left: 8%;
-}
+} */
 
 .banner1Text1 {
     color: #883c29;
@@ -285,7 +286,7 @@ img {
 
     .banner-text {
         top: 20%;
-        left: 1%;
+        left: 5%;
     }
 
     .image {

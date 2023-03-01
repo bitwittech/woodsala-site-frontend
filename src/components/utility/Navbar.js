@@ -275,43 +275,43 @@ export default function Navbar(props) {
   //  all link
   const linkObject = {
     furniture: [
-      { link: "/product", label: "Bedroom Set" },
+      { link: "/product/Bedroom Set", label: "Bedroom Set" },
       { link: "/product/Bed", label: "Bed" },
       { link: "/product/Cabinet", label: "Cabinet" },
       { link: "/product/Chair", label: "Chair" },
-      { link: "/product", label: "Dining Set" },
-      { link: "/product", label: "Drawer's Chest" },
+      { link: "/product/Dining Set", label: "Dining Set" },
+      { link: "/product/Drawer's Chest", label: "Drawer's Chest" },
       { link: "/product/Dressing Table", label: "Dressing Table" },
-      { link: "/product", label: "Fruits & Vegetable" },
+      { link: "/product/Fruits & Vegetable", label: "Fruits & Vegetable" },
       { link: "/product/Table", label: "Table" },
       { link: "/product/Sofa", label: "Sofa" },
       { link: "/product/Swing", label: "Swing (Jhula)" },
     ],
     kitchen: [
-      { link: "/product", label: "Bowl" },
+      { link: "/product/Bowl", label: "Bowl" },
       { link: "/product/Coaster", label: "Coaster" },
-      { link: "/product", label: "Chopping Board" },
-      { link: "/product", label: "Glass" },
-      { link: "/product", label: "Grinder" },
-      { link: "/product", label: "Rolling Pin" },
-      { link: "/product", label: "Tray" },
-      { link: "/product", label: "Spatula" },
+      { link: "/product/Chopping Board", label: "Chopping Board" },
+      { link: "/product/Glass", label: "Glass" },
+      { link: "/product/Grinder", label: "Grinder" },
+      { link: "/product/Rolling Pin", label: "Rolling Pin" },
+      { link: "/product/Tray", label: "Tray" },
+      { link: "/product/Spatula", label: "Spatula" },
     ],
     gifting: [
       { link: "/product/Animal Figurine", label: "Animal Figure" },
       { link: "/product/Clock", label: "Clock" },
       { link: "/product/Candle Holder", label: "Candle Holder" },
-      { link: "/product", label: "Collectibles" },
+      { link: "/productCollectibles", label: "Collectibles" },
       { link: "/product/Wall Decor", label: "Wall Decor" },
-      { link: "/product", label: "Desk Organizer" },
-      { link: "/product", label: "Hook & Holder" },
-      { link: "/product", label: "Rack" },
-      { link: "/product", label: "Mirror" },
+      { link: "/product/Desk Organizer", label: "Desk Organizer" },
+      { link: "/product/Desk Hook & Holder", label: "Hook & Holder" },
+      { link: "/product/Rack", label: "Rack" },
+      { link: "/product/Mirror", label: "Mirror" },
     ],
     exclusive: [
       { link: "/product/Bajot", label: "Bajot" },
-      { link: "/product", label: "Mirror" },
-      { link: "/product", label: "Silver Furniture" },
+      { link: "/product/Mirror", label: "Mirror" },
+      { link: "/product/Silver Furniture", label: "Silver Furniture" },
       { link: "/product/Stool", label: "Wooden Stool" },
       { link: "/product/Box", label: "Box (Sanduk)" },
     ],
@@ -718,7 +718,10 @@ export default function Navbar(props) {
               </Box>
             </Grid>
             <Grid item>
-              <Button onClick={() => props.history("/product")} className="btn">
+              <Button
+                onClick={() => props.history("/collection")}
+                className="btn"
+              >
                 Browse All
               </Button>
             </Grid>
@@ -776,7 +779,7 @@ function HamBurgerMenu({ Ham, setHam, history, linkObject }) {
     } else if (tab === "Home") {
       history("/");
     } else if (tab === "Browse All") {
-      history("/product");
+      history("/collection");
     } else if (tab === "Useful Products") {
       setList({
         open: !renderList.open,
@@ -860,34 +863,6 @@ function HamBurgerMenu({ Ham, setHam, history, linkObject }) {
             </>
           ))}
         </List>
-        {/* <Tabs
-        orientation="vertical"
-        scrollButtons
-        allowScrollButtonsMobile
-        aria-label="auto tabs example"
-        onChange={handleChange}
-        value={
-          navBarComponent.includes(window.location.pathname) &&
-          window.location.pathname
-        }
-        color="primary"
-      >
-        {navBarLabel.map((tag, index) => (
-          <Tab
-            key={index}
-            wrapped
-            label={tag}
-            icon={<img alt="home" src={navBarImage[index]} />}
-            iconPosition="start"
-            component={Link}
-            value={navBarComponent[index]}
-            to={navBarComponent[index]}
-            onClick={() => {
-              setHam(false);
-            }}
-          />
-        ))}
-      </Tabs> */}
       </Drawer>
     </>
   );

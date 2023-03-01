@@ -34,6 +34,7 @@ import {
   CardContent,
   Breadcrumbs,
   MenuItem,
+  Link as A,
 } from "@mui/material";
 import { Helmet } from "react-helmet";
 
@@ -467,6 +468,7 @@ export default function ProductDetails(props) {
             {/* details sec  */}
             <Grid item xs={12} className="contentSec" md={6}>
               <Grid container>
+                {/* Top Bar things like price and rating in it  */}
                 <Grid item xs={12}>
                   {/* // link  */}
                   <Breadcrumbs className="bradCrumbs" aria-label="breadcrumb">
@@ -539,8 +541,9 @@ export default function ProductDetails(props) {
                     {/* </Typography> */}
                   </Box>
                 </Grid>
-                {/* Specifications */}
+                {/* More Details */}
                 <Grid className="pd" item xs={12}>
+                  {/* Specifications */}
                   <Typography sx={{ fontWeight: 400 }} variant="h6">
                     Specifications
                   </Typography>
@@ -587,6 +590,30 @@ export default function ProductDetails(props) {
                       Range<Typography sx={{ float: "right" }} variant="body1">{data.range}</Typography>
                     </Typography> */}
                   </Stack>
+                  {/* Specifications */}
+                  {/* About This Item  */}
+                  {data.selling_points.length > 0 && data.selling_points && (
+                    <>
+                      <Typography mt={1} sx={{ fontWeight: 400 }} variant="h6">
+                        About This Item
+                      </Typography>
+                      <Divider />
+                      <Stack sx={{ paddingTop: "2%", paddingLeft: "1%" }}>
+                        {data.selling_points.map((point, index) => (
+                          <Typography
+                            component={"li"}
+                            sx={{ fontWeight: 400 }}
+                            key={index}
+                            variant="body2"
+                          >
+                            {point}
+                          </Typography>
+                        ))}
+                      </Stack>
+                    </>
+                  )}
+                  {/* Reason To buy Ends */}
+
                   {/* Polish */}
                   {/* <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
                     Polish
@@ -707,26 +734,56 @@ export default function ProductDetails(props) {
                   {/* // Buttons ends  */}
 
                   {/* Affiliate Vendors */}
-                  <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
-                    Also Shop From
-                  </Typography>
-                  <Divider />
-                  <Stack className="shopFrom">
-                    <img
-                      className="vendorIcon"
-                      src={amazon}
-                      alt="amazon_icon"
-                    />
-                    |
-                    <img
-                      className="vendorIcon"
-                      src={flipkart}
-                      alt="flipkart_icon"
-                    />
-                    |
-                    <img className="vendorIcon" src={jioMart} alt="jio_icon" />
-                  </Stack>
+                  {(data.amazon_url ||
+                    data.amazon_url !== "" ||
+                    data.flipkart_url ||
+                    data.flipkart_url !== "" ||
+                    data.jiomart_url ||
+                    data.jiomart_url !== "") && (
+                    <>
+                      {" "}
+                      <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
+                        Also Shop From
+                      </Typography>
+                      <Divider />
+                      <Stack className="shopFrom">
+                        {(data.amazon_url || data.amazon_url !== "") && (
+                          <A href={data.amazon_url} target="_blank" rel="add">
+                            <img
+                              className="vendorIcon"
+                              src={amazon}
+                              alt="amazon_icon"
+                            />
+                          </A>
+                        )}
+
+                        {(data.flipkart_url || data.flipkart_url !== "") && (
+                          <A href={data.flipkart_url} target="_blank" rel="add">
+                            {" "}
+                            <img
+                              className="vendorIcon"
+                              src={flipkart}
+                              alt="flipkart_icon"
+                            />
+                          </A>
+                        )}
+
+                        {(data.jiomart_url || data.jiomart_url !== "") && (
+                          <A href={data.jiomart_url} target="_blank" rel="add">
+                            {" "}
+                            <img
+                              className="vendorIcon"
+                              src={jioMart}
+                              alt="jio_icon"
+                            />
+                          </A>
+                        )}
+                      </Stack>
+                    </>
+                  )}
+                  {/* Affiliate Vendors Ends*/}
                 </Grid>
+                {/* More Details ends*/}
               </Grid>
             </Grid>
             {/* details sec ends */}

@@ -154,7 +154,7 @@ export default function Checkout() {
 
         // now the send the data to the backend
         let res = await abandonedOrder(finalData);
-      }, 60000); // 10 minute
+      }, 600000); // 10 minute
     }
     window.onfocus = () => {
       clearInterval(abandoned);

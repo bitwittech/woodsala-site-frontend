@@ -11,6 +11,8 @@ import amazon from "../../asset/images/productPage/amazon.png";
 import flipkart from "../../asset/images/productPage/flipkart.png";
 import jioMart from "../../asset/images/productPage/JioMart.png";
 
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 // css
 import "../../asset/css/productDetails.css";
 
@@ -33,7 +35,7 @@ import {
   CardMedia,
   CardContent,
   Breadcrumbs,
-  MenuItem,
+  MenuItem,IconButton,
   Link as A,
 } from "@mui/material";
 import { Helmet } from "react-helmet";
@@ -43,13 +45,15 @@ import {
   getProductDetails,
   addCartItem,
   getRelatedProduct,
+  removeWshList,
+  addWshList,
 } from "../../service/service";
 // import defaultIMG from "../../asset/images/defaultProduct.svg";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
 // action
-import { addItem, removeItem, setAlert } from "../../Redux/action/action";
+import { addItem, removeItem, setAlert, addToList, removeFromList } from "../../Redux/action/action";
 
 export default function ProductDetails(props) {
   // state
@@ -82,7 +86,7 @@ export default function ProductDetails(props) {
     try {
       let productDetails = await getProductDetails(SKU);
 
-      setData(productDetails.data.data);
+      setData({...productDetails.data.data,qty : 1});
 
       setVariant(productDetails.data.variant);
 
@@ -156,6 +160,103 @@ export default function ProductDetails(props) {
     index: PropTypes.number.isRequired,
     value: PropTypes.number.isRequired,
   };
+
+    // function for adding the item into the wishlist
+    async function addToWish(item) {
+      // server side
+      if (state.auth.isAuth) {
+        let response = await addWshList({
+          CID: state.auth.CID,
+          product_id: item.SKU,
+          quantity: 1,
+        });
+  
+        if (response) {
+          // for client side
+          dispatch(
+            addToList({
+              CID: state.auth.CID || "Not Logged In",
+              product_id: item.SKU,
+              quantity: 1,
+            })
+          );
+          return dispatch(
+            setAlert({
+              variant: "success",
+              message: response.data.message,
+              open: true,
+            })
+          );
+        } else {
+          return dispatch(
+            setAlert({
+              variant: "error",
+              message: "Something Went Wrong !!!",
+              open: true,
+            })
+          );
+        }
+      } else {
+        // for client side
+        dispatch(
+          addToList({
+            CID: state.auth.CID || "Not Logged In",
+            product_id: item.SKU,
+            quantity: 1,
+          })
+        );
+        return dispatch(
+          setAlert({
+            variant: "success",
+            message: "Item added to the wishlist !!!",
+            open: true,
+          })
+        );
+      }
+    }
+  
+    // removeItemFromCart
+    async function removeFromWishlist(item) {
+      // server side
+      if (state.auth.isAuth) {
+        await removeWshList({
+          CID: state.auth.CID,
+          product_id: item.SKU,
+        })
+          .then((response) => {
+            // for client side
+            dispatch(removeFromList(item.SKU));
+  
+            return dispatch(
+              setAlert({
+                variant: "warning",
+                message: response.data.message,
+                open: true,
+              })
+            );
+          })
+          .catch((err) => {
+            return dispatch(
+              setAlert({
+                variant: "error",
+                message: "Something Went Wrong !!!",
+                open: true,
+              })
+            );
+          });
+      } else {
+        // for client side
+        dispatch(removeFromList(item.SKU));
+  
+        return dispatch(
+          setAlert({
+            variant: "warning",
+            message: "Item removed from wishlist !!!",
+            open: true,
+          })
+        );
+      }
+    }
 
   // function a11yProps(index) {
   //   return {
@@ -323,7 +424,7 @@ export default function ProductDetails(props) {
   function handleScroll() {
     const winScroll =
       document.body.scrollTop || document.documentElement.scrollTop;
-    if (winScroll >= 800) setShowSticky(true);
+    if (winScroll >= 350 && winScroll <1000 ) setShowSticky(true);
     else setShowSticky(false);
   }
 
@@ -911,7 +1012,7 @@ export default function ProductDetails(props) {
               src={data.product_image[0] || defaultIMG}
             ></img>
           </Box>
-          <Typography variant="h6">{data.product_title}</Typography>
+          {/* <Typography variant="h6">{data.product_title}</Typography> */}
           <TextField
             size="small"
             sx={{ flexBasis: "1" }}
@@ -920,7 +1021,7 @@ export default function ProductDetails(props) {
             type="number"
             variant="outlined"
             value={data.qty || 1}
-            onChange={(e) => setData({ ...data, qty: e.target.value })}
+            onChange={(e) => setData({ ...data, qty: e.target.value || 1 })}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">QTY</InputAdornment>
@@ -934,6 +1035,21 @@ export default function ProductDetails(props) {
           >
             Add To Cart
           </Button>
+            {/* // WISHLIST */}
+            {state.wishlist.items.filter((row) => {
+                            return row.product_id === data.SKU;
+                          }).length > 0 ? (
+                            <IconButton
+                            color = "primary"
+                              onClick={() => removeFromWishlist(data)}
+                            >
+                              <FavoriteIcon sx = {{fontSize : 25}} />
+                            </IconButton>
+                          ) : (
+                            <IconButton   color = "primary" onClick={() => addToWish(data)}>
+                              <FavoriteBorderOutlinedIcon sx = {{fontSize : 25}} />
+                            </IconButton>
+                          )}
         </Box>
       )}
       {/* Sticky Add to Cart ends */}

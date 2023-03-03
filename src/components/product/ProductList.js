@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
@@ -122,7 +122,7 @@ export default function ProductList(props) {
   const [filterShow, setFilter] = useState(false);
 
   // use Effect
-  useMemo(() => {
+  useEffect(() => {
     getMartialList().then((row) => {
       setMaterials(
         row.data.map((item) => {
@@ -226,8 +226,8 @@ export default function ProductList(props) {
       });
   };
 
-  useMemo(() => {
-    return fetchMoreData();
+  useEffect(() => {
+     fetchMoreData();
   }, [filter, extraFilter.apply]);
 
   // handle accordions

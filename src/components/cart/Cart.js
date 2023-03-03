@@ -96,7 +96,7 @@ const Cart = (props) => {
 
   // fetching the cart item
   useEffect(() => {
-    console.log(state.cart.items)
+    // console.log(state.cart.items)
     getDetails(JSON.stringify(state.cart.items.map((item) => { return item.product_id })))
       .then((response) => {
         // console.log(state.cart.items)
@@ -104,7 +104,7 @@ const Cart = (props) => {
         setRow(
           response.data.map((dataSet, index) => {
             let discount = dataSet[0].categories.length > 0 && (dataSet[0].discount_limit < dataSet[0].categories[0].discount_limit ? dataSet[0].discount_limit : dataSet[0].categories[0].discount_limit)
-            console.log(dataSet[0].discount_limit,dataSet[0].categories[0].discount_limit)
+            // console.log(dataSet[0].discount_limit,dataSet[0].categories[0].discount_limit)
             return {
               id: index + 1,
               SKU: dataSet[0].SKU,

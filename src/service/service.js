@@ -212,6 +212,16 @@ export const placeOrder = async (data) => {
     },
   });
 };
+
+// for  abandoned Order to the list
+
+export const abandonedOrder = async (data) => {
+  return await axios.post(`${API}/abandonedOrder`, data, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
+    },
+  });
+};
 // for  verify check out
 
 export const verifyPayment = async (data) => {

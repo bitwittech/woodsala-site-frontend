@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 // mui
 import {
@@ -13,7 +13,7 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 import { Helmet } from "react-helmet";
 
@@ -25,54 +25,81 @@ import "../../asset/css/checkout.css";
 // import OutlinedFlagSharpIcon from "@mui/icons-material/OutlinedFlagSharp";
 // import bajot from "../asset/images/home/bajot_TC.png";
 
-// apis function 
-import { getCustomer, getLastOrder, placeOrder, removeCartItem, verifyPayment, getCartItem } from '../../service/service'
+// apis function
+import {
+  getCustomer,
+  getLastOrder,
+  placeOrder,
+  removeCartItem,
+  verifyPayment,
+  getCartItem,
+  abandonedOrder
+} from "../../service/service";
 
 // // store
 // import {Store} from '../store/Context';
 // import {Notify} from '../store/Types';
 
-// redux 
-import { useDispatch, useSelector } from 'react-redux'
-import { setAlert, setCart, thanks } from '../../Redux/action/action'
-
-
-
+// redux
+import { useDispatch, useSelector } from "react-redux";
+import { setAlert, setCart, thanks } from "../../Redux/action/action";
+// import { AbcRounded } from "@mui/icons-material";
 
 export default function Checkout() {
-
   // global Store
   // const {state,dispatch} = Store();
-  const state = useSelector(state => state);
+  const state = useSelector((state) => state);
   const dispatch = useDispatch();
-
+  var abandoned = null;
   // url parameter
   const location = useLocation();
   // (location)
   const { total, subtotal, product, quantity } = location.state;
 
-  const [OID, setOID] = useState();
+  const [OID, setOID] = useState(null);
   // data form state
   const [data, setData] = useState({
-    O: '',
-    CID: state.auth.CID || 'Not Logged In',
-    status: 'processing',
-    customer_name: '',
-    customer_email: '',
-    customer_mobile: '',
-    city: '',
-    state: '',
-    shipping: '',
+    O: "",
+    CID: state.auth.CID || "Not Logged In",
+    status: "processing",
+    customer_name: "",
+    customer_email: "",
+    customer_mobile: "",
+    city: "",
+    state: "",
+    shipping: "",
     address: [],
     quantity: quantity,
     discount: 0,
     paid: 0,
     total: total,
-    note: '',
-  })
+    note: "",
+  });
+  var ref = {
+    customer_name: useRef(),
+    customer_email: useRef(),
+    customer_mobile: useRef(),
+    city: useRef(),
+    state: useRef(),
+    shipping: useRef(),
+    note: useRef(),
+  }
 
-
+  // event for monitoring the user behavior with cart
   useEffect(() => {
+    // 30 minutes timeout for now
+    // for tab change event
+    window.addEventListener("visibilitychange", (e) => setAbandonedTime(e));
+    // on window unload
+    window.onbeforeunload = (e)=> setAbandonedTime(e);
+    // path changes event
+
+    // if (window.location.pathname !== "/checkout") setAbandonedTime();
+  }, []);
+
+
+ useEffect(() => {
+
     if (state.auth.CID) {
       getCustomer(state.auth.CID)
         .then((response) => {
@@ -85,165 +112,200 @@ export default function Checkout() {
             city: response.data.city,
             state: response.data.state,
             address: response.data.address,
-          })
+          });
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
 
-        getCartItem(state.auth.CID)
-      .then((response) => {
-        if(response.data.length > 0)
-          dispatch(setCart({ items: response.data }))
-      })  
+      getCartItem(state.auth.CID).then((response) => {
+        if (response.data.length > 0)
+          dispatch(setCart({ items: response.data }));
+      });
+      getOID();
+    } else {
       getOID();
     }
-    else {
-      getOID();
-    }
-  }, [state.auth.isAuth])
+  }, [state.auth.isAuth]);
 
   useEffect(() => {
-    setData({ ...data, OID: OID })
-  }, [OID])
+    setData({ ...data, OID: OID });
+  }, [OID]);
 
-  // verify Payment 
-  async function verifyPay (response,order_id) {
-          
-    const order = {...data,
-        O : OID,
+  // set the time for abandoned cart
+  function setAbandonedTime(e) {
+    e.preventDefault()
+    
+    console.log("Invoked");
+    if (abandoned !== null) {
+      console.log("clear", abandoned);
+      clearInterval(abandoned);
+    } else {
+      abandoned = setInterval(async(e) => {
+        console.log(abandoned)
+        clearInterval(abandoned);
+        // this is beacause i want current state of the tetfeild without rerendring too much 
+        let finalData = {...data}
+        Object.keys(ref).map((key)=>finalData[key] = ref[`${key}`].current.value)        
+        
+        // now the send the data to the backend
+        let res = await abandonedOrder(finalData);
+      }, 600000);
+    }
+    window.onfocus = () => {
+      clearInterval(abandoned);
+      abandoned = null;
+    };
+  }
+
+  // verify Payment
+  async function verifyPay(response, order_id) {
+    try {
+      const order = {
+        ...data,
+        O: OID,
         orderCreationId: order_id,
         razorpayPaymentId: response.razorpay_payment_id,
         razorpayOrderId: response.razorpay_order_id,
-        razorpaySignature: response.razorpay_signature}
+        razorpaySignature: response.razorpay_signature,
+      };
 
-        console.log(order)
-      
-        const res = verifyPayment(order);
+      console.log(order);
 
-        res
-        .then(async(response) => {
-          if (response.status !== 200) {
-            setData({
-              O: '',
-              CUS: '',
-              CID: null,
-              customer_email: '',
-              customer_mobile: '',
-              customer_name: '',
-              shipping: '',
-              product_array: [],
-              quantity: [],
-              subTotal: 0,
-              discount: 0,
-              total: 0,
-              status: 'processing',
-              city: '',
-              state: '',
-              paid: 0,
-              note: ''
-            })
-            dispatch(setAlert({
-              open: true,
-              variant: "error",
-              message: response.data.message || "Something Went Wrong !!!",
-            }));
-  
-          } else {
-            // removing the item for the cart after order
-            if(state.auth.isAuth)
-            {
-              Promise.all(state.cart.items.map(async row => await row.product_id && removeCartItem({
-                CID: state.auth.CID,
-                product_id: row.product_id,
-              })))  
-            }
-            dispatch(setCart({ items: [] }))
-                  dispatch(setAlert({
-                    open: true,
-                    variant: "success",
-                    message: response.data.message,
-                  }));
-                  dispatch(thanks({
-                    open: true,
-                    payload : OID,
-                  }));
-  
-            // window.location.href = '/'
-          }
-        })
-        .catch((err) => {
-          dispatch(setAlert({
+      const res = await verifyPayment(order);
+
+      if (res.status !== 200) {
+        setData({
+          O: "",
+          CUS: "",
+          CID: null,
+          customer_email: "",
+          customer_mobile: "",
+          customer_name: "",
+          shipping: "",
+          product_array: [],
+          quantity: [],
+          subTotal: 0,
+          discount: 0,
+          total: 0,
+          status: "processing",
+          city: "",
+          state: "",
+          paid: 0,
+          note: "",
+        });
+        dispatch(
+          setAlert({
             open: true,
             variant: "error",
-            message: "Something Went Wrong !!!",
-  
-          }));
-        });
+            message: res.data.message || "Something Went Wrong !!!",
+          })
+        );
+      } else {
+        // removing the item for the cart after order
+        if (state.auth.isAuth) {
+          Promise.all(
+            state.cart.items.map(
+              async (row) =>
+                (await row.product_id) &&
+                removeCartItem({
+                  CID: state.auth.CID,
+                  product_id: row.product_id,
+                })
+            )
+          );
+        }
+        dispatch(setCart({ items: [] }));
+        dispatch(
+          setAlert({
+            open: true,
+            variant: "success",
+            message: res.data.message,
+          })
+        );
+        dispatch(
+          thanks({
+            open: true,
+            payload: OID,
+          })
+        );
 
+        // window.location.href = '/'
+      }
+    } catch (err) {
+      dispatch(
+        setAlert({
+          open: true,
+          variant: "error",
+          message: "Something Went Wrong !!!",
+        })
+      );
+    }
   }
 
   // function for payment Gateway
   function loadScript(src) {
     return new Promise((resolve) => {
-        const script = document.createElement("script");
-        script.src = src;
-        script.onload = () => {
-            resolve(true);
-        };
-        script.onerror = () => {
-            resolve(false);
-        };
-        document.body.appendChild(script);
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
     });
-}
+  }
 
-// FOR Pay UI 
-async function displayRazorpay(e) {
-  e.preventDefault();
+  // FOR Pay UI
+  async function displayRazorpay(e) {
+    e.preventDefault();
 
-  // UI response check
+    // UI response check
     const res = await loadScript(
-        "https://checkout.razorpay.com/v1/checkout.js"
+      "https://checkout.razorpay.com/v1/checkout.js"
     );
 
     if (!res) {
-        alert("Razorpay SDK failed to load. Are you online?");
-        return;
+      alert("Razorpay SDK failed to load. Are you online?");
+      return;
     }
 
-    const response  = await placeOrder(data) // local APIs for saving Order
+    const response = await placeOrder(data); // local APIs for saving Order
 
-    if(response.status !== 200) return;
+    if (response.status !== 200) return;
 
-    const order_id = response.data.id.toString() // Order Id from Payment Getaway
+    const order_id = response.data.id.toString(); // Order Id from Payment Getaway
 
-    // Config for Payment Getaway 
+    // Config for Payment Getaway
     const options = {
-        key: process.env.REACT_APP_PAY_KEY, // Enter the Key ID generated from the Dashboard
-        amount: (total * 100).toString(),
-        currency: 'INR',
-        name: "WoodShala",
-        description: "Product Order",
-        image: 'https://admin.woodshala.in/favicon.ico',
-        order_id: order_id,
-        handler: (response)=>{verifyPay(response,order_id)},
-        prefill: {
-            name: data.customer_name,
-            email: data.customer_email,
-            contact: data.customer_mobile,
-        },
-        notes: {
-            address: data.shipping,
-        },
-        theme: {
-            color: "#91441f",
-        },
+      key: process.env.REACT_APP_PAY_KEY, // Enter the Key ID generated from the Dashboard
+      amount: (total * 100).toString(),
+      currency: "INR",
+      name: "WoodShala",
+      description: "Product Order",
+      image: "https://admin.woodshala.in/favicon.ico",
+      order_id: order_id,
+      handler: (response) => {
+        verifyPay(response, order_id);
+      },
+      prefill: {
+        name: data.customer_name,
+        email: data.customer_email,
+        contact: data.customer_mobile,
+      },
+      notes: {
+        address: data.shipping,
+      },
+      theme: {
+        color: "#91441f",
+      },
     };
 
     const paymentObject = new window.Razorpay(options);
     paymentObject.open();
-}
+  }
   // function for generating product OID ID
   const getOID = async () => {
     return await getLastOrder()
@@ -266,7 +328,7 @@ async function displayRazorpay(e) {
   const handleData = (e) => {
     // (e.target.name)
     setData({ ...data, [e.target.name]: e.target.value });
-  }
+  };
 
   /// submit order
   // const handleSubmit = async (e) => {
@@ -336,16 +398,17 @@ async function displayRazorpay(e) {
   //     });
   // }
 
-
   return (
     <>
-    
-     {/* helmet tag  */}
-     <Helmet>
-    <title>Check-Out</title>
-    <meta name="description" content="This page is for finall checkout and bill paying." />
-    </Helmet>
-    {/* helmet tag ends  */}
+      {/* helmet tag  */}
+      <Helmet>
+        <title>Check-Out</title>
+        <meta
+          name="description"
+          content="This page is for finall checkout and bill paying."
+        />
+      </Helmet>
+      {/* helmet tag ends  */}
       {/* Banner */}
       <Grid container className="Banner">
         <Grid item xs={12}>
@@ -354,9 +417,13 @@ async function displayRazorpay(e) {
       </Grid>
       {/* Banner Ends */}
       {/* Main Section */}
-      <form method='post' onSubmit={displayRazorpay} encType='multipart/form-data'>
-        <Grid container className="mainSec" >
-          <Grid sx = {{mb :2}} item xs={12}>
+      <form
+        method="post"
+        onSubmit={displayRazorpay}
+        encType="multipart/form-data"
+      >
+        <Grid container className="mainSec">
+          <Grid sx={{ mb: 2 }} item xs={12}>
             <Typography variant="h4">CheckOut</Typography>
           </Grid>
 
@@ -388,9 +455,9 @@ async function displayRazorpay(e) {
                 <TextField
                   required
                   label="OID"
-                  name='OID'
+                  name="OID"
                   disabled
-                  value={OID || ''}
+                  value={OID || ""}
                   onChange={handleData}
                   fullWidth
                   id="outlined-start-adornment"
@@ -400,9 +467,10 @@ async function displayRazorpay(e) {
                 <TextField
                   required
                   label="Name"
-                  name='customer_name'
+                  name="customer_name"
+                  inputProps={{ref:ref.customer_name}}
                   onChange={handleData}
-                  value={data.customer_name || ''}
+                  value={data.customer_name || ""}
                   fullWidth
                   id="outlined-start-adornment"
                   sx={{ marginTop: "2%" }}
@@ -410,9 +478,10 @@ async function displayRazorpay(e) {
                 />
                 <TextField
                   required
-                  name='customer_email'
+                  name="customer_email"
+                  inputProps={{ref:ref.customer_email}}
                   onChange={handleData}
-                  value={data.customer_email || ''}
+                  value={data.customer_email || ""}
                   label="Email"
                   fullWidth
                   id="outlined-start-adornment"
@@ -421,9 +490,10 @@ async function displayRazorpay(e) {
                 />
                 <TextField
                   required
-                  name='customer_mobile'
+                  name="customer_mobile"
+                  inputProps={{ref:ref.customer_mobile}}
                   onChange={handleData}
-                  value={data.customer_mobile || ''}
+                  value={data.customer_mobile || ""}
                   label="Phone Number"
                   fullWidth
                   id="outlined-start-adornment"
@@ -431,62 +501,68 @@ async function displayRazorpay(e) {
                   size="small"
                 />
 
-               {state.auth.isAuth && data.address.length > 0 ? <TextField sx={{ mt: 2 }}
-                  size="small"
-                  fullWidth
-                  // required
-                  id="outlined-select"
-                  select
-                  required 
-                  name="shipping"
+                {state.auth.isAuth && data.address.length > 0 ? (
+                  <TextField
+                    sx={{ mt: 2 }}
+                    size="small"
+                    fullWidth
+                    // required
+                    id="outlined-select"
+                    select
+                    required
+                    name="shipping"
+                  inputProps={{ref:ref.shipping}}
                   label="Address"
-                  value={data.shipping || ''}
-                  multiple
-                  onChange={handleData}
-                  helperText="Please select your address"
-                >
-                  {data.address.map(
-                    (option) =>
-                      <MenuItem
-                        key={option.address}
-                        value={option.address}
-                      >
+                    value={data.shipping || ""}
+                    multiple
+                    onChange={handleData}
+                    helperText="Please select your address"
+                  >
+                    {data.address.map((option) => (
+                      <MenuItem key={option.address} value={option.address}>
                         {option.customer_name} : {option.address}
-                      </MenuItem>)}
-                </TextField> : 
-                <>
-                <TextField
-                  required
-                  name='shipping'
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                ) : (
+                  <>
+                    <TextField
+                      required
+                      name="shipping"
+                  inputProps={{ref:ref.shipping}}
                   onChange={handleData}
-                  value={data.shipping || ''}
-                  label="Address"
-                  fullWidth
-                  id="outlined-start-adornment"
-                  sx={{ marginTop: "2%" }}
-                  size="small"
-                />
-                <TextField
-                label="State"
-                fullWidth
-                value={data.state || ''}
-                name='state'
-                onChange={handleData}
-                id="outlined-start-adornment"
-                sx={{ marginTop: "2%" }}
-                size="small"
-              />
-              <TextField
-                label="Town/City"
-                value={data.city || ''}
-                name='city'
-                onChange={handleData}
-                fullWidth
-                id="outlined-start-adornment"
-                sx={{ marginTop: "2%" }}
-                size="small"
-              /></>
-                }
+                      value={data.shipping || ""}
+                      label="Address"
+                      fullWidth
+                      id="outlined-start-adornment"
+                      sx={{ marginTop: "2%" }}
+                      size="small"
+                    />
+                    <TextField
+                      label="State"
+                      fullWidth
+                      value={data.state || ""}
+                  inputProps={{ref:ref.state}}
+                      name="state"
+                      onChange={handleData}
+                      id="outlined-start-adornment"
+                      sx={{ marginTop: "2%" }}
+                      size="small"
+                    />
+                    <TextField
+                      label="Town/City"
+                      value={data.city || ""}
+                  inputProps={{ref:ref.city}}
+
+                      name="city"
+                      onChange={handleData}
+                      fullWidth
+                      id="outlined-start-adornment"
+                      sx={{ marginTop: "2%" }}
+                      size="small"
+                    />
+                  </>
+                )}
                 {/* 
                 <TextField
                   select
@@ -535,7 +611,7 @@ async function displayRazorpay(e) {
                     </MenuItem>
                   ))}
                 </TextField> */}
-          
+
                 {/* <TextField
                   label="Pin Code"
                   fullWidth
@@ -552,8 +628,9 @@ async function displayRazorpay(e) {
                   sx={{ marginTop: "2%" }}
                   id="standard-multiline-static"
                   label="Order Notes (Optional)"
+                  inputProps={{ref:ref.note}}
                   value={data.note}
-                  name='note'
+                  name="note"
                   onChange={handleData}
                   // required
                   fullWidth
@@ -575,7 +652,7 @@ async function displayRazorpay(e) {
               <Grid item xs={12}>
                 <Grid container className="orderSummary">
                   <Grid item xs={12} sx={{ mb: 2 }}>
-                    <Stack className='productStack'>
+                    <Stack className="productStack">
                       {product.map((item, index) => {
                         return (
                           <Box key={index}>
@@ -598,7 +675,12 @@ async function displayRazorpay(e) {
                     <Divider />
                     <Box className="productBox text">
                       <Typography variant="body">Subtotal</Typography>
-                      <Typography variant="body">&#8377; {subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
+                      <Typography variant="body">
+                        &#8377;{" "}
+                        {subtotal
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                      </Typography>
                     </Box>
                     <Divider />
                   </Grid>
@@ -612,7 +694,10 @@ async function displayRazorpay(e) {
                   <Grid item xs={12}>
                     <Box className="productBox text">
                       <Typography variant="body">Total</Typography>
-                      <Typography variant="body">&#8377; {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
+                      <Typography variant="body">
+                        &#8377;{" "}
+                        {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                      </Typography>
                     </Box>
                   </Grid>
                 </Grid>
@@ -625,16 +710,13 @@ async function displayRazorpay(e) {
                     </Typography>
                     <br></br>
                     <FormControl>
-
                       <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
                         defaultValue="female"
                         name="radio-buttons-group"
                       >
-
                         <FormControlLabel
                           value="COD"
-
                           control={<Radio size="small" />}
                           label="Cash on Delivery"
                         />
@@ -653,8 +735,15 @@ async function displayRazorpay(e) {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12} className="orderButton" >
-                <Button type='submit'  sx={{ fontWeight: "500" }} fullWidth variant='contained'>Place Order</Button>
+              <Grid item xs={12} className="orderButton">
+                <Button
+                  type="submit"
+                  sx={{ fontWeight: "500" }}
+                  fullWidth
+                  variant="contained"
+                >
+                  Place Order
+                </Button>
               </Grid>
             </Grid>
           </Grid>

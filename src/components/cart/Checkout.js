@@ -33,7 +33,7 @@ import {
   removeCartItem,
   verifyPayment,
   getCartItem,
-  abandonedOrder
+  abandonedOrder,
 } from "../../service/service";
 
 // // store
@@ -83,7 +83,7 @@ export default function Checkout() {
     state: useRef(),
     shipping: useRef(),
     note: useRef(),
-  }
+  };
 
   // event for monitoring the user behavior with cart
   useEffect(() => {
@@ -91,15 +91,13 @@ export default function Checkout() {
     // for tab change event
     window.addEventListener("visibilitychange", (e) => setAbandonedTime(e));
     // on window unload
-    window.onbeforeunload = (e)=> setAbandonedTime(e);
+    window.onbeforeunload = (e) => setAbandonedTime(e);
     // path changes event
 
     // if (window.location.pathname !== "/checkout") setAbandonedTime();
   }, []);
 
-
- useEffect(() => {
-
+  useEffect(() => {
     if (state.auth.CID) {
       getCustomer(state.auth.CID)
         .then((response) => {
@@ -134,23 +132,29 @@ export default function Checkout() {
 
   // set the time for abandoned cart
   function setAbandonedTime(e) {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     console.log("Invoked");
     if (abandoned !== null) {
       console.log("clear", abandoned);
       clearInterval(abandoned);
     } else {
-      abandoned = setInterval(async(e) => {
-        console.log(abandoned)
+      abandoned = setInterval(async (e) => {
+        console.log(abandoned);
         clearInterval(abandoned);
-        // this is beacause i want current state of the tetfeild without rerendring too much 
-        let finalData = {...data}
-        Object.keys(ref).map((key)=>finalData[key] = ref[`${key}`].current.value)        
-        
+        // this is because i want current state of the textfeild without rereading too much
+        let finalData = { ...data };
+        Object.keys(ref).map((key) => {
+          return (
+            ref[`${key}`].current &&
+            (finalData[key] = ref[`${key}`].current.value)
+          );
+        });
+        // Object.keys(ref).map((key) => console.log(ref[key], key));
+
         // now the send the data to the backend
         let res = await abandonedOrder(finalData);
-      }, 600000);
+      }, 60000); // 10 minute
     }
     window.onfocus = () => {
       clearInterval(abandoned);
@@ -468,7 +472,7 @@ export default function Checkout() {
                   required
                   label="Name"
                   name="customer_name"
-                  inputProps={{ref:ref.customer_name}}
+                  inputProps={{ ref: ref.customer_name }}
                   onChange={handleData}
                   value={data.customer_name || ""}
                   fullWidth
@@ -479,7 +483,7 @@ export default function Checkout() {
                 <TextField
                   required
                   name="customer_email"
-                  inputProps={{ref:ref.customer_email}}
+                  inputProps={{ ref: ref.customer_email }}
                   onChange={handleData}
                   value={data.customer_email || ""}
                   label="Email"
@@ -491,7 +495,7 @@ export default function Checkout() {
                 <TextField
                   required
                   name="customer_mobile"
-                  inputProps={{ref:ref.customer_mobile}}
+                  inputProps={{ ref: ref.customer_mobile }}
                   onChange={handleData}
                   value={data.customer_mobile || ""}
                   label="Phone Number"
@@ -511,8 +515,8 @@ export default function Checkout() {
                     select
                     required
                     name="shipping"
-                  inputProps={{ref:ref.shipping}}
-                  label="Address"
+                    inputProps={{ ref: ref.shipping }}
+                    label="Address"
                     value={data.shipping || ""}
                     multiple
                     onChange={handleData}
@@ -529,8 +533,8 @@ export default function Checkout() {
                     <TextField
                       required
                       name="shipping"
-                  inputProps={{ref:ref.shipping}}
-                  onChange={handleData}
+                      inputProps={{ ref: ref.shipping }}
+                      onChange={handleData}
                       value={data.shipping || ""}
                       label="Address"
                       fullWidth
@@ -542,7 +546,7 @@ export default function Checkout() {
                       label="State"
                       fullWidth
                       value={data.state || ""}
-                  inputProps={{ref:ref.state}}
+                      inputProps={{ ref: ref.state }}
                       name="state"
                       onChange={handleData}
                       id="outlined-start-adornment"
@@ -552,8 +556,7 @@ export default function Checkout() {
                     <TextField
                       label="Town/City"
                       value={data.city || ""}
-                  inputProps={{ref:ref.city}}
-
+                      inputProps={{ ref: ref.city }}
                       name="city"
                       onChange={handleData}
                       fullWidth
@@ -628,7 +631,7 @@ export default function Checkout() {
                   sx={{ marginTop: "2%" }}
                   id="standard-multiline-static"
                   label="Order Notes (Optional)"
-                  inputProps={{ref:ref.note}}
+                  inputProps={{ ref: ref.note }}
                   value={data.note}
                   name="note"
                   onChange={handleData}

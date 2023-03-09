@@ -78,23 +78,21 @@ function App() {
       <>
         {window.location.pathname !== "/verify" && <Navbar history={history} />}
         <Routes>
-          {/* Not found  */}
-          <Route path="*" element={<Home />} />
-
+         
           {/* // main routes  */}
           <Route path="/" element={<Home history={history} />}></Route>
           <Route path="/verify" element={<Verify history={history} />}></Route>
 
           {/* // page routes  */}
           <Route path="/cart" element={<Cart history={history} />}></Route>
-          <Route path="/checkout" element={<Checkout />}></Route>
-          <Route path="/contact" element={<ContactUs />}></Route>
+          <Route path="/checkout" element={<Checkout history={history}/>}></Route>
+          <Route path="/contact" element={<ContactUs history={history}/>}></Route>
           <Route
             path="/collection"
             element={<Collection history={history} />}
           ></Route>
           <Route path="/home" element={<Home history={history} />}></Route>
-          <Route path="/profile" element={<Profile />}></Route>
+          <Route path="/profile" element={<Profile  history={history}/>}></Route>
           <Route
             path="/wishlist"
             element={<Wishlist history={history} />}
@@ -103,6 +101,10 @@ function App() {
           {/* for Product Page  */}
           <Route
             path="/details/:SKU/:title/:category"
+            element={<ProductDetails history={history} />}
+          ></Route>
+          <Route
+            path="/details/:SKU/:title"
             element={<ProductDetails history={history} />}
           ></Route>
 
@@ -130,8 +132,12 @@ function App() {
             path="/blog/:blog_id"
             element={<Blog history={history} />}
           ></Route>
+
+           {/* Not found  */}
+           <Route path="*" element={<Home history={history}/>} />
+ 
         </Routes>
-        {window.location.pathname !== "/verify" && <Footer />}
+        {window.location.pathname !== "/verify" && <Footer history={history} />}
       </>
     );
   }

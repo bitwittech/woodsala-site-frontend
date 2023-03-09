@@ -168,6 +168,7 @@ img {
 
 .video {
     margin-top: 6%;
+    margin-bottom: 10%;
 }
 
 .center-Video {
@@ -179,7 +180,7 @@ img {
 }
 
 .slider {
-    margin-top: 10%;
+    /* margin-top: 10%; */
     /* height: 50%; */
 }
 
@@ -282,50 +283,39 @@ img {
     .banner {
         margin-bottom: 15%;
     }
-
     .banner-text {
         top: 20%;
         left: 5%;
     }
-
     .image {
         height: auto;
     }
-
     .journalSec {
         gap: 20px !important;
     }
-
     .conatiner-TC {
         padding: 2% 5%;
     }
-
     .carousel-cell {
         width: 100%;
     }
-
     .heading {
         text-align: center;
     }
-
     .SBR {
         background-size: cover;
     }
-
     .underline {
         margin-bottom: 5% !important;
     }
-
     .SBF {
         padding: 5% 3% !important;
     }
-
     .heading {
         display: flex;
         justify-content: center;
         align-items: center;
     }
-
     .heading::after {
         width: calc(80vw - 40%);
         top: 90%;
@@ -336,19 +326,15 @@ img {
     .carousel-cell {
         width: 100%;
     }
-
     .banner-text {
         left: 1%;
     }
-
     .underline {
         margin-bottom: 8% !important;
     }
-
     .SBF {
         padding: 10% 3% !important;
     }
-
     .text-3 {
         display: none;
     }

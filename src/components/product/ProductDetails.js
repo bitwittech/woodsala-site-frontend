@@ -92,7 +92,7 @@ export default function ProductDetails(props) {
 
       let related = await getRelatedProduct({
         product_title: title,
-        category_name: category,
+        category_name: category || productDetails.data.data.category_name,
       });
 
       setRelatedProducts(related.data);
@@ -428,86 +428,8 @@ export default function ProductDetails(props) {
     else setShowSticky(false);
   }
 
-  // function StickyAddToCart({data,setData}) {
-  //   return (
-  //     <>
-  //      {data && <Box
-  //         className="stickCart"
-  //         sx={{
-  //           bottom: showSticky ? "0% !important" : "-20% !important",
-  //         }}
-  //       >
-  //         <Box sx={{ width: "50px" }}>
-  //           <img
-  //             style={{ width: "100%" }}
-  //             alt={"product_image"}
-  //             src={data.product_image[0] || defaultIMG}
-  //           ></img>
-  //         </Box>
-  //         <Typography variant="h6">{data.product_title}</Typography>
-  //         <TextField
-  //           size="small"
-  //           sx={{ flexBasis: "1" }}
-  //           id="standard-multiline-static"
-  //           label="Quantity"
-  //           type="number"
-  //           variant="outlined"
-  //           value={data.qty || 1}
-  //           onChange={(e) => setData({ ...data, qty: e.target.value })}
-  //           InputProps={{
-  //             startAdornment: (
-  //               <InputAdornment position="start">QTY</InputAdornment>
-  //             ),
-  //           }}
-  //         />
-  //         <Button
-  //           size={"small"}
-  //           variant="contained"
-  //           onClick={() => addToCart(data)}
-  //         >
-  //           Add To Cart
-  //         </Button>
-  //       </Box>}
-  //     </>
-  //   );
-  // }
 
-  function Price({ item }) {
-    const [value, setValue] = useState(0);
 
-    function setPrice() {
-      if (item.categories.length > 0) {
-        if (
-          item.categories[0].discount_limit &&
-          item.categories[0].discount_limit > 0 &&
-          item.categories[0].discount_limit < item.discount_limit
-        )
-          // checking every possible value
-          return setValue(
-            item.selling_price -
-              (item.selling_price / 100) * item.categories[0].discount_limit
-          );
-        else
-          return setValue(
-            item.selling_price -
-              (item.selling_price / 100) * item.discount_limit
-          );
-      }
-    }
-
-    useEffect(() => {
-      setPrice();
-    }, [item]);
-
-    return (
-      <>
-        {value.toLocaleString("us-Rs", {
-          style: "currency",
-          currency: "INR",
-        })}
-      </>
-    );
-  }
 
   return (
     <>
@@ -587,7 +509,7 @@ export default function ProductDetails(props) {
                         {data.category_name}
                       </Typography>
                     )}
-                    {data.sub_category_name !== "None" && (
+                    {(data.sub_category_name !== "None" && data.sub_category_name)  && (
                       <Typography color="text.primary">
                         {data.sub_category_name}
                       </Typography>
@@ -868,7 +790,7 @@ export default function ProductDetails(props) {
                             />
                           </A>
                         )}
-
+Please
                         {(data.jiomart_url || data.jiomart_url !== "") && (
                           <A href={data.jiomart_url} target="_blank" rel="add">
                             {" "}
@@ -1056,6 +978,44 @@ export default function ProductDetails(props) {
     </>
   );
 }
+
+function Price({ item }) {
+  const [value, setValue] = useState(0);
+
+  function setPrice() {
+    if (item.categories.length > 0) {
+      if (
+        item.categories[0].discount_limit &&
+        item.categories[0].discount_limit > 0 &&
+        item.categories[0].discount_limit < item.discount_limit
+      )
+        // checking every possible value
+        return setValue(
+          item.selling_price -
+            (item.selling_price / 100) * item.categories[0].discount_limit
+        );
+      else
+        return setValue(
+          item.selling_price -
+            (item.selling_price / 100) * item.discount_limit
+        );
+    }
+  }
+
+  useEffect(() => {
+    setPrice();
+  }, [item]);
+
+  return (
+    <>
+      {value.toLocaleString("us-Rs", {
+        style: "currency",
+        currency: "INR",
+      })}
+    </>
+  );
+}
+
 
 // {/* // ======================== Not is use for now */}
 //         {/* More Information */}

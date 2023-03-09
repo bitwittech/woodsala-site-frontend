@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-animated-slider";
 
 import Carousel from "react-multi-carousel";
@@ -42,7 +42,7 @@ import bajot from "../../asset/images/home/bajot_TC.png";
 import stool from "../../asset/images/home/stool_TC.png";
 import mirror from "../../asset/images/home/mirror_TC.png";
 import wallCabinet from "../../asset/images/home/wallCabinet_TC.png";
-import banner from "../../asset/images/home/banner1_BS.png";
+import bannerPic from "../../asset/images/home/banner1_BS.png";
 import box from "../../asset/images/home/Box.jpg";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import post1 from "../../asset/images/home/insta.png";
@@ -52,7 +52,24 @@ import FJ2 from "../../asset/images/home/FJ_2.png";
 import FJ3 from "../../asset/images/home/FJ_3.png";
 import { Helmet } from "react-helmet";
 
+// apis
+import { getBanner } from "../../service/service";
+
 export default function Home(props) {
+  const [banner, setBanner] = useState([]);
+
+  useEffect(() => {
+    fetchBanner();
+  }, []);
+
+  async function fetchBanner() {
+    let res = await getBanner();
+    if (res.status === 200) {
+      console.log(res);
+      setBanner([...res.data.data]);
+    }
+  }
+
   let instaPost = [
     post1,
     table,
@@ -101,7 +118,7 @@ export default function Home(props) {
     },
   ];
 
-  let content = [banner];
+  let content = [bannerPic];
 
   let customer = [
     {
@@ -232,26 +249,72 @@ export default function Home(props) {
 
       {/* Banner  */}
 
-      <Grid container className="banner">
-        <Grid item xs={6} md={12} className="banner-text">
-          <Typography className="text-1">One-of-a-king</Typography>
-          <Typography className="text-2">FURNITURE SHOP!</Typography>
-          <Typography className="text-3">
-            We bet you can't find an identical piece, <br></br> any where in the
-            world
-          </Typography>
-          <Button
-            onClick={() => {
-              props.history("/product");
-            }}
-            sx={{ margin: "5px" }}
-            small={"true"}
-            variant="outlined"
-          >
-            Shop Now
-          </Button>
+      {banner.length > 0 ? (
+        banner.length > 0 && (
+          <Grid container className="slider">
+            <Grid item xs={12}>
+              <Slider autoplay={5000} infinite = {true}  className="center" >
+                {banner.map((article, index) => (
+                  <Grid container 
+                    key={index}
+                    className="sliderBanner"
+                    style={{
+                      backgroundImage: `url('${article.web_banner}')`,
+                      backgroundSize: "100vw 100%",
+                      backgroundRepeat: "no-repeat",
+                      height: "30rem",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Grid item xs={6} md={12} className="banner-text">
+                      <Typography className="text-1">One-of-a-king</Typography>
+                      <Typography className="text-2">
+                        FURNITURE SHOP!
+                      </Typography>
+                      <Typography className="text-3">
+                        We bet you can't find an identical piece, <br></br> any
+                        where in the world
+                      </Typography>
+                      <Button
+                        onClick={() => {
+                          props.history("/product");
+                        }}
+                        sx={{ margin: "5px" }}
+                        small={"true"}
+                        variant="outlined"
+                      >
+                        Shop Now
+                      </Button>
+                    </Grid>
+                  </Grid>
+                ))}
+              </Slider>
+            </Grid>
+          </Grid>
+        )
+      ) : (
+        <Grid container className="banner">
+          <Grid item xs={6} md={12} className="banner-text">
+            <Typography className="text-1">One-of-a-king</Typography>
+            <Typography className="text-2">FURNITURE SHOP!</Typography>
+            <Typography className="text-3">
+              We bet you can't find an identical piece, <br></br> any where in
+              the world
+            </Typography>
+            <Button
+              onClick={() => {
+                props.history("/product");
+              }}
+              sx={{ margin: "5px" }}
+              small={"true"}
+              variant="outlined"
+            >
+              Shop Now
+            </Button>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
 
       {/* Ends Banner  */}
 

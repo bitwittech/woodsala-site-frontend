@@ -14,14 +14,14 @@ export const cart = (state = initialState,action)=>{
         case 'DECREMENT': 
             state = {items : state.items.map((row)=>{
                 if(row.product_id === action.payload && row.quantity > 1)
-                    row.quantity -= 1
+                row.quantity = parseInt(row.quantity) - 1
                 return row
             })}
             return {...state}      
         case 'INCREMENT': 
             state ={items : state.items.map((row)=>{
                 if(row.product_id === action.payload)
-                    row.quantity += 1 
+                row.quantity = parseInt(row.quantity) + 1 
                 return row
             })}
             return {...state}      

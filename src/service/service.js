@@ -319,3 +319,14 @@ export const addContact = async (data) => {
 };
 
 // ========================== Ends COntact  CURD =================
+
+
+// ============= banner 
+
+export const getBanner = async ()=>{
+  return await axios.get(`${API}/getBanner`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+}

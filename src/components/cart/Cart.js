@@ -10,10 +10,11 @@ import {
   Divider,
   MenuItem,
   InputAdornment,
-  IconButton
+  IconButton,
+  Box
 } from "@mui/material";
 import { Helmet } from "react-helmet";
-
+import { Link, useParams } from "react-router-dom";
 
 import {
   DataGrid,
@@ -31,6 +32,7 @@ import OutlinedFlagSharpIcon from "@mui/icons-material/OutlinedFlagSharp";
 import DeleteIcon from '@mui/icons-material/Delete';
 // APis services 
 import { getDetails, updateQuantity, removeCartItem, getCartItem } from "../../service/service"
+import defaultIMG from "../../asset/images/defaultProduct.svg";
 
 // state global
 // import { Store } from '../store/Context'
@@ -177,7 +179,7 @@ const Cart = (props) => {
   // decrease quantity
   const handleDecrease = (e) => {
     if (state.auth.isAuth) {
-      updateQuantity({ CID: state.auth.CID, product_id: e.product_id, quantity: e.quantity-1 })
+      updateQuantity({ CID: state.auth.CID, product_id: e.product_id, quantity: parseInt(e.quantity)-1 })
         .then(() => {
          dispatch(subQTY(e.product_id));
         })
@@ -187,14 +189,13 @@ const Cart = (props) => {
   // increase quantity
   const handleIncrease = (e) => {
     if (state.auth.isAuth) {
-      updateQuantity({ CID: state.auth.CID, product_id: e.product_id, quantity: e.quantity+1 })
+      updateQuantity({ CID: state.auth.CID, product_id: e.product_id, quantity: parseInt(e.quantity)+1 })
         .then(() => {
          dispatch(addQTY(e.product_id));
         })
     }
     else dispatch(addQTY(e.product_id));
   }
-
   // columns section 
   const columns = [
     { field: "id", renderHeader: () => <strong>{"S.No"}</strong>, width: 50 },
@@ -205,13 +206,13 @@ const Cart = (props) => {
       width: 200,
       renderHeader: () => <strong>{"Product"}</strong>,
       renderCell: (params) => (
-        <div>
-          {params.formattedValue !== "undefined" ? (
-            <img className="productImage" src={params.formattedValue} alt="category" />
-          ) : (
-            "Image Not Give"
+        <Box component = {Link} to = {`/details/${params.row.SKU}/${params.row.product_name}`}>
+          {params.formattedValue !== undefined ? (
+            <img className="productImage" src={params.formattedValue || defaultIMG } alt="category" />
+            ) : (
+              <img className="productImage" src={defaultIMG} alt="category" />
           )}
-        </div>
+        </Box>
       ),
     },
     {

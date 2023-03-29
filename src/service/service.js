@@ -330,3 +330,12 @@ export const getBanner = async ()=>{
     },
   });
 }
+// ============= COD limit 
+
+export const getCODLimits = async ()=>{
+  return await axios.get(`${API}/cod_limit`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+}

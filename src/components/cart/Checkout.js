@@ -14,8 +14,11 @@ import {
   FormControlLabel,
   Radio,
   MenuItem,
+  FormLabel,
+  InputAdornment,
 } from "@mui/material";
 import { Helmet } from "react-helmet";
+import defaultIMG from "../../asset/images/defaultProduct.svg";
 
 // css
 import "../../asset/css/checkout.css";
@@ -34,6 +37,7 @@ import {
   verifyPayment,
   getCartItem,
   abandonedOrder,
+  getCODLimits,
 } from "../../service/service";
 
 // // store
@@ -69,12 +73,22 @@ export default function Checkout() {
     state: "",
     shipping: "",
     address: [],
+    subTotal: subtotal,
     quantity: quantity,
     discount: 0,
     paid: 0,
     total: total,
+    pay_method: 'UPI',
     note: "",
   });
+
+  const [codLimit, setLimit] = useState(
+    {
+      limit_without_advance: 0,
+      max_advance_limit: 0,
+      min_advance_limit: 0,
+      limit: 0,
+    })
   var ref = {
     customer_name: useRef(),
     customer_email: useRef(),
@@ -87,6 +101,9 @@ export default function Checkout() {
 
   // event for monitoring the user behavior with cart
   useEffect(() => {
+
+    getLimits();
+
     // 30 minutes timeout for now
     // for tab change event
     window.addEventListener("visibilitychange", (e) => setAbandonedTime(e));
@@ -96,6 +113,12 @@ export default function Checkout() {
 
     // if (window.location.pathname !== "/checkout") setAbandonedTime();
   }, []);
+
+  useEffect(() => {
+    if(data.total > codLimit.limit_without_advance)
+      setData(old=>({...old,advance : Math.ceil((data.total/100)*codLimit.min_advance_limit)}))
+  }, [data.pay_method]);
+
 
   useEffect(() => {
     if (state.auth.CID) {
@@ -127,8 +150,17 @@ export default function Checkout() {
   }, [state.auth.isAuth]);
 
   useEffect(() => {
-    setData({ ...data, OID: OID });
+    setData(old => ({ ...old, OID: OID }));
   }, [OID]);
+
+
+  // for getting the COD limit to impose whil chossing the he COD options
+  async function getLimits() {
+    console.log('fire')
+    const response = await getCODLimits();
+    if (response)
+      setLimit(response.data[0])
+  }
 
   // set the time for abandoned cart
   function setAbandonedTime(e) {
@@ -179,6 +211,15 @@ export default function Checkout() {
       const res = await verifyPayment(order);
 
       if (res.status !== 200) {
+
+        dispatch(
+          setAlert({
+            open: true,
+            variant: "error",
+            message: res.data.message || "Something Went Wrong !!!",
+          })
+        );
+      } else {
         setData({
           O: "",
           CUS: "",
@@ -188,7 +229,7 @@ export default function Checkout() {
           customer_name: "",
           shipping: "",
           product_array: [],
-          quantity: [],
+          quantity: {},
           subTotal: 0,
           discount: 0,
           total: 0,
@@ -198,14 +239,6 @@ export default function Checkout() {
           paid: 0,
           note: "",
         });
-        dispatch(
-          setAlert({
-            open: true,
-            variant: "error",
-            message: res.data.message || "Something Went Wrong !!!",
-          })
-        );
-      } else {
         // removing the item for the cart after order
         if (state.auth.isAuth) {
           Promise.all(
@@ -334,73 +367,7 @@ export default function Checkout() {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
-  /// submit order
-  // const handleSubmit = async (e) => {
 
-  //   e.preventDefault();
-  //   const formVal = { ...data, O: OID };
-
-  //   // (formVal)
-  //   // return 'x'
-  //   const res = addOrder(formVal)
-
-  //   res
-  //     .then((response) => {
-  //       if (response.status !== 200) {
-  //         setData({
-  //           O: '',
-  //           CUS: '',
-  //           CID: null,
-  //           customer_email: '',
-  //           customer_mobile: '',
-  //           customer_name: '',
-  //           shipping: [],
-  //           product_array: [],
-  //           quantity: [],
-  //           subTotal: 0,
-  //           discount: 0,
-  //           total: 0,
-  //           status: 'processing',
-  //           city: '',
-  //           state: '',
-  //           paid: 0,
-  //           note: ''
-  //         })
-  //         dispatch(setAlert({
-  //           open: true,
-  //           variant: "error",
-  //           message: response.data.message || "Something Went Wrong !!!",
-
-  //         }));
-
-  //       } else {
-  //         // removing the item for the cart after order
-  //         Promise.all(state.cart.items.map(async row => await removeCartItem({
-  //           CID: state.auth.CID,
-  //           product_id: row.product_id,
-  //         })))
-  //           .then(() => {
-  //             dispatch(setCart({ items: [] }))
-  //           })
-
-  //         dispatch(setAlert({
-  //           open: true,
-  //           variant: "success",
-  //           message: response.data.message,
-  //         }));
-
-  //         window.location.href = '/'
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       dispatch(setAlert({
-  //         open: true,
-  //         variant: "error",
-  //         message: "Something Went Wrong !!!",
-
-  //       }));
-  //     });
-  // }
 
   return (
     <>
@@ -623,6 +590,7 @@ export default function Checkout() {
                   size="small"
                 /> */}
 
+
                 <Typography sx={{ marginTop: "3%" }} variant="h6">
                   Additional Information
                 </Typography>
@@ -660,7 +628,7 @@ export default function Checkout() {
                         return (
                           <Box key={index}>
                             <Box className="productBox">
-                              <img src={item.product} alt="productImage" />
+                              <img src={item.product || defaultIMG} alt="productImage" />
                               <Typography variant="body2">
                                 {item.product_name}
                               </Typography>
@@ -679,10 +647,11 @@ export default function Checkout() {
                     <Box className="productBox text">
                       <Typography variant="body">Subtotal</Typography>
                       <Typography variant="body">
-                        &#8377;{" "}
-                        {subtotal
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                        {" "}
+                        {subtotal.toLocaleString("us-Rs", {
+                          style: "currency",
+                          currency: "INR",
+                        })}
                       </Typography>
                     </Box>
                     <Divider />
@@ -698,25 +667,50 @@ export default function Checkout() {
                     <Box className="productBox text">
                       <Typography variant="body">Total</Typography>
                       <Typography variant="body">
-                        &#8377;{" "}
-                        {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                        {total.toLocaleString("us-Rs", {
+                          style: "currency",
+                          currency: "INR",
+                        })}
                       </Typography>
                     </Box>
                   </Grid>
                 </Grid>
               </Grid>
+
+{/* // pay method */}
               <Grid item xs={12}>
                 <Grid container className="payMethod text">
-                  <Grid item xs={12}>
-                    <Typography variant="body2" className="text">
+                  {/* // advance pay module  */}
+                  {(data.pay_method === 'COD' && codLimit.limit_without_advance <= total) &&
+                    <Grid mb = {1} item sx = {{display : 'flex',gap : '1rem', flexDirection : 'column'}} xs={12}>
+                    <Typography variant="body1" className="text">
+                      Advance Pay 
+                    </Typography>
+                    <TextField
+                    variant="outlined"
+                    size = 'small'
+                    disabled
+                    fullWidth
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">₹</InputAdornment>,
+                    }}
+                    value = {data.advance}
+                    />
+                    <Button size = 'small' fullWidth variant = 'outlined'>Pay Advance</Button>
+                     </Grid>}
+                  {/* // advance pay module ends */}
+                  <Grid item  xs={12}>
+                    <Typography variant="body1" className="text">
                       Select a payment method
                     </Typography>
-                    <br></br>
                     <FormControl>
                       <RadioGroup
+                        required={true}
                         aria-labelledby="demo-radio-buttons-group-label"
-                        defaultValue="female"
-                        name="radio-buttons-group"
+                        defaultValue="UPI"
+                        value={data.pay_method}
+                        onChange={(e) => setData(old => ({ ...old, pay_method: e.target.value }))}
+                        name="pay_method"
                       >
                         <FormControlLabel
                           value="COD"
@@ -724,12 +718,12 @@ export default function Checkout() {
                           label="Cash on Delivery"
                         />
                         <FormControlLabel
-                          value="UPIe"
+                          value="UPI"
                           control={<Radio size="small" />}
                           label="UPI Method"
                         />
                         <FormControlLabel
-                          value="DC"
+                          value="Card"
                           control={<Radio size="small" />}
                           label="Debit/Credit Card Method"
                         />

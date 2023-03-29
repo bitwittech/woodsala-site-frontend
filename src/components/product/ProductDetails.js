@@ -35,7 +35,7 @@ import {
   CardMedia,
   CardContent,
   Breadcrumbs,
-  MenuItem,IconButton,
+  MenuItem, IconButton,
   Link as A,
 } from "@mui/material";
 import { Helmet } from "react-helmet";
@@ -86,7 +86,7 @@ export default function ProductDetails(props) {
     try {
       let productDetails = await getProductDetails(SKU);
 
-      setData({...productDetails.data.data,qty : 1});
+      setData({ ...productDetails.data.data, qty: 1 });
 
       setVariant(productDetails.data.variant);
 
@@ -161,42 +161,17 @@ export default function ProductDetails(props) {
     value: PropTypes.number.isRequired,
   };
 
-    // function for adding the item into the wishlist
-    async function addToWish(item) {
-      // server side
-      if (state.auth.isAuth) {
-        let response = await addWshList({
-          CID: state.auth.CID,
-          product_id: item.SKU,
-          quantity: 1,
-        });
-  
-        if (response) {
-          // for client side
-          dispatch(
-            addToList({
-              CID: state.auth.CID || "Not Logged In",
-              product_id: item.SKU,
-              quantity: 1,
-            })
-          );
-          return dispatch(
-            setAlert({
-              variant: "success",
-              message: response.data.message,
-              open: true,
-            })
-          );
-        } else {
-          return dispatch(
-            setAlert({
-              variant: "error",
-              message: "Something Went Wrong !!!",
-              open: true,
-            })
-          );
-        }
-      } else {
+  // function for adding the item into the wishlist
+  async function addToWish(item) {
+    // server side
+    if (state.auth.isAuth) {
+      let response = await addWshList({
+        CID: state.auth.CID,
+        product_id: item.SKU,
+        quantity: 1,
+      });
+
+      if (response) {
         // for client side
         dispatch(
           addToList({
@@ -208,55 +183,80 @@ export default function ProductDetails(props) {
         return dispatch(
           setAlert({
             variant: "success",
-            message: "Item added to the wishlist !!!",
+            message: response.data.message,
             open: true,
           })
         );
-      }
-    }
-  
-    // removeItemFromCart
-    async function removeFromWishlist(item) {
-      // server side
-      if (state.auth.isAuth) {
-        await removeWshList({
-          CID: state.auth.CID,
-          product_id: item.SKU,
-        })
-          .then((response) => {
-            // for client side
-            dispatch(removeFromList(item.SKU));
-  
-            return dispatch(
-              setAlert({
-                variant: "warning",
-                message: response.data.message,
-                open: true,
-              })
-            );
-          })
-          .catch((err) => {
-            return dispatch(
-              setAlert({
-                variant: "error",
-                message: "Something Went Wrong !!!",
-                open: true,
-              })
-            );
-          });
       } else {
-        // for client side
-        dispatch(removeFromList(item.SKU));
-  
         return dispatch(
           setAlert({
-            variant: "warning",
-            message: "Item removed from wishlist !!!",
+            variant: "error",
+            message: "Something Went Wrong !!!",
             open: true,
           })
         );
       }
+    } else {
+      // for client side
+      dispatch(
+        addToList({
+          CID: state.auth.CID || "Not Logged In",
+          product_id: item.SKU,
+          quantity: 1,
+        })
+      );
+      return dispatch(
+        setAlert({
+          variant: "success",
+          message: "Item added to the wishlist !!!",
+          open: true,
+        })
+      );
     }
+  }
+
+  // removeItemFromCart
+  async function removeFromWishlist(item) {
+    // server side
+    if (state.auth.isAuth) {
+      await removeWshList({
+        CID: state.auth.CID,
+        product_id: item.SKU,
+      })
+        .then((response) => {
+          // for client side
+          dispatch(removeFromList(item.SKU));
+
+          return dispatch(
+            setAlert({
+              variant: "warning",
+              message: response.data.message,
+              open: true,
+            })
+          );
+        })
+        .catch((err) => {
+          return dispatch(
+            setAlert({
+              variant: "error",
+              message: "Something Went Wrong !!!",
+              open: true,
+            })
+          );
+        });
+    } else {
+      // for client side
+      dispatch(removeFromList(item.SKU));
+
+      return dispatch(
+        setAlert({
+          variant: "warning",
+          message: "Item removed from wishlist !!!",
+          open: true,
+        })
+      );
+    }
+  }
 
   // function a11yProps(index) {
   //   return {
@@ -373,7 +373,7 @@ export default function ProductDetails(props) {
             </Box>
           )}
 
-          {/* range */}
+          {/* range
           {variant.range.length > 0 && (
             <Typography variant="button">Range</Typography>
           )}
@@ -390,7 +390,7 @@ export default function ProductDetails(props) {
                 </Button>
               ))}
             </Box>
-          )}
+          )} */}
           {/* fabric */}
           {variant.fabric.length > 0 && (
             <Typography variant="button">Range</Typography>
@@ -409,6 +409,42 @@ export default function ProductDetails(props) {
               ))}
             </Box>
           )}
+          {/* Fitting */}
+          {variant.fitting.length > 0 && (
+            <Typography variant="button">Fitting</Typography>
+          )}
+          {variant.fitting.length > 0 && (
+            <Box className=" size rang">
+              {variant.fitting.map((s) => (
+                <Button
+                  component={Link}
+                  to={`/details/${s.SKU}/${s.title}/${s.category}`}
+                  size={"small"}
+                  variant={SKU == s.SKU ? "contained" : "outlined"}
+                >
+                  {s.fitting}
+                </Button>
+              ))}
+            </Box>
+          )}
+          {/* mattress */}
+          {/* {variant.fitting.length > 0 && (
+            <Typography variant="button">Mattress</Typography>
+          )}
+          {variant.fitting.length > 0 && (
+            <Box className=" size rang">
+              {variant.mattress.map((s) => (
+                <Button
+                  component={Link}
+                  to={`/details/${s.SKU}/${s.title}/${s.category}`}
+                  size={"small"}
+                  variant={SKU == s.SKU ? "contained" : "outlined"}
+                >
+                  {s.mattress}
+                </Button>
+              ))}
+            </Box>
+          )} */}
         </Box>
       </>
     );
@@ -424,7 +460,7 @@ export default function ProductDetails(props) {
   function handleScroll() {
     const winScroll =
       document.body.scrollTop || document.documentElement.scrollTop;
-    if (winScroll >= 350 && winScroll <1000 ) setShowSticky(true);
+    if (winScroll >= 350 && winScroll < 1000) setShowSticky(true);
     else setShowSticky(false);
   }
 
@@ -509,7 +545,7 @@ export default function ProductDetails(props) {
                         {data.category_name}
                       </Typography>
                     )}
-                    {(data.sub_category_name !== "None" && data.sub_category_name)  && (
+                    {(data.sub_category_name !== "None" && data.sub_category_name) && (
                       <Typography color="text.primary">
                         {data.sub_category_name}
                       </Typography>
@@ -545,13 +581,13 @@ export default function ProductDetails(props) {
                           <strike>
                             {data.selling_price
                               ? data.selling_price.toLocaleString("us-Rs", {
-                                  style: "currency",
-                                  currency: "INR",
-                                })
+                                style: "currency",
+                                currency: "INR",
+                              })
                               : (0).toLocaleString("us-Rs", {
-                                  style: "currency",
-                                  currency: "INR",
-                                })}
+                                style: "currency",
+                                currency: "INR",
+                              })}
                           </strike>
                         </Typography>
                       )}
@@ -598,7 +634,7 @@ export default function ProductDetails(props) {
                       </Typography>
                     </Typography>
                     <Typography variant="body1">
-                      Delivery By
+                      Shipped By
                       <Typography sx={{ float: "right" }} variant="body1">
                         {data.manufacturing_time + data.polish_time} Days
                       </Typography>
@@ -763,47 +799,47 @@ export default function ProductDetails(props) {
                     data.flipkart_url !== "" ||
                     data.jiomart_url ||
                     data.jiomart_url !== "") && (
-                    <>
-                      {" "}
-                      <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
-                        Also Shop From
-                      </Typography>
-                      <Divider />
-                      <Stack className="shopFrom">
-                        {(data.amazon_url || data.amazon_url !== "") && (
-                          <A href={data.amazon_url} target="_blank" rel="add">
-                            <img
-                              className="vendorIcon"
-                              src={amazon}
-                              alt="amazon_icon"
-                            />
-                          </A>
-                        )}
+                      <>
+                        {" "}
+                        <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
+                          Also Shop From
+                        </Typography>
+                        <Divider />
+                        <Stack className="shopFrom">
+                          {(data.amazon_url || data.amazon_url !== "") && (
+                            <A href={data.amazon_url} target="_blank" rel="add">
+                              <img
+                                className="vendorIcon"
+                                src={amazon}
+                                alt="amazon_icon"
+                              />
+                            </A>
+                          )}
 
-                        {(data.flipkart_url || data.flipkart_url !== "") && (
-                          <A href={data.flipkart_url} target="_blank" rel="add">
-                            {" "}
-                            <img
-                              className="vendorIcon"
-                              src={flipkart}
-                              alt="flipkart_icon"
-                            />
-                          </A>
-                        )}
-Please
-                        {(data.jiomart_url || data.jiomart_url !== "") && (
-                          <A href={data.jiomart_url} target="_blank" rel="add">
-                            {" "}
-                            <img
-                              className="vendorIcon"
-                              src={jioMart}
-                              alt="jio_icon"
-                            />
-                          </A>
-                        )}
-                      </Stack>
-                    </>
-                  )}
+                          {(data.flipkart_url || data.flipkart_url !== "") && (
+                            <A href={data.flipkart_url} target="_blank" rel="add">
+                              {" "}
+                              <img
+                                className="vendorIcon"
+                                src={flipkart}
+                                alt="flipkart_icon"
+                              />
+                            </A>
+                          )}
+                          Please
+                          {(data.jiomart_url || data.jiomart_url !== "") && (
+                            <A href={data.jiomart_url} target="_blank" rel="add">
+                              {" "}
+                              <img
+                                className="vendorIcon"
+                                src={jioMart}
+                                alt="jio_icon"
+                              />
+                            </A>
+                          )}
+                        </Stack>
+                      </>
+                    )}
                   {/* Affiliate Vendors Ends*/}
                 </Grid>
                 {/* More Details ends*/}
@@ -897,7 +933,7 @@ Please
                             (
                               article.selling_price -
                               (article.selling_price / 100) *
-                                article.discount_limit
+                              article.discount_limit
                             ).toLocaleString("us-Rs", {
                               style: "currency",
                               currency: "INR",
@@ -957,21 +993,21 @@ Please
           >
             Add To Cart
           </Button>
-            {/* // WISHLIST */}
-            {state.wishlist.items.filter((row) => {
-                            return row.product_id === data.SKU;
-                          }).length > 0 ? (
-                            <IconButton
-                            color = "primary"
-                              onClick={() => removeFromWishlist(data)}
-                            >
-                              <FavoriteIcon sx = {{fontSize : 25}} />
-                            </IconButton>
-                          ) : (
-                            <IconButton   color = "primary" onClick={() => addToWish(data)}>
-                              <FavoriteBorderOutlinedIcon sx = {{fontSize : 25}} />
-                            </IconButton>
-                          )}
+          {/* // WISHLIST */}
+          {state.wishlist.items.filter((row) => {
+            return row.product_id === data.SKU;
+          }).length > 0 ? (
+            <IconButton
+              color="primary"
+              onClick={() => removeFromWishlist(data)}
+            >
+              <FavoriteIcon sx={{ fontSize: 25 }} />
+            </IconButton>
+          ) : (
+            <IconButton color="primary" onClick={() => addToWish(data)}>
+              <FavoriteBorderOutlinedIcon sx={{ fontSize: 25 }} />
+            </IconButton>
+          )}
         </Box>
       )}
       {/* Sticky Add to Cart ends */}
@@ -992,12 +1028,12 @@ function Price({ item }) {
         // checking every possible value
         return setValue(
           item.selling_price -
-            (item.selling_price / 100) * item.categories[0].discount_limit
+          (item.selling_price / 100) * item.categories[0].discount_limit
         );
       else
         return setValue(
           item.selling_price -
-            (item.selling_price / 100) * item.discount_limit
+          (item.selling_price / 100) * item.discount_limit
         );
     }
   }

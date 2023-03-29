@@ -42,7 +42,7 @@ import defaultIMG from "../../asset/images/defaultProduct.svg";
 import { useDispatch, useSelector } from 'react-redux'
 
 // action 
-import {setCart,removeItem,setAlert,addQTY,subQTY} from '../../Redux/action/action'
+import { setCart, removeItem, setAlert, addQTY, subQTY } from '../../Redux/action/action'
 
 const countries = [
   {
@@ -114,7 +114,7 @@ const Cart = (props) => {
               product_name: dataSet[0].product_title,
               price: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price,
               qty: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity,
-              total: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price - (state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price)/100*discount,
+              total: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price - (state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price) / 100 * discount,
               action: dataSet[0].SKU
             }
           })
@@ -146,17 +146,17 @@ const Cart = (props) => {
           dispatch(removeItem(item.SKU))
 
           return dispatch(setAlert({
-              variant: 'warning',
-              message: response.data.message,
-              open: true
-            }))
+            variant: 'warning',
+            message: response.data.message,
+            open: true
+          }))
         })
         .catch((err) => {
           return dispatch(setAlert({
-              variant: 'error',
-              message: 'Something Went Wrong !!!',
-              open: true
-            }))
+            variant: 'error',
+            message: 'Something Went Wrong !!!',
+            open: true
+          }))
         })
     }
     else {
@@ -164,10 +164,10 @@ const Cart = (props) => {
       dispatch(removeItem(item.SKU))
 
       return dispatch(setAlert({
-          variant: 'warning',
-          message: 'Item removed added to the cart !!!',
-          open: true
-        }))
+        variant: 'warning',
+        message: 'Item removed added to the cart !!!',
+        open: true
+      }))
 
     }
   }
@@ -179,9 +179,9 @@ const Cart = (props) => {
   // decrease quantity
   const handleDecrease = (e) => {
     if (state.auth.isAuth) {
-      updateQuantity({ CID: state.auth.CID, product_id: e.product_id, quantity: parseInt(e.quantity)-1 })
+      updateQuantity({ CID: state.auth.CID, product_id: e.product_id, quantity: parseInt(e.quantity) - 1 })
         .then(() => {
-         dispatch(subQTY(e.product_id));
+          dispatch(subQTY(e.product_id));
         })
     }
     else dispatch(subQTY(e.product_id));
@@ -189,9 +189,9 @@ const Cart = (props) => {
   // increase quantity
   const handleIncrease = (e) => {
     if (state.auth.isAuth) {
-      updateQuantity({ CID: state.auth.CID, product_id: e.product_id, quantity: parseInt(e.quantity)+1 })
+      updateQuantity({ CID: state.auth.CID, product_id: e.product_id, quantity: parseInt(e.quantity) + 1 })
         .then(() => {
-         dispatch(addQTY(e.product_id));
+          dispatch(addQTY(e.product_id));
         })
     }
     else dispatch(addQTY(e.product_id));
@@ -206,11 +206,11 @@ const Cart = (props) => {
       width: 200,
       renderHeader: () => <strong>{"Product"}</strong>,
       renderCell: (params) => (
-        <Box component = {Link} to = {`/details/${params.row.SKU}/${params.row.product_name}`}>
+        <Box component={Link} to={`/details/${params.row.SKU}/${params.row.product_name}`}>
           {params.formattedValue !== undefined ? (
-            <img className="productImage" src={params.formattedValue || defaultIMG } alt="category" />
-            ) : (
-              <img className="productImage" src={defaultIMG} alt="category" />
+            <img className="productImage" src={params.formattedValue || defaultIMG} alt="category" />
+          ) : (
+            <img className="productImage" src={defaultIMG} alt="category" />
           )}
         </Box>
       ),
@@ -225,7 +225,7 @@ const Cart = (props) => {
       renderHeader: () => <strong>{"Price (Rupee)"}</strong>,
       type: "number",
       width: 120,
-      align : 'center'
+      align: 'center'
     },
 
     {
@@ -259,7 +259,7 @@ const Cart = (props) => {
       renderHeader: () => <strong>{"Total"}</strong>,
       type: "number",
       width: 100,
-      align : 'center'
+      align: 'center'
 
     },
     {
@@ -274,10 +274,10 @@ const Cart = (props) => {
               setRow(row.filter((set) => {
                 return set.action !== params.formattedValue;
               }))
-              dispatch(setAlert( {
-                  open: true,
-                  variant: 'warning',
-                  message: 'Item Removed !!!'
+              dispatch(setAlert({
+                open: true,
+                variant: 'warning',
+                message: 'Item Removed !!!'
               }))
             })
           }} aria-label="delete"  >
@@ -295,10 +295,10 @@ const Cart = (props) => {
     return (
       <div style={{ height: "450px", width: "100%" }}>
         <DataGrid
-        sx = {{
-          fontWeight : 400,
-          fontSize : '1rem'
-        }}
+          sx={{
+            fontWeight: 400,
+            fontSize: '1rem'
+          }}
           rows={row}
           columns={columns}
           pageSize={5}
@@ -318,13 +318,13 @@ const Cart = (props) => {
 
   return (
     <>
-     {/* helmet tag  */}
-     <Helmet>
-    <title>Cart</title>
-    <meta name="description" content="Woodsala cart and checkout page." />
-    </Helmet>
-    {/* helmet tag ends  */}
-      
+      {/* helmet tag  */}
+      <Helmet>
+        <title>Cart</title>
+        <meta name="description" content="Woodsala cart and checkout page." />
+      </Helmet>
+      {/* helmet tag ends  */}
+
       {/* Banner */}
       <Grid container className="Banner">
         <Grid item xs={12}>
@@ -347,7 +347,7 @@ const Cart = (props) => {
             <Grid item xs={12}>
               <Typography variant="h5">Cart Total</Typography>
               <Grid container className="cartTotals">
-           
+
                 {/* <Grid item xs={12}>
                   <Typography variant="body1">Shipping</Typography>
                 </Grid>
@@ -433,55 +433,72 @@ const Cart = (props) => {
                     </Grid>
                   </Grid>
                 </Grid> */}
-                 {/* coupon section */}
+                {/* coupon section */}
 
-          <Grid item xs={12} className="couponBox">
-            <Typography variant="body1">
-              Have Any Coupon Code? Apply here.
-            </Typography>
-            <br></br>
-            <div className="applyBox">
-              <TextField size="small" variant="outlined" label="Coupon Code" />
-              <Button sx={{ fontWeight: "400" }} size="small" variant="contained">
-                Apply
-              </Button>
-            </div>
-          </Grid>
-          {/* coupon section ends */}
-          <Grid sx = {{mt:2, mb : 2}} item xs={12}>
-                      <Divider></Divider>
-                    </Grid>
-          <Grid item xs={12} className="subTotal">
+                <Grid item xs={12} className="couponBox">
+                  <Typography variant="body1">
+                    Have Any Coupon Code? Apply here.
+                  </Typography>
+                  <br></br>
+                  <div className="applyBox">
+                    <TextField size="small" variant="outlined" label="Coupon Code" />
+                    <Button sx={{ fontWeight: "400" }} size="small" variant="contained">
+                      Apply
+                    </Button>
+                  </div>
+                </Grid>
+                {/* coupon section ends */}
+                <Grid sx={{ mt: 2, mb: 2 }} item xs={12}>
+                  <Divider></Divider>
+                </Grid>
+                <Grid item xs={12} className="subTotal">
                   <Typography variant="body">Number Items</Typography>
                   <Typography variant="body">{state.cart.items.length} unit</Typography>
                 </Grid>
-              <Grid item xs={12} className="subTotal">
+                <Grid item xs={12} className="subTotal">
                   <Typography variant="body">Discount</Typography>
-                  <Typography variant="body">-  `&#8377; {data.subtotal - data.total }</Typography>
+                  <Typography variant="body">- {(data.subtotal - data.total).toLocaleString("us-Rs", {
+                    style: "currency",
+                    currency: "INR",
+                  })}</Typography>
                 </Grid>
                 <Grid item xs={12} className="subTotal">
                   <Typography variant="body">Subtotal</Typography>
-                  <Typography variant="body">&#8377; {data.subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
+                  <Typography variant="body">{data.subtotal.toLocaleString("us-Rs", {
+                    style: "currency",
+                    currency: "INR",
+                  })}</Typography>
                 </Grid>
-                <Grid sx = {{mt:2}} item xs={12}>
+                <Grid sx={{ mt: 2 }} item xs={12}>
                   <Divider></Divider>
                   <br></br>
                 </Grid>
-                   
-                    <Grid item xs={12} className="Total">
-                      <Typography variant="body1">Total</Typography>
-                      <Typography variant="body1">&#8377; {data.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Divider></Divider>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Button disabled={row.length <= 0 ? true : false} onClick={() => {
-                        props.history("/checkout", { state: { total: data.total, subtotal: data.subtotal, quantity: row.map((set) => { return { [set.SKU]: set.qty } }), product: row } })
-                      }} sx={{ fontWeight: "500" }} variant="contained" fullWidth>
-                        Proceed To CheckOut
-                      </Button>
-                    </Grid>
+
+                <Grid item xs={12} className="Total">
+                  <Typography variant="body1">Total</Typography>
+                  <Typography variant="body1">&#8377; {data.total.toLocaleString("us-Rs", {
+                    style: "currency",
+                    currency: "INR",
+                  })}</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Divider></Divider>
+                </Grid>
+                <Grid item xs={12}>
+                  <Button disabled={row.length <= 0 ? true : false} onClick={() => {
+                    props.history("/checkout",
+                      {
+                        state: {
+                          total: data.total,
+                          subtotal: data.subtotal,
+                          quantity: row.reduce((initial, set) => { return { ...initial, [set.SKU]: set.qty } }, {}),
+                          product: row
+                        }
+                      })
+                  }} sx={{ fontWeight: "500" }} variant="contained" fullWidth>
+                    Proceed To CheckOut
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>

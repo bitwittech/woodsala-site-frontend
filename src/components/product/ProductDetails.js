@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import Carousel from "react-multi-carousel";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+// import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import defaultIMG from "../../asset/images/defaultProduct.svg";
 import Review from "../user/Review";
 import amazon from "../../asset/images/productPage/amazon.png";
@@ -47,6 +47,7 @@ import {
   getRelatedProduct,
   removeWshList,
   addWshList,
+  fetchVariants
 } from "../../service/service";
 // import defaultIMG from "../../asset/images/defaultProduct.svg";
 
@@ -66,7 +67,7 @@ export default function ProductDetails(props) {
   const [imageIndex, setIndex] = useState(0); // use for updating the images
   const [ratting, setRatting] = useState(2);
   // const [expanded, setExpanded] = useState("panel1");
-  const [variant, setVariant] = useState([]);
+  const [ACIN, setACIN] = useState([]);
 
   // useParams search parameters
   const { SKU, title, category } = useParams();
@@ -76,7 +77,7 @@ export default function ProductDetails(props) {
   const [relatedProducts, setRelatedProducts] = useState([]);
 
   // for getting the product
-  useMemo(() => {
+  useEffect(() => {
     setData(null);
     setRelatedProducts([]);
     getData();
@@ -86,9 +87,13 @@ export default function ProductDetails(props) {
     try {
       let productDetails = await getProductDetails(SKU);
 
-      setData({ ...productDetails.data.data, qty: 1 });
+      console.log(productDetails)
+      setData(productDetails.data);
+      // setData(null);
 
-      setVariant(productDetails.data.variant);
+      // throw Error ('Customer error')
+      setACIN(productDetails.data.ACIN);
+      // setVariant(null);
 
       let related = await getRelatedProduct({
         product_title: title,
@@ -108,13 +113,6 @@ export default function ProductDetails(props) {
     }
   }
 
-  // const handleChange = (panel) => (event, newExpanded) => {
-  //   setExpanded(newExpanded ? panel : false);
-  // };
-
-  // const handleChangeTab = (event, newValue) => {
-  //   setValue(newValue);
-  // };
 
   const responsive = {
     midDesktop: {
@@ -258,12 +256,6 @@ export default function ProductDetails(props) {
     }
   }
 
-  // function a11yProps(index) {
-  //   return {
-  //     id: `simple-tab-${index}`,
-  //     "aria-controls": `simple-tabpanel-${index}`,
-  //   };
-  // }
 
   // function for adding the product to cart
   const addToCart = async () => {
@@ -325,130 +317,7 @@ export default function ProductDetails(props) {
     }
   };
 
-  // function for variant section
-  function Variant() {
-    return (
-      <>
-        <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
-          Variants
-        </Typography>
-        <Divider />
-        <Box className="Variants" mt={2}>
-          {/* // size   */}
-          {variant.size.length > 0 && (
-            <Typography variant="button">Dimension</Typography>
-          )}
-          {variant.size.length > 0 && (
-            <Box className="size">
-              {variant.size.map((s) => (
-                <Button
-                  component={Link}
-                  to={`/details/${s.SKU}/${s.title}/${s.category}`}
-                  size={"small"}
-                  variant={SKU == s.SKU ? "contained" : "outlined"}
-                >
-                  {s.size}
-                </Button>
-              ))}
-            </Box>
-          )}
-
-          {/* material  */}
-          {variant.material.length > 0 && (
-            <Typography variant="button">Material</Typography>
-          )}
-          {variant.material.length > 0 && (
-            <Box className="size materialBox">
-              {variant.material.map((s) => (
-                <Button
-                  component={Link}
-                  to={`/details/${s.SKU}/${s.title}/${s.category}`}
-                  size={"small"}
-                  variant={SKU == s.SKU ? "contained" : "outlined"}
-                  className="item"
-                >
-                  {s.material}
-                </Button>
-              ))}
-            </Box>
-          )}
-
-          {/* range
-          {variant.range.length > 0 && (
-            <Typography variant="button">Range</Typography>
-          )}
-          {variant.range.length > 0 && (
-            <Box className=" size rang">
-              {variant.range.map((s) => (
-                <Button
-                  component={Link}
-                  to={`/details/${s.SKU}/${s.title}/${s.category}`}
-                  size={"small"}
-                  variant={SKU == s.SKU ? "contained" : "outlined"}
-                >
-                  {s.range}
-                </Button>
-              ))}
-            </Box>
-          )} */}
-          {/* fabric */}
-          {variant.fabric.length > 0 && (
-            <Typography variant="button">Range</Typography>
-          )}
-          {variant.fabric.length > 0 && (
-            <Box className=" size rang">
-              {variant.fabric.map((s) => (
-                <Button
-                  component={Link}
-                  to={`/details/${s.SKU}/${s.title}/${s.category}`}
-                  size={"small"}
-                  variant={SKU == s.SKU ? "contained" : "outlined"}
-                >
-                  {s.fabric}
-                </Button>
-              ))}
-            </Box>
-          )}
-          {/* Fitting */}
-          {variant.fitting.length > 0 && (
-            <Typography variant="button">Fitting</Typography>
-          )}
-          {variant.fitting.length > 0 && (
-            <Box className=" size rang">
-              {variant.fitting.map((s) => (
-                <Button
-                  component={Link}
-                  to={`/details/${s.SKU}/${s.title}/${s.category}`}
-                  size={"small"}
-                  variant={SKU == s.SKU ? "contained" : "outlined"}
-                >
-                  {s.fitting}
-                </Button>
-              ))}
-            </Box>
-          )}
-          {/* mattress */}
-          {/* {variant.fitting.length > 0 && (
-            <Typography variant="button">Mattress</Typography>
-          )}
-          {variant.fitting.length > 0 && (
-            <Box className=" size rang">
-              {variant.mattress.map((s) => (
-                <Button
-                  component={Link}
-                  to={`/details/${s.SKU}/${s.title}/${s.category}`}
-                  size={"small"}
-                  variant={SKU == s.SKU ? "contained" : "outlined"}
-                >
-                  {s.mattress}
-                </Button>
-              ))}
-            </Box>
-          )} */}
-        </Box>
-      </>
-    );
-  }
+ 
 
   const [showSticky, setShowSticky] = useState(false);
 
@@ -463,9 +332,6 @@ export default function ProductDetails(props) {
     if (winScroll >= 350 && winScroll < 1000) setShowSticky(true);
     else setShowSticky(false);
   }
-
-
-
 
   return (
     <>
@@ -706,7 +572,7 @@ export default function ProductDetails(props) {
                     </MenuItem>
                   </TextField> */}
                   {/* Variants  */}
-                  {variant.show && <Variant />}
+                  <Variant ACIN = {ACIN} SKU = {SKU} />
                   {/* Variants ends  */}
 
                   {/* <Typography sx={{ fontWeight: 400, mt: 1 }} variant="h6">
@@ -1048,6 +914,163 @@ function Price({ item }) {
         style: "currency",
         currency: "INR",
       })}
+    </>
+  );
+}
+
+ // function for variant section
+ function Variant({ACIN,SKU}) {
+
+  const [variant, setVariant] = useState({ size: [],
+    range: [],
+    material: [],
+    fabric: [],
+    fitting : [],
+    mattress : []});
+
+  useMemo(()=>{
+    getVariants()
+  },[ACIN])
+
+  async function getVariants (){
+    try {
+
+      let res = await fetchVariants(ACIN);
+
+      console.log(res.data)
+      if(res.status === 200)
+      setVariant({...res.data})
+      // setVariant(null)
+
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  return (
+    <>
+     {variant.show &&
+     <>
+     <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
+        Variants
+      </Typography>
+      <Divider />
+      <Box className="Variants" mt={2}>
+        {/* // size   */}
+        {variant.size.length > 0 && (
+          <Typography variant="button">Dimension</Typography>
+        )}
+        {variant.size.length > 0 && (
+          <Box className="size">
+            {variant.size.map((s) => (
+              <Button
+                component={Link}
+                to={`/details/${s.SKU}/${s.title}/${s.category}`}
+                size={"small"}
+                variant={SKU === s.SKU ? "contained" : "outlined"}
+              >
+                {s.size}
+              </Button>
+            ))}
+          </Box>
+        )}
+
+        {/* material  */}
+        {variant.material.length > 0 && (
+          <Typography variant="button">Material</Typography>
+        )}
+        {variant.material.length > 0 && (
+          <Box className="size materialBox">
+            {variant.material.map((s) => (
+              <Button
+                component={Link}
+                to={`/details/${s.SKU}/${s.title}/${s.category}`}
+                size={"small"}
+                variant={SKU === s.SKU ? "contained" : "outlined"}
+                className="item"
+              >
+                {s.material}
+              </Button>
+            ))}
+          </Box>
+        )}
+
+        {/* range
+        {variant.range.length > 0 && (
+          <Typography variant="button">Range</Typography>
+        )}
+        {variant.range.length > 0 && (
+          <Box className=" size rang">
+            {variant.range.map((s) => (
+              <Button
+                component={Link}
+                to={`/details/${s.SKU}/${s.title}/${s.category}`}
+                size={"small"}
+                variant={SKU === s.SKU ? "contained" : "outlined"}
+              >
+                {s.range}
+              </Button>
+            ))}
+          </Box>
+        )} */}
+        {/* fabric */}
+        {variant.fabric.length > 0 && (
+          <Typography variant="button">Range</Typography>
+        )}
+        {variant.fabric.length > 0 && (
+          <Box className=" size rang">
+            {variant.fabric.map((s) => (
+              <Button
+                component={Link}
+                to={`/details/${s.SKU}/${s.title}/${s.category}`}
+                size={"small"}
+                variant={SKU === s.SKU ? "contained" : "outlined"}
+              >
+                {s.fabric}
+              </Button>
+            ))}
+          </Box>
+        )}
+        {/* Fitting */}
+        {variant.fitting.length > 0 && (
+          <Typography variant="button">Fitting</Typography>
+        )}
+        {variant.fitting.length > 0 && (
+          <Box className=" size rang">
+            {variant.fitting.map((s) => (
+              <Button
+                component={Link}
+                to={`/details/${s.SKU}/${s.title}/${s.category}`}
+                size={"small"}
+                variant={SKU === s.SKU ? "contained" : "outlined"}
+              >
+                {s.fitting}
+              </Button>
+            ))}
+          </Box>
+        )}
+        {/* mattress */}
+        {variant.fitting.length > 0 && (
+          <Typography variant="button">Mattress</Typography>
+        )}
+        {variant.mattress.length > 0 && (
+          <Box className=" size rang">
+            {variant.mattress.map((s) => (
+              <Button
+              component={Link}
+              to={`/details/${s.SKU}/${s.title}/${s.category}`}
+              size={"small"}
+              variant={SKU === s.SKU ? "contained" : "outlined"}
+              >
+                {s.mattress}
+              </Button>
+            ))}
+          </Box>
+        )}
+      </Box>
+      </>
+      }
     </>
   );
 }

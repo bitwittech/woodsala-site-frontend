@@ -122,6 +122,13 @@ export const addReply = async (data) => {
     },
   });
 };
+export const fetchVariants = async (data) => {
+  return await axios.get(`${API}/fetchVariants?ACIN=${data}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+};
 
 // get listReview for display
 export const listReview = async (data) => {

@@ -131,6 +131,17 @@ function Review(props) {
                           Posted On : {chat.time}
                         </Typography> */}
                       </Box>
+                      {
+                        row.admin_reply.length > 0 && row.admin_reply.map(row=> row.message &&
+                      <Box className={"reply"}>
+                        <Typography variant="body1">{row.message}</Typography>
+                        <Typography className variant="caption">
+                          Posted On : {row.time}
+                        </Typography>
+                      </Box>
+                          
+                          ) 
+                      }
                     </Grid>
                     {row.review_images.length > 0 && (
                       <Grid mt={1} item xs={12}>

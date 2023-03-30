@@ -23,6 +23,9 @@ import FallBack from "./components/utility/FallBack";
 // const Home = lazy(()=>import( "./components/home/Home"))
 import Home from "./components/home/Home";
 
+// error boundaries for handling error 
+import ErrorBound from "./components/utility/ErrorBound";
+
 // utility
 const Navbar = lazy(() => import("./components/utility/Navbar"));
 const Footer = lazy(() => import("./components/utility/Footer"));
@@ -147,12 +150,14 @@ function App() {
       <Suspense fallback={<FallBack />}>
         <ThemeProvider theme={light}>
           <CssBaseline enableColorScheme>
+            <ErrorBound fallback = {'Sorry for the inconvenience !!! '}>
             <BrowserRouter>
               <Path />
             </BrowserRouter>
             <EntryPoint />
             <Thanks />
             <SnakBar />
+            </ErrorBound>
           </CssBaseline>
         </ThemeProvider>
       </Suspense>

@@ -476,7 +476,7 @@ const Cart = (props) => {
 
                 <Grid item xs={12} className="Total">
                   <Typography variant="body1">Total</Typography>
-                  <Typography variant="body1">&#8377; {data.total.toLocaleString("us-Rs", {
+                  <Typography variant="body1">{data.total.toLocaleString("us-Rs", {
                     style: "currency",
                     currency: "INR",
                   })}</Typography>

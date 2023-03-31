@@ -273,7 +273,7 @@ export default function ProductDetails(props) {
           dispatch(
             addItem({
               product_id: data.SKU,
-              quantity: data.qty,
+              quantity: data.qty || 1,
               CID: state.auth.CID,
             })
           );
@@ -302,7 +302,7 @@ export default function ProductDetails(props) {
       dispatch(
         addItem({
           product_id: data.SKU,
-          quantity: data.qty,
+          quantity: data.qty || 1, 
           CID: "Not Logged In",
         })
       );
@@ -918,8 +918,7 @@ function Price({ item }) {
   );
 }
 
- // function for variant section
- function Variant({ACIN,SKU}) {
+function Variant({ACIN,SKU}) {
 
   const [variant, setVariant] = useState({ size: [],
     range: [],
@@ -956,124 +955,188 @@ function Price({ item }) {
         Variants
       </Typography>
       <Divider />
-      <Box className="Variants" mt={2}>
-        {/* // size   */}
-        {variant.size.length > 0 && (
-          <Typography variant="button">Dimension</Typography>
-        )}
-        {variant.size.length > 0 && (
-          <Box className="size">
-            {variant.size.map((s) => (
-              <Button
-                component={Link}
-                to={`/details/${s.SKU}/${s.title}/${s.category}`}
-                size={"small"}
-                variant={SKU === s.SKU ? "contained" : "outlined"}
-              >
-                {s.size}
-              </Button>
-            ))}
-          </Box>
-        )}
-
-        {/* material  */}
-        {variant.material.length > 0 && (
-          <Typography variant="button">Material</Typography>
-        )}
-        {variant.material.length > 0 && (
-          <Box className="size materialBox">
-            {variant.material.map((s) => (
-              <Button
-                component={Link}
-                to={`/details/${s.SKU}/${s.title}/${s.category}`}
-                size={"small"}
-                variant={SKU === s.SKU ? "contained" : "outlined"}
-                className="item"
-              >
-                {s.material}
-              </Button>
-            ))}
-          </Box>
-        )}
-
-        {/* range
-        {variant.range.length > 0 && (
-          <Typography variant="button">Range</Typography>
-        )}
-        {variant.range.length > 0 && (
-          <Box className=" size rang">
-            {variant.range.map((s) => (
-              <Button
-                component={Link}
-                to={`/details/${s.SKU}/${s.title}/${s.category}`}
-                size={"small"}
-                variant={SKU === s.SKU ? "contained" : "outlined"}
-              >
-                {s.range}
-              </Button>
-            ))}
-          </Box>
-        )} */}
-        {/* fabric */}
-        {variant.fabric.length > 0 && (
-          <Typography variant="button">Range</Typography>
-        )}
-        {variant.fabric.length > 0 && (
-          <Box className=" size rang">
-            {variant.fabric.map((s) => (
-              <Button
-                component={Link}
-                to={`/details/${s.SKU}/${s.title}/${s.category}`}
-                size={"small"}
-                variant={SKU === s.SKU ? "contained" : "outlined"}
-              >
-                {s.fabric}
-              </Button>
-            ))}
-          </Box>
-        )}
-        {/* Fitting */}
-        {variant.fitting.length > 0 && (
-          <Typography variant="button">Fitting</Typography>
-        )}
-        {variant.fitting.length > 0 && (
-          <Box className=" size rang">
-            {variant.fitting.map((s) => (
-              <Button
-                component={Link}
-                to={`/details/${s.SKU}/${s.title}/${s.category}`}
-                size={"small"}
-                variant={SKU === s.SKU ? "contained" : "outlined"}
-              >
-                {s.fitting}
-              </Button>
-            ))}
-          </Box>
-        )}
-        {/* mattress */}
-        {variant.fitting.length > 0 && (
-          <Typography variant="button">Mattress</Typography>
-        )}
-        {variant.mattress.length > 0 && (
-          <Box className=" size rang">
-            {variant.mattress.map((s) => (
-              <Button
-              component={Link}
-              to={`/details/${s.SKU}/${s.title}/${s.category}`}
+      <Box className="variants" mt={2}>
+        {variant.variants.length > 0 && 
+          variant.variants.map((s) =><Box
+          component={Link}
+              to={`/details/${s.SKU}/${s.title}/${s.category}`} 
+          className ={SKU === s.SKU ? "size borderSize" : "size"} >
+              <img src={s.product_image[0] || defaultIMG } alt="variant_image" />
+              <Typography 
               size={"small"}
-              variant={SKU === s.SKU ? "contained" : "outlined"}
+              // variant={SKU === s.SKU ? "contained" : "outlined"}
+              className ={SKU === s.SKU ? "variant_label bold" : "variant_label"}              
+              variant = 'caption'
               >
-                {s.mattress}
-              </Button>
-            ))}
-          </Box>
-        )}
+                {s.product_title}
+              </Typography>
+              </Box>
+            )}
       </Box>
       </>
       }
     </>
   );
 }
+
+
+
+ // function for variant section
+//  function Variant({ACIN,SKU}) {
+
+//   const [variant, setVariant] = useState({ size: [],
+//     range: [],
+//     material: [],
+//     fabric: [],
+//     fitting : [],
+//     mattress : []});
+
+//   useMemo(()=>{
+//     getVariants()
+//   },[ACIN])
+
+//   async function getVariants (){
+//     try {
+
+//       let res = await fetchVariants(ACIN);
+
+//       console.log(res.data)
+//       if(res.status === 200)
+//       setVariant({...res.data})
+//       // setVariant(null)
+
+      
+//     } catch (error) {
+//       console.log(error)
+//     }
+//   }
+
+//   return (
+//     <>
+//      {variant.show &&
+//      <>
+//      <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
+//         Variants
+//       </Typography>
+//       <Divider />
+//       <Box className="Variants" mt={2}>
+//         {/* // size   */}
+//         {variant.size.length > 0 && (
+//           <Typography variant="button">Dimension</Typography>
+//         )}
+//         {variant.size.length > 0 && (
+//           <Box className="size">
+//             {variant.size.map((s) => (
+//               <Button
+//                 component={Link}
+//                 to={`/details/${s.SKU}/${s.title}/${s.category}`}
+//                 size={"small"}
+//                 variant={SKU === s.SKU ? "contained" : "outlined"}
+//               >
+//                 {s.size}
+//               </Button>
+//             ))}
+//           </Box>
+//         )}
+
+//         {/* material  */}
+//         {variant.material.length > 0 && (
+//           <Typography variant="button">Material</Typography>
+//         )}
+//         {variant.material.length > 0 && (
+//           <Box className="size materialBox">
+//             {variant.material.map((s) => (
+//               <Button
+//                 component={Link}
+//                 to={`/details/${s.SKU}/${s.title}/${s.category}`}
+//                 size={"small"}
+//                 variant={SKU === s.SKU ? "contained" : "outlined"}
+//                 className="item"
+//               >
+//                 {s.material}
+//               </Button>
+//             ))}
+//           </Box>
+//         )}
+
+//         {/* range
+//         {variant.range.length > 0 && (
+//           <Typography variant="button">Range</Typography>
+//         )}
+//         {variant.range.length > 0 && (
+//           <Box className=" size rang">
+//             {variant.range.map((s) => (
+//               <Button
+//                 component={Link}
+//                 to={`/details/${s.SKU}/${s.title}/${s.category}`}
+//                 size={"small"}
+//                 variant={SKU === s.SKU ? "contained" : "outlined"}
+//               >
+//                 {s.range}
+//               </Button>
+//             ))}
+//           </Box>
+//         )} */}
+//         {/* fabric */}
+//         {variant.fabric.length > 0 && (
+//           <Typography variant="button">Range</Typography>
+//         )}
+//         {variant.fabric.length > 0 && (
+//           <Box className=" size rang">
+//             {variant.fabric.map((s) => (
+//               <Button
+//                 component={Link}
+//                 to={`/details/${s.SKU}/${s.title}/${s.category}`}
+//                 size={"small"}
+//                 variant={SKU === s.SKU ? "contained" : "outlined"}
+//               >
+//                 {s.fabric}
+//               </Button>
+//             ))}
+//           </Box>
+//         )}
+//         {/* Fitting */}
+//         {variant.fitting.length > 0 && (
+//           <Typography variant="button">Fitting</Typography>
+//         )}
+//         {variant.fitting.length > 0 && (
+//           <Box className=" size rang">
+//             {variant.fitting.map((s) => (
+//               <Button
+//                 component={Link}
+//                 to={`/details/${s.SKU}/${s.title}/${s.category}`}
+//                 size={"small"}
+//                 variant={SKU === s.SKU ? "contained" : "outlined"}
+//               >
+//                 {s.fitting}
+//               </Button>
+//             ))}
+//           </Box>
+//         )}
+//         {/* mattress */}
+//         {variant.fitting.length > 0 && (
+//           <Typography variant="button">Mattress</Typography>
+//         )}
+//         {variant.mattress.length > 0 && (
+//           <Box className=" size rang">
+//             {variant.mattress.map((s) => (
+//               <Button
+//               component={Link}
+//               to={`/details/${s.SKU}/${s.title}/${s.category}`}
+//               size={"small"}
+//               variant={SKU === s.SKU ? "contained" : "outlined"}
+//               >
+//                 {s.mattress}
+//               </Button>
+//             ))}
+//           </Box>
+//         )}
+//       </Box>
+//       </>
+//       }
+//     </>
+//   );
+// }
 
 
 // {/* // ======================== Not is use for now */}

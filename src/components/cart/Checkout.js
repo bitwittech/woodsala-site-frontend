@@ -38,6 +38,7 @@ import {
   getCartItem,
   abandonedOrder,
   getCODLimits,
+  getAddress
 } from "../../service/service";
 
 // // store
@@ -75,12 +76,16 @@ export default function Checkout() {
     address: [],
     subTotal: subtotal,
     quantity: quantity,
+    pincode: "",
     discount: 0,
     paid: 0,
     total: total,
     pay_method: 'UPI',
     note: "",
   });
+
+  // catalog for city
+  const [cities,setCity] = useState([])
 
   const [codLimit, setLimit] = useState(
     {
@@ -97,6 +102,7 @@ export default function Checkout() {
     state: useRef(),
     shipping: useRef(),
     note: useRef(),
+    pincode : useRef()
   };
 
   // event for monitoring the user behavior with cart
@@ -153,8 +159,30 @@ export default function Checkout() {
     setData(old => ({ ...old, OID: OID }));
   }, [OID]);
 
+  useEffect(() => {
+    handelPincode();
+  }, [data.pincode]);
 
-  // for getting the COD limit to impose whil chossing the he COD options
+  async function handelPincode() {
+    // console.log(changeData.pincode);
+    if (data.pincode && data.pincode.toString().length === 6) {
+      let res = await getAddress(data.pincode);
+      if (res.status === 200) {
+        let pincode = res.data.results[data.pincode] || [];
+        setCity(pincode);
+        setData((old) => ({
+          ...old,
+          state: pincode[0].state,
+        }));
+      }
+    } else {
+      setData((old) => ({ ...old, pincode: data.pincode }));
+    }
+  }
+
+
+
+  // for getting the COD limit to impose while choosing the he COD options
   async function getLimits() {
     console.log('fire')
     const response = await getCODLimits();
@@ -376,7 +404,7 @@ export default function Checkout() {
         <title>Check-Out</title>
         <meta
           name="description"
-          content="This page is for finall checkout and bill paying."
+          content="This page is for finale checkout and bill paying."
         />
       </Helmet>
       {/* helmet tag ends  */}
@@ -509,6 +537,18 @@ export default function Checkout() {
                       sx={{ marginTop: "2%" }}
                       size="small"
                     />
+                           <TextField
+                  label="Pin Code"
+                  name = 'pincode'
+                  fullWidth
+                  inputProps={{ ref: ref.pincode }}
+                  value = {data.pincode || ""}
+                  id="outlined-start-adornment"
+                  sx={{ marginTop: "2%" }}
+                  size="small"
+                  onChange={handleData}
+                />
+
                     <TextField
                       label="State"
                       fullWidth
@@ -525,12 +565,19 @@ export default function Checkout() {
                       value={data.city || ""}
                       inputProps={{ ref: ref.city }}
                       name="city"
+                      select
                       onChange={handleData}
                       fullWidth
                       id="outlined-start-adornment"
                       sx={{ marginTop: "2%" }}
                       size="small"
-                    />
+                    >
+                        {cities.map((option) => (
+                      <MenuItem key={option.city} value={option.city}>
+                        {option.city} 
+                      </MenuItem>
+                    ))}
+                    </TextField>
                   </>
                 )}
                 {/* 
@@ -582,14 +629,7 @@ export default function Checkout() {
                   ))}
                 </TextField> */}
 
-                {/* <TextField
-                  label="Pin Code"
-                  fullWidth
-                  id="outlined-start-adornment"
-                  sx={{ marginTop: "2%" }}
-                  size="small"
-                /> */}
-
+         
 
                 <Typography sx={{ marginTop: "3%" }} variant="h6">
                   Additional Information

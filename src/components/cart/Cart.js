@@ -11,7 +11,8 @@ import {
   MenuItem,
   InputAdornment,
   IconButton,
-  Box
+  Box,
+  CircularProgress
 } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link, useParams } from "react-router-dom";
@@ -24,6 +25,7 @@ import {
   useGridSelector,
 } from "@mui/x-data-grid";
 import Pagination from "@mui/material/Pagination";
+import "../../asset/css/checkout.css";
 
 // icon
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
@@ -31,7 +33,7 @@ import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
 import OutlinedFlagSharpIcon from "@mui/icons-material/OutlinedFlagSharp";
 import DeleteIcon from '@mui/icons-material/Delete';
 // APis services 
-import { getDetails, updateQuantity, removeCartItem, getCartItem } from "../../service/service"
+import { getDetails, updateQuantity, removeCartItem, verifyCoupon } from "../../service/service"
 import defaultIMG from "../../asset/images/defaultProduct.svg";
 
 // state global
@@ -42,22 +44,10 @@ import defaultIMG from "../../asset/images/defaultProduct.svg";
 import { useDispatch, useSelector } from 'react-redux'
 
 // action 
-import { setCart, removeItem, setAlert, addQTY, subQTY } from '../../Redux/action/action'
+import { setCart, removeItem, setAlert, addQTY, subQTY, setLoginModal } from '../../Redux/action/action'
+import { width } from "@mui/system";
 
-const countries = [
-  {
-    value: "USD",
-  },
-  {
-    value: "EUR",
-  },
-  {
-    value: "BTC",
-  },
-  {
-    value: "JPY",
-  },
-];
+
 
 // pagination
 function CustomPagination() {
@@ -77,8 +67,6 @@ function CustomPagination() {
 
 const Cart = (props) => {
 
-  // global 
-  // const { state, dispatch } = Store();
 
   // Redux 
   const dispatch = useDispatch();
@@ -90,47 +78,64 @@ const Cart = (props) => {
   const [country, setCountry] = useState("EUR");
   const [data, setData] = useState(
     {
+      isLoading: false,
+      applied: false,
+      coupon_type: undefined,
+      coupon_value: 0,
+      code: '',
       total: 0,
-      subtotal: 0
+      subtotal: 0,
+      discount: 0
     }
   );
 
 
   // fetching the cart item
   useEffect(() => {
-    // console.log(state.cart.items)
-    getDetails(JSON.stringify(state.cart.items.map((item) => { return item.product_id })))
-      .then((response) => {
-        // console.log(state.cart.items)
-        // console.log(response)
-        setRow(
-          response.data.map((dataSet, index) => {
-            let discount = dataSet[0].categories.length > 0 && (dataSet[0].discount_limit < dataSet[0].categories[0].discount_limit ? dataSet[0].discount_limit : dataSet[0].categories[0].discount_limit)
-            // console.log(dataSet[0].discount_limit,dataSet[0].categories[0].discount_limit)
-            return {
-              id: index + 1,
-              SKU: dataSet[0].SKU,
-              product: dataSet[0].featured_image || dataSet[0].product_image[0],
-              product_name: dataSet[0].product_title,
-              price: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price,
-              qty: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity,
-              total: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price - (state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price) / 100 * discount,
-              action: dataSet[0].SKU
-            }
-          })
-        )
-        // setRow(data.data)
-      })
+    fetchCartProduct()
   }, [state.cart])
 
   // for calculating total on value on runtime
   useEffect(() => {
+    let sub = row.reduce((partial, set) => partial + parseInt(set.price), 0);
+    let total = row.reduce((partial, set) => partial + parseInt(set.total), 0);
+    let coupon_value = data.coupon_type === "FLAT" ? data.coupon_value  : sub/100 * data.coupon_value;
 
-    setData({
-      total: row.reduce((partial, set) => partial + parseInt(set.total), 0),
-      subtotal: row.reduce((partial, set) => partial + parseInt(set.price), 0),
-    })
-  }, [row])
+    setData(old=>({...old,
+      total: (total - coupon_value).toFixed(2),
+      subtotal: sub.toFixed(2),
+      discount: sub - total,
+    }))
+  }, [row,data.coupon_type])
+
+  async function fetchCartProduct(){
+     let response = await getDetails(JSON.stringify(state.cart.items.map((item) => { return item.product_id })))
+
+    if(response) {
+      // console.log(state.cart.items)
+      // console.log(response)
+      setRow(
+        response.data.map((dataSet, index) => {
+          
+          let discount = dataSet[0].categories[0].discount_limit ? (dataSet[0].discount_limit > dataSet[0].categories[0].discount_limit)
+           ?  dataSet[0].categories[0].discount_limit : dataSet[0].discount_limit : dataSet[0].discount_limit
+          
+          discount = (state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price) / 100 * discount
+          return {
+            id: index + 1,
+            SKU: dataSet[0].SKU,
+            product: dataSet[0].featured_image || dataSet[0].product_image[0],
+            product_name: dataSet[0].product_title,
+            price: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price,
+            qty: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity,
+            discount : discount, 
+            total: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price - discount,
+            action: dataSet[0].SKU
+          }
+        })
+      )
+    }
+  }
 
   // removeItemFromCart 
   const removeItemFromCart = async (item) => {
@@ -255,6 +260,14 @@ const Cart = (props) => {
       ),
     },
     {
+      field: "discount",
+      renderHeader: () => <strong>{"Discount"}</strong>,
+      type: "number",
+      width: 100,
+      align: 'center'
+
+    },
+    {
       field: "total",
       renderHeader: () => <strong>{"Total"}</strong>,
       type: "number",
@@ -314,6 +327,51 @@ const Cart = (props) => {
     );
   }
 
+  // checkCoupon in DB
+  async function checkCoupon() {
+    try {
+      setData(old => ({ ...old, isLoading: true }))
+      if (state.auth.email) {
+        let res = await verifyCoupon({ code: data.code, email: state.auth.email })
+        if (res.status === 200) {
+          console.log(data)
+          // now saving the coupon and adjusting the total amount  
+          setData(old =>({ ...old, 
+            coupon_type : res.data.coupon_type, 
+            coupon_value : res.data.coupon_type === "FLAT" ?  res.data.flat_amount : res.data.off,
+            applied: true, 
+            isLoading: false 
+          }))
+          
+          dispatch(setAlert({
+            open: true,
+            variant: 'success',
+            message: 'Hurray, Coupon Applied'
+          }))
+
+        }
+        else {
+          setData(old => ({ ...old, isLoading: false }))
+          dispatch(setAlert({
+            open: true,
+            variant: 'error',
+            message: res.data.message || 'Something Went Wrong !!!'
+          }))
+        }
+      }
+      else {
+      setData(old => ({ ...old, isLoading: false }))
+
+        dispatch(setLoginModal({
+          open: true,
+          type: 'logIn'
+        }))
+      }
+
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
 
 
   return (
@@ -348,91 +406,6 @@ const Cart = (props) => {
               <Typography variant="h5">Cart Total</Typography>
               <Grid container className="cartTotals">
 
-                {/* <Grid item xs={12}>
-                  <Typography variant="body1">Shipping</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="body2">Shipping Charges (0)</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="body2">
-                    Shipping To Jaipur 302001, Rajasthan
-                  </Typography>
-                </Grid> */}
-                {/* <Grid item xs={12} className="address">
-                  <Grid container>
-                    <Grid className="changeAddress" item xs={12}>
-                      <LocationOnOutlinedIcon />
-                      <Typography variant="body2">Change Address</Typography>
-                    </Grid>
-                    <Grid item xs={12} sx={{ padding: "5% 0%" }}>
-                      <form className="fromSec">
-                        <TextField
-                          select
-                          size="small"
-                          label="Country"
-                          value={country}
-                          fullWidth
-                          onChange={handleChange}
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <PublicOutlinedIcon small="true" />
-                              </InputAdornment>
-                            ),
-                          }}
-                        >
-                          {countries.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                              {option.value}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                        <TextField
-                          select
-                          sx={{ marginTop: "7%" }}
-                          size="small"
-                          label="State"
-                          value={country}
-                          fullWidth
-                          onChange={handleChange}
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <OutlinedFlagSharpIcon small="true" />
-                              </InputAdornment>
-                            ),
-                          }}
-                        >
-                          {countries.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                              {option.value}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                        <TextField
-                          label="Town/City"
-                          id="outlined-start-adornment"
-                          sx={{ marginTop: "7%" }}
-                          size="small"
-                        />
-                        <TextField
-                          label="Pin Code"
-                          id="outlined-start-adornment"
-                          sx={{ marginTop: "7%" }}
-                          size="small"
-                        />
-                        <Button
-                          sx={{ marginTop: "7%" }}
-                          small="true"
-                          variant="outlined"
-                        >
-                          Update
-                        </Button>
-                      </form>
-                    </Grid>
-                  </Grid>
-                </Grid> */}
                 {/* coupon section */}
 
                 <Grid item xs={12} className="couponBox">
@@ -441,10 +414,20 @@ const Cart = (props) => {
                   </Typography>
                   <br></br>
                   <div className="applyBox">
-                    <TextField size="small" variant="outlined" label="Coupon Code" />
-                    <Button sx={{ fontWeight: "400" }} size="small" variant="contained">
-                      Apply
-                    </Button>
+                    <TextField size="small" variant="outlined" name='code'
+                      disabled={data.applied}
+                      value={data.code || ''}
+                      onChange={(e) =>setData(old => ({ ...old, code: e.target.value }))}
+                      label="Coupon Code" />
+                      {/* // button */}
+                    {data.applied ? <Button 
+                    onClick={() => setData(old =>({ ...old, code: "", coupon_value : 0, coupon_type : undefined, applied: false }))} 
+                    sx={{ fontWeight: "400" }} size="small" variant="contained">
+                      Remove
+                    </Button> : <Button disabled={data.isLoading} onClick={checkCoupon} sx={{ fontWeight: "400" }}
+                      size="small" variant="contained">
+                      {data.isLoading ? <CircularProgress size={'2rem'} color="secondary" /> : 'Apply'}
+                    </Button>}
                   </div>
                 </Grid>
                 {/* coupon section ends */}
@@ -455,13 +438,27 @@ const Cart = (props) => {
                   <Typography variant="body">Number Items</Typography>
                   <Typography variant="body">{state.cart.items.length} unit</Typography>
                 </Grid>
-                <Grid item xs={12} className="subTotal">
-                  <Typography variant="body">Discount</Typography>
-                  <Typography variant="body">- {(data.subtotal - data.total).toLocaleString("us-Rs", {
+
+                {/* // Coupon  */}
+                {data.coupon_type && <Grid item xs={12} className="subTotal">
+                  <Typography variant="body">Coupon</Typography>
+                  {data.coupon_type === 'FLAT' ? 
+                    <Typography variant="body">- {(data.coupon_value).toLocaleString("us-Rs", {
                     style: "currency",
                     currency: "INR",
                   })}</Typography>
-                </Grid>
+                :
+                    <Typography variant="body">- {data.coupon_value}%</Typography>}
+                </Grid>}
+                {/* // Discount  */}
+
+                {data.discount !== 0 && <Grid item xs={12} className="subTotal">
+                  <Typography variant="body">Discount</Typography>
+                  <Typography variant="body">- {(data.discount).toLocaleString("us-Rs", {
+                    style: "currency",
+                    currency: "INR",
+                  })}</Typography>
+                </Grid>}
                 <Grid item xs={12} className="subTotal">
                   <Typography variant="body">Subtotal</Typography>
                   <Typography variant="body">{data.subtotal.toLocaleString("us-Rs", {
@@ -510,3 +507,89 @@ const Cart = (props) => {
 };
 
 export default Cart;
+
+//  <Grid item xs={12}>
+//                   <Typography variant="body1">Shipping</Typography>
+//                 </Grid>
+//                 <Grid item xs={12}>
+//                   <Typography variant="body2">Shipping Charges (0)</Typography>
+//                 </Grid>
+//                 <Grid item xs={12}>
+//                   <Typography variant="body2">
+//                     Shipping To Jaipur 302001, Rajasthan
+//                   </Typography>
+//                 </Grid> */}
+//                 {/* <Grid item xs={12} className="address">
+//                   <Grid container>
+//                     <Grid className="changeAddress" item xs={12}>
+//                       <LocationOnOutlinedIcon />
+//                       <Typography variant="body2">Change Address</Typography>
+//                     </Grid>
+//                     <Grid item xs={12} sx={{ padding: "5% 0%" }}>
+//                       <form className="fromSec">
+//                         <TextField
+//                           select
+//                           size="small"
+//                           label="Country"
+//                           value={country}
+//                           fullWidth
+//                           onChange={handleChange}
+//                           InputProps={{
+//                             startAdornment: (
+//                               <InputAdornment position="start">
+//                                 <PublicOutlinedIcon small="true" />
+//                               </InputAdornment>
+//                             ),
+//                           }}
+//                         >
+//                           {countries.map((option) => (
+//                             <MenuItem key={option.value} value={option.value}>
+//                               {option.value}
+//                             </MenuItem>
+//                           ))}
+//                         </TextField>
+//                         <TextField
+//                           select
+//                           sx={{ marginTop: "7%" }}
+//                           size="small"
+//                           label="State"
+//                           value={country}
+//                           fullWidth
+//                           onChange={handleChange}
+//                           InputProps={{
+//                             startAdornment: (
+//                               <InputAdornment position="start">
+//                                 <OutlinedFlagSharpIcon small="true" />
+//                               </InputAdornment>
+//                             ),
+//                           }}
+//                         >
+//                           {countries.map((option) => (
+//                             <MenuItem key={option.value} value={option.value}>
+//                               {option.value}
+//                             </MenuItem>
+//                           ))}
+//                         </TextField>
+//                         <TextField
+//                           label="Town/City"
+//                           id="outlined-start-adornment"
+//                           sx={{ marginTop: "7%" }}
+//                           size="small"
+//                         />
+//                         <TextField
+//                           label="Pin Code"
+//                           id="outlined-start-adornment"
+//                           sx={{ marginTop: "7%" }}
+//                           size="small"
+//                         />
+//                         <Button
+//                           sx={{ marginTop: "7%" }}
+//                           small="true"
+//                           variant="outlined"
+//                         >
+//                           Update
+//                         </Button>
+//                       </form>
+//                     </Grid>
+//                   </Grid>
+//                 </Grid> 

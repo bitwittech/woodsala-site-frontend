@@ -1,5 +1,6 @@
 import config from "../config.json";
 import { useSelector } from "react-redux";
+const apiKey = config.PINCODE;
 
 const API = config.OfficialAPI;
 
@@ -139,6 +140,14 @@ export const listReview = async (data) => {
 export const getProductDetails = async (data) => {
   return await axios.get(`${API}/getProductDetails?SKU=${data}`);
 };
+// get product details for display
+export const verifyCoupon = async (data) => {
+  return await axios.get(`${API}/verifyCoupon?code=${data.code}&email=${data.email}`,  {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+};
 
 export const getMartialList = async () => {
   return await axios.get(`https://admin.woodshala.in/api/getPrimaryMaterial`, {
@@ -228,6 +237,13 @@ export const abandonedOrder = async (data) => {
       Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
     },
   });
+};
+
+// for get address vai pin code
+export const getAddress = async (data) => {
+  return await axios.get(
+    `https://app.zipcodebase.com/api/v1/search?apikey=${apiKey}&codes=${data}`
+  );
 };
 // for  verify check out
 

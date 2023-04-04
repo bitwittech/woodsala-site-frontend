@@ -167,7 +167,7 @@ export default function Navbar(props) {
 
   const handleProfileIconClick = (event) => {
     auth.isAuth
-      ? setAnchorEl(event.currentTarget)
+      ? props.history('/profile')
       : dispatch(
           setLoginModal({
             open: true,
@@ -441,7 +441,6 @@ export default function Navbar(props) {
               <IconButton color="primary" onClick={handleProfileIconClick}>
                 <PersonOutlineOutlinedIcon />
               </IconButton>
-              <MenuBox></MenuBox>
               <IconButton
                 color="primary"
                 onClick={() => {

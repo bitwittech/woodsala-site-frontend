@@ -48,6 +48,9 @@ const Profile = lazy(() => import("./components/user/Profile"));
 const Collection = lazy(() => import("./components/product/Collection"));
 const Blog = lazy(() => import("./components/blog/Blog"));
 const BlogHome = lazy(() => import("./components/blog/BlogHome"));
+const Address = lazy(() => import("./components/profileMenu/Address"));
+const Order = lazy(() => import("./components/profileMenu/Order"));
+const UserInfo = lazy(() => import("./components/profileMenu/UserInfo"));
 
 // global theme
 const light = createTheme({
@@ -96,6 +99,9 @@ function App() {
           ></Route>
           <Route path="/home" element={<Home history={history} />}></Route>
           <Route path="/profile" element={<Profile  history={history}/>}></Route>
+          <Route path="/account" element={<UserInfo  history={history}/>}></Route>
+          <Route path="/address" element={<Address  history={history}/>}></Route>
+          <Route path="/order" element={<Order  history={history}/>}></Route>
           <Route
             path="/wishlist"
             element={<Wishlist history={history} />}

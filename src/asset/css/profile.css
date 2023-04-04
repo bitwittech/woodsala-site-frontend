@@ -1,3 +1,39 @@
+.tileContainer{
+    display: flex;
+    padding: 5% 7%;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+}
+
+.items{
+    display: flex;
+    padding: 2%;
+    align-items: center;
+    gap : 1rem;
+    max-width: 350px;
+    min-width: 300px;
+    height: 100px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: rgba(207, 207, 207, 0.226);
+    transition: all 200ms;
+}
+.items:hover{
+    transform: scale(1.02);
+    background-color: wheat;
+}
+
+.tileContainer a {
+    text-decoration: none;
+    color: black;
+}
+
+.items img{
+    width: 60px;    
+}
+
+
 .profileTab {
     font-size: 1.2rem !important;
 }
@@ -6,9 +42,7 @@
 /* CSS for UserProfile */
 
 .form {
-    padding: 2%;
-    padding-left: 5%;
-    padding-right: 5%;
+    padding: 5% 5%;
 }
 
 .profilePicBox {
@@ -57,21 +91,33 @@
     cursor: pointer;
     border: 1px dashed #91441f;
     border-radius: 10px;
+    flex-wrap: wrap;
     z-index: 1;
-    min-height: 220px;
+    max-width: 300px;
+    min-width: 250px;
     justify-content: center;
     align-items: center;
     flex-direction: column !important;
+    max-height: 250px;
+    min-height: 250px;
 }
 
 .addressTile {
     display: flex;
+    max-width: 300px;
+    min-width: 250px;
+    min-height: 200px;
     flex-direction: column !important;
     cursor: pointer;
     border: 1px solid #91441f;
     border-radius: 10px;
-    min-height: 220px;
+    padding: 2%;
 }
 
-
-/* CSS for Address ENDS */
+.addressContainer{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding : 5% 5%
+}

@@ -38,7 +38,8 @@ import {
   getCartItem,
   abandonedOrder,
   getCODLimits,
-  getAddress
+  getAddress,
+  simpleOrder
 } from "../../service/service";
 
 // // store
@@ -63,7 +64,7 @@ export default function Checkout() {
 
   const [OID, setOID] = useState(null);
   // data form state
-  const [data, setData] = useState({
+  const initial = {
     O: "",
     CID: state.auth.CID || "Not Logged In",
     status: "processing",
@@ -80,12 +81,38 @@ export default function Checkout() {
     discount: 0,
     paid: 0,
     total: total,
-    pay_method: 'UPI',
     note: "",
-  });
+    CUS: "",
+    GST: null,
+    open: false,
+    payload: {},
+    classification: 'personal',
+    customer_type: '',
+    has_GST: 'no',
+    fulfilled: false,
+    advance_received: false,
+    pay_method_remaining: 'UPI',
+    pay_method_advance: '',
+    inventory_location: '',
+    courier_company: '',
+    AWB: '',
+    billing: "",
+    product_array: [],
+    product_price: {},
+    items: {},
+    customizations: [],
+    discount_per_product: {},
+    country: "India",
+    custom_order: true,
+    sale_channel: "Online",
+    PO: "",
+    refresh: 0,
+    sales_person: "",
+  }
+  const [data, setData] = useState(initial);
 
   // catalog for city
-  const [cities,setCity] = useState([])
+  const [cities, setCity] = useState([])
 
   const [codLimit, setLimit] = useState(
     {
@@ -102,7 +129,7 @@ export default function Checkout() {
     state: useRef(),
     shipping: useRef(),
     note: useRef(),
-    pincode : useRef()
+    pincode: useRef()
   };
 
   // event for monitoring the user behavior with cart
@@ -121,9 +148,9 @@ export default function Checkout() {
   }, []);
 
   useEffect(() => {
-    if(data.total > codLimit.limit_without_advance)
-      setData(old=>({...old,advance : Math.ceil((data.total/100)*codLimit.min_advance_limit)}))
-  }, [data.pay_method]);
+    if (data.total > codLimit.limit_without_advance)
+      setData(old => ({ ...old, advance_received: Math.ceil((data.total / 100) * codLimit.min_advance_limit) }))
+  }, [data.pay_method_remaining]);
 
 
   useEffect(() => {
@@ -156,12 +183,37 @@ export default function Checkout() {
   }, [state.auth.isAuth]);
 
   useEffect(() => {
-    setData(old => ({ ...old, OID: OID }));
+    setData(old => ({ ...old, O: OID }));
   }, [OID]);
 
   useEffect(() => {
     handelPincode();
   }, [data.pincode]);
+
+  // setting up the other information about order 
+  useEffect(() => {
+
+    let newDiscount = {} // for the check on removal product
+    let newProduct = {} // for the check on removal product
+    let items = {} // for the check on removal product
+
+    // console.log(product)
+
+    product.map((row) => {
+      newDiscount = { ...newDiscount, [row.SKU]: row.discount/row.price * 100 }
+      newProduct = { ...newProduct, [row.SKU]: row.price }
+      items = {
+        ...items, [row.SKU]: {
+          fullfilled: false,
+          trackingId: "",
+          shipping_carrier: "",
+          qty: 0
+        }
+      }
+    });
+
+    setData(old => ({ ...old, discount_per_product: newDiscount, product_price: newProduct, items }))
+  }, [quantity])
 
   async function handelPincode() {
     // console.log(changeData.pincode);
@@ -180,11 +232,53 @@ export default function Checkout() {
     }
   }
 
+async function placeSimpleOrder(e){
+  try {
 
+    e.preventDefault();
+
+    let res = await simpleOrder(data);
+    if(res.status === 200)
+    {
+      setData(initial);
+      // removing the item for the cart after order
+      if (state.auth.isAuth) {
+        Promise.all(
+          state.cart.items.map(
+            async (row) =>
+              (await row.product_id) &&
+              removeCartItem({
+                CID: state.auth.CID,
+                product_id: row.product_id,
+              })
+          )
+        );
+      }
+      dispatch(setCart({ items: [] }));
+      dispatch(
+        setAlert({
+          open: true,
+          variant: "success",
+          message: res.data.message,
+        })
+      );
+      dispatch(
+        thanks({
+          open: true,
+          payload: OID,
+        })
+      );
+
+
+    }
+  } catch (error) {
+    
+  }
+}
 
   // for getting the COD limit to impose while choosing the he COD options
   async function getLimits() {
-    console.log('fire')
+    // console.log('fire')
     const response = await getCODLimits();
     if (response)
       setLimit(response.data[0])
@@ -194,13 +288,13 @@ export default function Checkout() {
   function setAbandonedTime(e) {
     e.preventDefault();
 
-    console.log("Invoked");
+    // console.log("Invoked");
     if (abandoned !== null) {
-      console.log("clear", abandoned);
+      // console.log("clear", abandoned);
       clearInterval(abandoned);
     } else {
       abandoned = setInterval(async (e) => {
-        console.log(abandoned);
+        // console.log(abandoned);
         clearInterval(abandoned);
         // this is because i want current state of the textfeild without rereading too much
         let finalData = { ...data };
@@ -248,25 +342,7 @@ export default function Checkout() {
           })
         );
       } else {
-        setData({
-          O: "",
-          CUS: "",
-          CID: null,
-          customer_email: "",
-          customer_mobile: "",
-          customer_name: "",
-          shipping: "",
-          product_array: [],
-          quantity: {},
-          subTotal: 0,
-          discount: 0,
-          total: 0,
-          status: "processing",
-          city: "",
-          state: "",
-          paid: 0,
-          note: "",
-        });
+        setData(initial);
         // removing the item for the cart after order
         if (state.auth.isAuth) {
           Promise.all(
@@ -326,7 +402,7 @@ export default function Checkout() {
   // FOR Pay UI
   async function displayRazorpay(e) {
     e.preventDefault();
-
+    console.log(data.pay_method_remaining === 'COD' && codLimit.limit_without_advance <= total)
     // UI response check
     const res = await loadScript(
       "https://checkout.razorpay.com/v1/checkout.js"
@@ -337,16 +413,23 @@ export default function Checkout() {
       return;
     }
 
-    const response = await placeOrder(data); // local APIs for saving Order
+    const response = await placeOrder({...data, limit_without_advance : codLimit.limit_without_advance}); // local APIs for saving Order
 
     if (response.status !== 200) return;
 
+    if(data.pay_method_remaining === "COD")
+    setData(old=>({...old, pay_method_advance : "Razorpay"}))
+    else
+    setData(old=>({...old, pay_method_advance : ""}))
+
+
     const order_id = response.data.id.toString(); // Order Id from Payment Getaway
+
+    // amount: amount,
 
     // Config for Payment Getaway
     const options = {
       key: process.env.REACT_APP_PAY_KEY, // Enter the Key ID generated from the Dashboard
-      amount: (total * 100).toString(),
       currency: "INR",
       name: "WoodShala",
       description: "Product Order",
@@ -418,7 +501,7 @@ export default function Checkout() {
       {/* Main Section */}
       <form
         method="post"
-        onSubmit={displayRazorpay}
+        onSubmit={(data.pay_method_remaining === 'COD'  && codLimit.limit_without_advance > total) ? placeSimpleOrder :  displayRazorpay }
         encType="multipart/form-data"
       >
         <Grid container className="mainSec">
@@ -537,17 +620,17 @@ export default function Checkout() {
                       sx={{ marginTop: "2%" }}
                       size="small"
                     />
-                           <TextField
-                  label="Pin Code"
-                  name = 'pincode'
-                  fullWidth
-                  inputProps={{ ref: ref.pincode }}
-                  value = {data.pincode || ""}
-                  id="outlined-start-adornment"
-                  sx={{ marginTop: "2%" }}
-                  size="small"
-                  onChange={handleData}
-                />
+                    <TextField
+                      label="Pin Code"
+                      name='pincode'
+                      fullWidth
+                      inputProps={{ ref: ref.pincode }}
+                      value={data.pincode || ""}
+                      id="outlined-start-adornment"
+                      sx={{ marginTop: "2%" }}
+                      size="small"
+                      onChange={handleData}
+                    />
 
                     <TextField
                       label="State"
@@ -572,11 +655,11 @@ export default function Checkout() {
                       sx={{ marginTop: "2%" }}
                       size="small"
                     >
-                        {cities.map((option) => (
-                      <MenuItem key={option.city} value={option.city}>
-                        {option.city} 
-                      </MenuItem>
-                    ))}
+                      {cities.map((option) => (
+                        <MenuItem key={option.city} value={option.city}>
+                          {option.city}
+                        </MenuItem>
+                      ))}
                     </TextField>
                   </>
                 )}
@@ -629,7 +712,7 @@ export default function Checkout() {
                   ))}
                 </TextField> */}
 
-         
+
 
                 <Typography sx={{ marginTop: "3%" }} variant="h6">
                   Additional Information
@@ -717,29 +800,29 @@ export default function Checkout() {
                 </Grid>
               </Grid>
 
-{/* // pay method */}
+              {/* // pay method */}
               <Grid item xs={12}>
                 <Grid container className="payMethod text">
                   {/* // advance pay module  */}
-                  {(data.pay_method === 'COD' && codLimit.limit_without_advance <= total) &&
-                    <Grid mb = {1} item sx = {{display : 'flex',gap : '1rem', flexDirection : 'column'}} xs={12}>
-                    <Typography variant="body1" className="text">
-                      Advance Pay 
-                    </Typography>
-                    <TextField
-                    variant="outlined"
-                    size = 'small'
-                    disabled
-                    fullWidth
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">₹</InputAdornment>,
-                    }}
-                    value = {data.advance}
-                    />
-                    <Button size = 'small' fullWidth variant = 'outlined'>Pay Advance</Button>
-                     </Grid>}
+                  {(data.pay_method_remaining === "COD" && codLimit.limit_without_advance <= total) &&
+                    <Grid mb={1} item sx={{ display: 'flex', gap: '1rem', flexDirection: 'column' }} xs={12}>
+                      <Typography variant="body1" className="text">
+                        Advance Pay
+                      </Typography>
+                      <TextField
+                        variant="outlined"
+                        size='small'
+                        disabled
+                        fullWidth
+                        InputProps={{
+                          startAdornment: <InputAdornment position="start">₹</InputAdornment>,
+                        }}
+                        value={data.advance_received}
+                      />
+                      {/* <Button size='small' fullWidth variant='outlined'>Pay Advance </Button> */}
+                    </Grid>}
                   {/* // advance pay module ends */}
-                  <Grid item  xs={12}>
+                  <Grid item xs={12}>
                     <Typography variant="body1" className="text">
                       Select a payment method
                     </Typography>
@@ -748,9 +831,9 @@ export default function Checkout() {
                         required={true}
                         aria-labelledby="demo-radio-buttons-group-label"
                         defaultValue="UPI"
-                        value={data.pay_method}
-                        onChange={(e) => setData(old => ({ ...old, pay_method: e.target.value }))}
-                        name="pay_method"
+                        value={data.pay_method_remaining}
+                        onChange={(e) => setData(old => ({ ...old, pay_method_remaining: e.target.value }))}
+                        name="pay_method_remaining"
                       >
                         <FormControlLabel
                           value="COD"

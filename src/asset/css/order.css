@@ -1,14 +1,33 @@
-.orderWrapper {
-    gap: 10px;
-}
-
-.orderContainer {
-    border: 1px solid black;
-    border-radius: 5px;
-}
-
-.topSec {
+.orderListContainer{
     display: flex;
-    gap: 20px;
-    background-color: rgb(236, 235, 235);
+    padding: 5% 7%;
+    flex-wrap: wrap;
+    gap: 2rem;
+
+}
+
+.breadcrumbs{
+    width: 100%;
+}
+.breadcrumbs a{
+    color: #682D2D;
+    text-decoration: none;
+}
+
+.orderItem{
+    display: flex;
+    flex-direction: column ;
+    min-height: 200px;
+    width: 100%;
+    border-radius: 15px;
+    border : 1px solid rgb(173, 173, 173);
+    overflow: hidden;
+}
+
+.metaDetails{
+    display: flex;
+    position: relative;
+    gap: 1.5rem;
+    padding: 1%;
+    background-color: #dddddd85;
 }

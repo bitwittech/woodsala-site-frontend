@@ -254,6 +254,15 @@ export const verifyPayment = async (data) => {
     },
   });
 };
+// for  simple Order 
+
+export const simpleOrder = async (data) => {
+  return await axios.post(`${API}/simpleOrder`, data, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
+    },
+  });
+};
 
 // ========================  END ORDER =================================
 

@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 // action
 import { setAlert, setAuth } from "../../Redux/action/action";
+import { Helmet } from "react-helmet";
 
 const UserInfo = () => {
   // context
@@ -156,6 +157,24 @@ const UserInfo = () => {
   };
 
   return (
+    <>
+       {/* helmet tag  */}
+       <Helmet>
+        <title>Profile</title>
+        <meta
+          name="description"
+          content="Customer details and order sections"
+        />
+      </Helmet>
+      {/* helmet tag ends  */}
+      {/* Banner */}
+      <Grid container className="Banner">
+        <Grid item xs={12}>
+          <Typography variant="h1">Account</Typography>
+        </Grid>
+      </Grid>
+      {/* Banner ends */}
+    
     <form
       method="post"
       onSubmit={handleSubmit}
@@ -196,7 +215,7 @@ const UserInfo = () => {
               </IconButton>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Typography variant="h2">{formVal.username}</Typography>
+              <Typography variant="h3">{formVal.username}</Typography>
             </Grid>
           </Grid>
         </Grid>
@@ -311,6 +330,7 @@ const UserInfo = () => {
         </Grid>
       </Grid>
     </form>
+    </>
   );
 };
 

@@ -1,118 +1,104 @@
-import React from 'react';
-import {
-    Tabs,
-    Tab,
-    Typography,
-    Box,
-    Grid
-} from '@mui/material';
+import React, { useEffect } from "react";
+import { Tabs, Tab, Typography, Box, Grid, Button } from "@mui/material";
 
-// My components 
-import UserInfo from '../profileMenu/UserInfo';
-import Address from '../profileMenu/Address';
-import Order from '../profileMenu/Order';
+// My components
 import { Helmet } from "react-helmet";
 
-//css 
-import '../../asset/css/profile.css'
+// images
+import profile from "../../asset/images/profile/profile.svg";
+import address from "../../asset/images/profile/address.svg";
+import contact from "../../asset/images/profile/contact.svg";
+import order from "../../asset/images/profile/order.svg";
+import wishlist from "../../asset/images/profile/wishlist.svg";
+import logout from "../../asset/images/profile/logout.svg";
 
-const Profile = () => {
+//css
+import "../../asset/css/profile.css";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setAlert, setAuth } from "../../Redux/action/action";
 
-    function TabPanel(props) {
-        const { children, value, index, ...other } = props;
+const Profile = ({history}) => {
 
-        return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`vertical-tabpanel-${index}`}
-                aria-labelledby={`vertical-tab-${index}`}
-                {...other}
-            >
-                {value === index && (
-                    <Box sx={{ p: 3 }}>
-                        <Typography>{children}</Typography>
-                    </Box>
-                )}
-            </div>
-        );
-    }
+const dispatch = useDispatch()
+const {auth} = useSelector(state=>state) 
+const tabs = [
+      { description : 'All order details and order information.', link: "/order", image: order, title: "Your Orders" },
+    { description : 'Your account information stays here.', link: "/account", image: profile , title: "Your Account" },
+    { description : 'Address details', link: "/address", image: address, title: "Your Address" },
+    { description : 'In case you want to report something.', link: "/contact", image: contact, title: "Contact Us" },
+    { description : 'Lets order something from wishlist.', link: "/wishlist", image: wishlist, title: "Wishlist" },
+  ];
 
-    function a11yProps(index) {
-        return {
-            id: `vertical-tab-${index}`,
-            'aria-controls': `vertical-tabpanel-${index}`,
-        };
-    }
+  // check the person logged in 
+  useEffect(() => {
+    console.log(auth.isAuth)
+    if(auth.isAuth === false)
+    {
+        window.location.href = '/'
+    } 
+  }, []);
 
-    const [value, setValue] = React.useState(0);
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
-
-
-    return (
-        <>
-             {/* helmet tag  */}
-    <Helmet>
-    <title>Profile</title>
-    <meta name="description" content="Customer details and order sections" />
-    </Helmet>
-    {/* helmet tag ends  */}
-            {/* Banner */}
-            <Grid container className="Banner">
-                <Grid item xs={12}>
-                    <Typography variant="h1">My Account</Typography>
-                </Grid>
-            </Grid>
-            {/* Banner Ends */}
-            {/* tab starts */}
-            <Grid container sx={{ p: 1, pl: 5, pr: 5 }}>
-
-                <Grid item xs={12} sx={
-                    { p: 2 }
-                }>
-
-                </Grid>
-                <Grid item xs={12} md={1.5}>
-                    <Tabs
-                        orientation={window.innerWidth > 800 ? 'vertical' : 'horizontal'}
-                        variant="scrollable"
-                        value={value}
-                        onChange={handleChange}
-                        aria-label="Vertical tabs example"
-                        sx={{ borderRight: 1, borderColor: 'divider', height : '100%' }}
-                    >
-                        <Tab className='profileTab' label="User Info" {...a11yProps(0)} />
-                        <Tab className='profileTab' label="Your Address" {...a11yProps(1)} />
-                        <Tab className='profileTab' label="Your Order" {...a11yProps(2)} />
-                        <Tab className='profileTab' label="Account Settings" {...a11yProps(3)} />
-                    </Tabs>
-
-                </Grid>
-                <Grid item xs={12} md={10.5}>
-                    <TabPanel value={value} index={0}>
-                        <UserInfo />
-                    </TabPanel>
-                    <TabPanel value={value} index={1}>
-                        <Address/>
-                    </TabPanel>
-                    <TabPanel value={value} index={2}>
-                        <Order/>
-                    </TabPanel>
-                    <TabPanel value={value} index={3}>
-                        Item Three
-                    </TabPanel>
-
-                </Grid>
-            </Grid>
-            {/* tab ends */}
-
-        </>
+  function handleLogOut(){
+      localStorage.clear();
+      history('/')
+    dispatch(
+      setAlert({
+        variant: "success",
+        message: "Logging Out !!!",
+        open: true,
+      }))
+      dispatch(
+        setAuth({
+          isAuth: false,
+          CID: undefined,
+          email: undefined,
+          username: undefined,
+          token: undefined,
+        })
     );
-}
+   
+  }
+
+  return (
+    <>
+      {/* helmet tag  */}
+      <Helmet>
+        <title>Profile</title>
+        <meta
+          name="description"
+          content="Customer details and order sections"
+        />
+      </Helmet>
+      {/* helmet tag ends  */}
+      {/* Banner */}
+      <Grid container className="Banner">
+        <Grid item xs={12}>
+          <Typography variant="h1">My Account</Typography>
+        </Grid>
+      </Grid>
+      {/* Banner ends */}
+
+      <Box className="tileContainer">
+        {tabs.map((row, index) => (
+          <Box key={index} className="items" component={Link} to={row.link} >
+            <img src={row.image} alt="images" />
+            <Box>
+            <Typography variant="h5">{row.title}</Typography>
+            <Typography variant="caption">{row.description}</Typography>
+            </Box>
+          </Box>
+        ))}
+         <Box  className="items" onClick = {handleLogOut} sx = {{cursor : 'pointer'}} >
+            <img src={logout} alt="images" />
+            <Box>
+            <Typography variant="h5">Logout</Typography>
+            <Typography variant="caption">Please comeback soon.</Typography>
+            </Box>
+          </Box>
+      </Box>
+    </>
+  );
+};
 
 export default Profile;
-
-

@@ -14,7 +14,7 @@ import {
     CircularProgress
 
 } from '@mui/material';
-
+import config from "../../config.json"
 // image 
 import sidePic from '../../asset/images/logBox/sidePicLog.jpg'
 import sign from '../../asset/images/logBox/sign.jpg'
@@ -33,20 +33,21 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 // services 
-import { sendVerificationLink, login } from '../../service/service.js'
+import { sendVerificationLink, login, verifyRecaptcha } from '../../service/service.js'
 
 // Redux
-import {useDispatch,useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Action
-import {setAlert,setAuth,setLoginModal} from '../../Redux/action/action'
+import { setAlert, setAuth, setLoginModal } from '../../Redux/action/action'
+import ReCAPTCHA from 'react-google-recaptcha';
 export default function EntryPoint() {
 
     // dispatch action
     const dispatch = useDispatch();
-    
+
     // state retrieval
-    const state = useSelector(state=>state); 
+    const state = useSelector(state => state);
 
     // context
     // const { state, dispatch } = Store();
@@ -63,7 +64,8 @@ export default function EntryPoint() {
         mobile: '',
         email: '',
         password: '',
-        repassword: ''
+        repassword: '',
+        readyToSubmit : false
     })
 
     // error state
@@ -78,8 +80,8 @@ export default function EntryPoint() {
     const handleClose = () => {
 
         dispatch(setLoginModal({
-                open: false,
-                type: undefined
+            open: false,
+            type: undefined
         }))
 
         setData({
@@ -91,6 +93,24 @@ export default function EntryPoint() {
         })
 
     };
+
+    const client_key = config.client_side_recaptcha
+
+      function  handleVerification(e) {
+        // console.log(e)
+        // // let res = await  verifyRecaptcha(e)
+      if(e)
+      {
+        setData({...data,readyToSubmit : true})
+      }
+      else{
+        dispatch(setAlert({
+            open : true,
+            variant : 'error',
+            message : "Captacha error !!!"
+        }))
+      }
+    }
 
     // validation
     const handleValue = (e) => {
@@ -156,9 +176,9 @@ export default function EntryPoint() {
                     loading: false
                 })
                 dispatch(setAlert({
-                        open: true,
-                        message: data.data.message,
-                        variant: 'success',
+                    open: true,
+                    message: data.data.message,
+                    variant: 'success',
                 }))
                 handleClose();
             })
@@ -169,9 +189,9 @@ export default function EntryPoint() {
                     loading: false
                 })
                 dispatch(setAlert({
-                        open: true,
-                        message: data.data.message,
-                        variant: 'error',
+                    open: true,
+                    message: data.data.message,
+                    variant: 'error',
                 }))
 
             })
@@ -199,19 +219,19 @@ export default function EntryPoint() {
                     })
 
                     dispatch(setAlert({
-                            open: true,
-                            variant: 'success',
-                            message: data.data.message,
-                        }))
+                        open: true,
+                        variant: 'success',
+                        message: data.data.message,
+                    }))
 
-                        dispatch(setAuth({
-                            isAuth: true,
-                            username: data.data.name,
-                            email: data.data.email,
-                            CID: data.data.CID,
-                            token: data.data.token
-                        }))
-                   
+                    dispatch(setAuth({
+                        isAuth: true,
+                        username: data.data.name,
+                        email: data.data.email,
+                        CID: data.data.CID,
+                        token: data.data.token
+                    }))
+
                     handleClose();
                 }
                 else {
@@ -220,10 +240,10 @@ export default function EntryPoint() {
                         loading: false
                     })
                     dispatch(setAlert({
-                            open: true,
-                            message: data.data.message,
-                            variant: 'error',
-                        }))
+                        open: true,
+                        message: data.data.message,
+                        variant: 'error',
+                    }))
                 }
             })
             .catch((err) => {
@@ -257,15 +277,15 @@ export default function EntryPoint() {
             >
                 <Fade in={state.box.open}>
                     <Box className='box' sx={{ boxShadow: 24 }}>
-   
+
                         {state.box.type === 'logIn' &&
                             <Grid container className='login' >
-                                                          {/* helmet tag  */}
-     <Helmet>
-    <title>Log-in </title>
-    </Helmet>
-    {/* helmet tag ends  */}
-   
+                                {/* helmet tag  */}
+                                <Helmet>
+                                    <title>Log-in </title>
+                                </Helmet>
+                                {/* helmet tag ends  */}
+
                                 {/* // form  */}
                                 <Grid className='formBox' item xs={12} md={5} >
                                     <form onSubmit={handleLogIn} className='form' action='' method='post'>
@@ -279,7 +299,7 @@ export default function EntryPoint() {
                                         <FormControl sx={{ mt: 2 }} variant="outlined">
                                             {/* <InputLabel htmlFor="outlined-adornment-password">email</InputLabel> */}
                                             <TextField
-                                                sx = {{width :  "100%"}}
+                                                sx={{ width: "100%" }}
                                                 required
                                                 name='email'
                                                 onChange={handleValue}
@@ -289,10 +309,9 @@ export default function EntryPoint() {
                                                 size={'small'}
                                             />
                                         </FormControl>
-                                        {/* {(state.Auth)} */}
                                         <FormControl sx={{ mt: 2, mb: 2 }} variant="outlined">
                                             <TextField
-                                                sx = {{width :  "100%"}}
+                                                sx={{ width: "100%" }}
                                                 required
                                                 name='password'
                                                 id="outlined-adornment-password"
@@ -314,20 +333,29 @@ export default function EntryPoint() {
                                                 label="Password"
                                             />
                                         </FormControl>
-                                        <Button sx = {{width :  "100%"}} type='submit' disabled={controller.loading} variant='contained'><Typography sx= {{fontWeight : 400, fontSize : '1rem'}} variant = 'button'>{controller.loading ? <CircularProgress size={'2rem'} /> : 'Log In'}</Typography></Button>
+                                        <Box p = {1} sx = {{display : 'flex',justifyContent : 'center'}}>
+
+                                        <ReCAPTCHA
+                                        small = {"compact"}
+                                            sitekey={client_key}
+                                            onChange={handleVerification}
+                                            />
+                                            </Box>
+                                        <Button sx={{ width: "100%" }}  type='submit' disabled={controller.loading || !data.readyToSubmit} variant='contained'><Typography sx={{ fontWeight: 400, fontSize: '1rem' }} variant='button'>{controller.loading ? <CircularProgress size={'2rem'} /> : 'Log In'}</Typography></Button>
                                         <Typography sx={{ mt: 2, mb: 2, textAlign: 'center', width: '100%', display: 'block' }} color='primary' variant='body'>
                                             Forgot Password ?
                                         </Typography>
 
                                     </form>
                                     <hr ></hr>
+
                                     <Button sx={{ m: 'auto', mt: 3, display: 'block' }}
                                         onClick={() => {
-                                           
+
                                             dispatch(setLoginModal({
                                                 open: true,
                                                 type: 'signUp'
-                                        }))
+                                            }))
                                         }}
                                         variant='outlined'>Sign Up</Button>
 
@@ -343,12 +371,12 @@ export default function EntryPoint() {
                         }
                         {state.box.type === 'signUp' &&
                             <Grid container >
-                          {/* helmet tag  */}
-                          <Helmet>
-    <title>Sign-up</title>
-    </Helmet>
-    {/* helmet tag ends  */}
-   
+                                {/* helmet tag  */}
+                                <Helmet>
+                                    <title>Sign-up</title>
+                                </Helmet>
+                                {/* helmet tag ends  */}
+
                                 {/* Side pic */}
                                 <Grid item className='sidePic' xs={12} md={6} >
                                     <img className='posterImage' alt='logPic' src={sign} />
@@ -367,7 +395,7 @@ export default function EntryPoint() {
 
                                         <FormControl sx={{ mt: 2 }} variant="outlined">
                                             <TextField
-                                                sx = {{width :  "100%"}}
+                                                sx={{ width: "100%" }}
                                                 id="outlined-adornment-email"
                                                 type='text'
                                                 label="Username"
@@ -379,7 +407,7 @@ export default function EntryPoint() {
                                         </FormControl>
                                         <FormControl sx={{ mt: 2 }} variant="outlined">
                                             <TextField
-                                                sx = {{width :  "100%"}}
+                                                sx={{ width: "100%" }}
                                                 required
                                                 error={error.mobile}
                                                 id="outlined-adornment-email"
@@ -393,7 +421,7 @@ export default function EntryPoint() {
                                         </FormControl>
                                         <FormControl sx={{ mt: 2 }} variant="outlined">
                                             <TextField
-                                                sx = {{width :  "100%"}}
+                                                sx={{ width: "100%" }}
                                                 error={error.email}
                                                 id="outlined-adornment-email"
                                                 type='email'
@@ -407,7 +435,7 @@ export default function EntryPoint() {
 
                                         <FormControl sx={{ mt: 2, }} variant="outlined">
                                             <TextField
-                                                sx = {{width :  "100%"}}
+                                                sx={{ width: "100%" }}
                                                 error={error.password}
                                                 required
                                                 onChange={handleValue}
@@ -432,7 +460,7 @@ export default function EntryPoint() {
                                         </FormControl>
                                         <FormControl sx={{ mt: 2, mb: 2 }} variant="outlined">
                                             <TextField
-                                                sx = {{width :  "100%"}}
+                                                sx={{ width: "100%" }}
                                                 error={error.repassword}
                                                 onChange={handleValue}
                                                 id="outlined-adornment-password"
@@ -453,17 +481,17 @@ export default function EntryPoint() {
                                                 label="Retype Password"
                                             />
                                         </FormControl>
-                                        <Button sx = {{width :  "100%"}} type='submit' disabled={controller.loading} variant='contained'><Typography sx= {{fontWeight : 400, fontSize : '1rem'}} variant = 'button'>{controller.loading ? <CircularProgress size={'2rem'} /> : 'Sign Up'}</Typography></Button>
+                                        <Button sx={{ width: "100%" }} type='submit' disabled={controller.loading} variant='contained'><Typography sx={{ fontWeight: 400, fontSize: '1rem' }} variant='button'>{controller.loading ? <CircularProgress size={'2rem'} /> : 'Sign Up'}</Typography></Button>
 
                                     </form>
                                     <hr ></hr>
                                     <Button sx={{ m: 'auto', mt: 2, display: 'block' }}
                                         onClick={() => {
                                             dispatch(setLoginModal({
-                                                    open: true,
-                                                    type: 'logIn'
+                                                open: true,
+                                                type: 'logIn'
                                             }))
-                                            
+
                                         }}
                                         variant='outlined'>Log In</Button>
                                 </Grid>

@@ -371,3 +371,7 @@ export const getCODLimits = async ()=>{
     },
   });
 }
+
+export const verifyRecaptcha = async (data)=>{
+  return await axios.get(`${API}/captcha?response=${JSON.stringify({key : config.client_side_recaptcha, response : data})}`)
+}

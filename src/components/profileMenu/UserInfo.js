@@ -221,7 +221,7 @@ const UserInfo = () => {
         </Grid>
         <Grid item xs={12}>
           <Grid container className="profileForm" spacing={4}>
-            <Grid item xs={12} md={6}>
+            {/* <Grid item xs={12} md={6}>
               <TextField
                 size="small"
                 fullWidth
@@ -232,7 +232,7 @@ const UserInfo = () => {
                 type="text"
                 label="CID"
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} md={6}>
               <TextField
                 size="small"

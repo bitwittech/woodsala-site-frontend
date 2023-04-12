@@ -402,7 +402,9 @@ async function placeSimpleOrder(e){
   // FOR Pay UI
   async function displayRazorpay(e) {
     e.preventDefault();
-    console.log(data.pay_method_remaining === 'COD' && codLimit.limit_without_advance <= total)
+    console.log(data)
+
+    // return 1
     // UI response check
     const res = await loadScript(
       "https://checkout.razorpay.com/v1/checkout.js"
@@ -534,7 +536,7 @@ async function placeSimpleOrder(e){
 
             <Grid item xs={12}>
               <Grid container className="billingForm">
-                <TextField
+                {/* <TextField
                   required
                   label="OID"
                   name="OID"
@@ -545,7 +547,7 @@ async function placeSimpleOrder(e){
                   id="outlined-start-adornment"
                   sx={{ marginTop: "2%" }}
                   size="small"
-                />
+                /> */}
                 <TextField
                   required
                   label="Name"
@@ -741,7 +743,7 @@ async function placeSimpleOrder(e){
           <Grid xs={12} md={3.5} className="yourOrder">
             <Grid container>
               <Grid item xs={12}>
-                <Typography variant="h6">Your Order</Typography>
+                <Typography variant="h6" sx = {{fontWeight : 500}}>Your Order</Typography>
               </Grid>
               <Grid item xs={12}>
                 <Grid container className="orderSummary">
@@ -756,7 +758,7 @@ async function placeSimpleOrder(e){
                                 {item.product_name}
                               </Typography>
                               <Typography variant="body2">
-                                Rs.{item.total}
+                              ₹ {item.total}
                               </Typography>
                             </Box>
                             <Divider />
@@ -768,13 +770,9 @@ async function placeSimpleOrder(e){
                   <Grid item xs={12}>
                     <Divider />
                     <Box className="productBox text">
-                      <Typography variant="body">Subtotal</Typography>
-                      <Typography variant="body">
-                        {" "}
-                        {subtotal.toLocaleString("us-Rs", {
-                          style: "currency",
-                          currency: "INR",
-                        })}
+                      <Typography sx = {{fontWeight : 500}} variant="body1">Subtotal</Typography>
+                      <Typography sx = {{fontWeight : 500}} variant="body1">
+                        ₹ {subtotal}
                       </Typography>
                     </Box>
                     <Divider />
@@ -788,12 +786,9 @@ async function placeSimpleOrder(e){
                   </Grid> */}
                   <Grid item xs={12}>
                     <Box className="productBox text">
-                      <Typography variant="body">Total</Typography>
-                      <Typography variant="body">
-                        {total.toLocaleString("us-Rs", {
-                          style: "currency",
-                          currency: "INR",
-                        })}
+                      <Typography sx = {{fontWeight : 500}} variant="body1">Total</Typography>
+                      <Typography sx = {{fontWeight : 500}} variant="body1">
+                      ₹ {total}
                       </Typography>
                     </Box>
                   </Grid>
@@ -823,10 +818,10 @@ async function placeSimpleOrder(e){
                     </Grid>}
                   {/* // advance pay module ends */}
                   <Grid item xs={12}>
-                    <Typography variant="body1" className="text">
+                    <Typography sx = {{fontWeight : 500, fontSize : '1.1rem'}} variant="body1" className="text">
                       Select a payment method
                     </Typography>
-                    <FormControl>
+                    <FormControl >
                       <RadioGroup
                         required={true}
                         aria-labelledby="demo-radio-buttons-group-label"

@@ -51,6 +51,8 @@ import FJ1 from "../../asset/images/home/FJ_1.png";
 import FJ2 from "../../asset/images/home/FJ_2.png";
 import FJ3 from "../../asset/images/home/FJ_3.png";
 import { Helmet } from "react-helmet";
+// GA tracker
+import useTracker from '../../hooks/useTracker' 
 
 // apis
 import { getBanner } from "../../service/service";
@@ -58,6 +60,8 @@ import { getBanner } from "../../service/service";
 export default function Home(props) {
   const [banner, setBanner] = useState([]);
 
+  // GA tacker custom hook
+  const tracker = useTracker("Home Events")
   useEffect(() => {
     fetchBanner();
   }, []);
@@ -65,7 +69,7 @@ export default function Home(props) {
   async function fetchBanner() {
     let res = await getBanner();
     if (res.status === 200) {
-      console.log(res);
+      // console.log(res);
       setBanner([...res.data.data]);
     }
   }
@@ -278,6 +282,9 @@ export default function Home(props) {
                       </Typography>
                       <Button
                         onClick={() => {
+                          tracker({
+                            action : "Shop now button clicked", 
+                            label : "All Product"})
                           props.history("/product");
                         }}
                         sx={{ margin: "5px" }}

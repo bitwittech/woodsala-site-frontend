@@ -1,7 +1,7 @@
 .banner {
     background-image: url('../images/home/homeBanner.png');
     background-size: 100vw 98%;
-    height: 30rem;
+    /* height: 30rem; */
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100vw 100%;

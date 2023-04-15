@@ -115,7 +115,7 @@ const Home = (props) => {
     ];
 
     return (
-        <Box p={3}>
+        <Box p={1}>
             {/* helmet tag  */}
             <Helmet>
                 <title>Online Furniture Store | Buy Wooden Furniture Online</title>
@@ -144,14 +144,11 @@ const Home = (props) => {
                                                 className="sliderBanner"
                                                 style={{
                                                     backgroundImage: `url('${article.web_banner}')`,
-                                                    backgroundSize: "100vw 100%",
+                                                    backgroundSize: "100% 100%",
                                                     backgroundRepeat: "no-repeat",
-                                                    height: "30rem",
-                                                    display: "flex",
-                                                    justifyContent: "center",
                                                 }}
                                             >
-                                                <Grid item xs={6} md={12} className="banner-text">
+                                                <Grid item xs={12} md={12} className="banner-text">
                                                     <Typography className="text-1">One-of-a-king</Typography>
                                                     <Typography className="text-2">
                                                         FURNITURE SHOP!
@@ -162,7 +159,7 @@ const Home = (props) => {
                                                     </Typography>
                                                     <Button
                                                         onClick={() => {
-                                                            props.history("/product");
+                                                            props.history("/collection");
                                                         }}
                                                         sx={{ margin: "5px" }}
                                                         small={"true"}
@@ -212,12 +209,13 @@ const Home = (props) => {
 
             {/* Categories  */}
             <Box className='categoriesContainer'>
-                <Box className="headingNew">
-                    <Typography variant="h3">Shop By Categories</Typography>
-                </Box>
+                    <Typography className="headingNew" variant="h3">Shop By Categories</Typography>
                 {
-                    categories.map((row, index) => <Box className='catCard'>
-                        <img src={row.image} alt={index} />
+                    categories.map((row, index) => <Box className='catCardHome'>
+                        <img src={row.image} alt={index} 
+                             onClick={() => props.history(`/product/${row.link}`)}
+                        
+                        />
                         <Typography sx={{ fontWeight: 500 }} variant="h6">{row.label}</Typography>
                     </Box>)
                 }
@@ -226,27 +224,27 @@ const Home = (props) => {
 
             {/* Newly arrived */}
             <Box className="newlyArrivedWrapper">
-                <Slides title={"Newly Arrived"} items={common} />
+                <Slides title={"Newly Arrived"} items={common} history = {props.history}/>
             </Box>
             {/* Newly arrived end */}
             {/* Bestseller */}
             <Box className="newlyArrivedWrapper">
-                <Slides title={"Bestseller"} items={common} />
+                <Slides title={"Bestseller"} items={common} history = {props.history}/>
             </Box>
             {/* Bestseller end */}
             {/* Beautifully Handcrafted */}
             <Box className="newlyArrivedWrapper">
-                <Slides title={"Beautifully Handcrafted"} items={common} />
+                <Slides title={"Beautifully Handcrafted"} items={common} history = {props.history}/>
             </Box>
             {/* Beautifully Handcrafted end */}
             {/* Highly Recommended  */}
             <Box className="newlyArrivedWrapper">
-                <Slides title={"Highly Recommended "} items={HR} />
+                <Slides title={"Highly Recommended "} items={HR} history = {props.history}/>
             </Box>
             {/* Highly Recommended end */}
             {/* Popular Product  */}
             <Box className="newlyArrivedWrapper">
-                <Slides title={"Popular Product "} items={PP} />
+                <Slides title={"Popular Product "} items={PP} history = {props.history}/>
             </Box>
             {/* Popular Product end */}
             {/* CustomerSlides  */}
@@ -258,7 +256,7 @@ const Home = (props) => {
     );
 }
 
-function Slides({ title, items }) {
+function Slides({ title, items, history }) {
     const responsive_TC = {
         desktop: {
             breakpoint: { max: 3000, min: 1024 },
@@ -266,11 +264,11 @@ function Slides({ title, items }) {
         },
         tablet: {
             breakpoint: { max: 800, min: 600 },
-            items: 2,
+            items: 3,
         },
         mobile: {
             breakpoint: { max: 600, min: 0 },
-            items: 1,
+            items: 2,
         },
     };
     return (
@@ -287,7 +285,9 @@ function Slides({ title, items }) {
                             <img src={data.image} alt={i} />
                             {data.text && <Typography variant='body1'>{data.text}</Typography>}
                             {data.rating && <Rating name="read-only" value={data.rating} readOnly />}
-                            <Button variant='outlined'>Buy Now</Button>
+                            <Button
+                             onClick={() => history(`/product/${data.link}`)}
+                            variant='outlined'>Buy Now</Button>
                         </Box>
                     );
                 })}
@@ -312,7 +312,7 @@ function CustomerSlides({ title, items }) {
     };
     return (
         <Box className="slidesWrapper">
-            <Typography className='headingNew' variant='h3'>{title}</Typography>
+            <Typography  className='headingNew' variant='h3'>{title}</Typography>
             <Carousel
                 keyBoardControl={true}
                 ssr={true}

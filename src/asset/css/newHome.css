@@ -1,17 +1,46 @@
 .topSectionWrapper{
     display: flex;
     gap : 1rem;
-    align-items: center;
+    flex-wrap: wrap;
+}
+.sliderBanner:hover:before{
+    content: " ";
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.062);
+}
+
+
+.text-1 {
+    font-size: 3rem !important;
+    color: rgb(126, 46, 9);
+    font-family: 'Berkshire Swash', cursive !important;
+}
+
+.text-2 {
+    font-size: 2rem !important;
+    font-weight: 500 !important;
+    color: rgb(219, 123, 33);
+    font-family: 'Poppins', sans-serif !important;
+}
+
+.text-3 {
+    font-size: 0.8rem !important;
+    font-family: 'Poppins', sans-serif;
+}
+
+.banner-text{
+    margin-top: 5% !important;
 }
 
 .sliderWrapper{
-    width: 55%;
+    flex: 1;
+    height: 100%;
 }
 .imageWrapper{
     display: flex;
+    flex: 1;
     flex-direction: column;
     gap: 1rem;
-    width: 45%;
 }
 
 .imageWrapper img {
@@ -21,23 +50,41 @@
 /* // categories section  */
 .categoriesContainer{
     display: flex;
+    width: 100%;
+    justify-content: center;
+    margin: auto;
     flex-wrap: wrap;
     gap : 3rem;
-    justify-content: space-around;
-    align-items: center;
+    align-items: baseline;
     margin-top: 5%;
 }
 .headingNew{
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
+    margin:  0% auto;
+    font-size: 2.5rem;
     text-transform: uppercase;
 }
-.catCard{
+
+.headingNew::after{
+    display: flex;
+    content: url('../images/home/headingVector.png');
+    width: 100%;
+    overflow: hidden;
+    justify-content: center;
+    margin: auto;
+}
+.catCardHome{
     text-align: center;
     width: 200px;
 }
 
-.catCard img {
+.catCardHome img {
     width: 100%;
 }
 
@@ -62,21 +109,35 @@
     /* justify-content: center; */
     /* align-items: center; */
 }
-
+.slidesWrapper ul {
+    gap: 1.5rem;
+}
 .cardHome{
-    width: 300px;
-    overflow: hidden;
+  width: 100%;
+  height: fit-content;
+    /* overflow: hidden; */
 }
 .cardHome img{
   width: 100%; 
-
+  height: 100%;
+}
+.banner {
+    background-image: url('../images/home/homeBanner.png');
+    background-size: 100vw 98%;
+    /* height: 30rem; */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100vw 100%;
+    position: relative;
+    margin-bottom: 7%;
 }
 
+
 .cusCard{
-    width: 300px;
     display: flex;
     gap: 1rem;
-    justify-content: center;align-items: center;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
 }
 
@@ -85,9 +146,14 @@
     width: 100px;
 }
 
+
 @media screen and (width <= 800px) {
-    .cardHome{
+    /* .cardHome{
         width: 280px;
         overflow: hidden;
+    } */
+    .imageWrapper{
+        display: none;
     }
+    
 }

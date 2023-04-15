@@ -28,14 +28,12 @@ import {
   TextField,
   InputAdornment,
   Stack,
-  Tabs,
-  Tab,
   Card,
   CardActionArea,
   CardMedia,
   CardContent,
   Breadcrumbs,
-  MenuItem, IconButton,
+  IconButton,
   Link as A,
 } from "@mui/material";
 import { Helmet } from "react-helmet";
@@ -47,17 +45,23 @@ import {
   getRelatedProduct,
   removeWshList,
   addWshList,
-  fetchVariants
+  fetchVariants,
 } from "../../service/service";
 // import defaultIMG from "../../asset/images/defaultProduct.svg";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
 // action
-import { addItem, removeItem, setAlert, addToList, removeFromList } from "../../Redux/action/action";
+import {
+  addItem,
+  removeItem,
+  setAlert,
+  addToList,
+  removeFromList,
+} from "../../Redux/action/action";
 
 export default function ProductDetails(props) {
-  // state
+  // state Redux
   const state = useSelector((state) => state);
 
   //redux
@@ -66,14 +70,15 @@ export default function ProductDetails(props) {
   // state
   const [imageIndex, setIndex] = useState(0); // use for updating the images
   const [ratting, setRatting] = useState(2);
-  // const [expanded, setExpanded] = useState("panel1");
   const [ACIN, setACIN] = useState([]);
+  // const [expanded, setExpanded] = useState("panel1");
 
   // useParams search parameters
   const { SKU, title, category } = useParams();
 
   // state for data
   const [data, setData] = useState(null);
+  const [review, setReview] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
 
   // for getting the product
@@ -87,13 +92,14 @@ export default function ProductDetails(props) {
     try {
       let productDetails = await getProductDetails(SKU);
 
-      console.log(productDetails)
-      setData(productDetails.data);
-      // setData(null);
+      console.log(productDetails);
 
-      // throw Error ('Customer error')
-      setACIN(productDetails.data.ACIN);
-      // setVariant(null);
+      // main product
+      setData(productDetails.data.product);
+      // CT section reviews
+      setReview(productDetails.data.reviews)
+      // for fetching the Variation 
+      setACIN(productDetails.data.product.ACIN);
 
       let related = await getRelatedProduct({
         product_title: title,
@@ -113,7 +119,6 @@ export default function ProductDetails(props) {
     }
   }
 
-
   const responsive = {
     midDesktop: {
       breakpoint: { max: 3000, min: 1900 },
@@ -131,32 +136,6 @@ export default function ProductDetails(props) {
       breakpoint: { max: 400, min: 0 },
       items: 1,
     },
-  };
-
-  function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-
-  TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
   };
 
   // function for adding the item into the wishlist
@@ -256,7 +235,6 @@ export default function ProductDetails(props) {
     }
   }
 
-
   // function for adding the product to cart
   const addToCart = async () => {
     // server side
@@ -302,7 +280,7 @@ export default function ProductDetails(props) {
       dispatch(
         addItem({
           product_id: data.SKU,
-          quantity: data.qty || 1, 
+          quantity: data.qty || 1,
           CID: "Not Logged In",
         })
       );
@@ -317,8 +295,6 @@ export default function ProductDetails(props) {
     }
   };
 
- 
-
   const [showSticky, setShowSticky] = useState(false);
 
   useMemo(() => {
@@ -329,7 +305,7 @@ export default function ProductDetails(props) {
   function handleScroll() {
     const winScroll =
       document.body.scrollTop || document.documentElement.scrollTop;
-    if (winScroll >= 350 && winScroll < 1000) setShowSticky(true);
+    if (winScroll >= 350) setShowSticky(true);
     else setShowSticky(false);
   }
 
@@ -411,11 +387,12 @@ export default function ProductDetails(props) {
                         {data.category_name}
                       </Typography>
                     )}
-                    {(data.sub_category_name !== "None" && data.sub_category_name) && (
-                      <Typography color="text.primary">
-                        {data.sub_category_name}
-                      </Typography>
-                    )}
+                    {data.sub_category_name !== "None" &&
+                      data.sub_category_name && (
+                        <Typography color="text.primary">
+                          {data.sub_category_name}
+                        </Typography>
+                      )}
                   </Breadcrumbs>
                   {/* product title */}
                   <Typography sx={{ fontWeight: 350 }} variant="h4">
@@ -572,7 +549,7 @@ export default function ProductDetails(props) {
                     </MenuItem>
                   </TextField> */}
                   {/* Variants  */}
-                  <Variant ACIN = {ACIN} SKU = {SKU} />
+                  <Variant ACIN={ACIN} SKU={SKU} />
                   {/* Variants ends  */}
 
                   {/* <Typography sx={{ fontWeight: 400, mt: 1 }} variant="h6">
@@ -681,7 +658,6 @@ export default function ProductDetails(props) {
                               />
                             </A>
                           )}
-
                           {(data.flipkart_url || data.flipkart_url !== "") && (
                             <A href={data.flipkart_url} target="_blank" rel="add">
                               {" "}
@@ -877,6 +853,10 @@ export default function ProductDetails(props) {
         </Box>
       )}
       {/* Sticky Add to Cart ends */}
+
+      {/* Let Customer Speaks For Us */}
+      {review && <CustomerTestimonials review={review} />}
+      {/* Let Customer Speaks For Us ends */}
     </>
   );
 }
@@ -898,8 +878,7 @@ function Price({ item }) {
         );
       else
         return setValue(
-          item.selling_price -
-          (item.selling_price / 100) * item.discount_limit
+          item.selling_price - (item.selling_price / 100) * item.discount_limit
         );
     }
   }
@@ -918,70 +897,131 @@ function Price({ item }) {
   );
 }
 
-function Variant({ACIN,SKU}) {
-
-  const [variant, setVariant] = useState({ size: [],
+function Variant({ ACIN, SKU }) {
+  const [variant, setVariant] = useState({
+    size: [],
     range: [],
     material: [],
     fabric: [],
-    fitting : [],
-    mattress : []});
+    fitting: [],
+    mattress: [],
+  });
 
-  useMemo(()=>{
-    getVariants()
-  },[ACIN])
+  useMemo(() => {
+    getVariants();
+  }, [ACIN]);
 
-  async function getVariants (){
+  async function getVariants() {
     try {
-
       let res = await fetchVariants(ACIN);
 
-      console.log(res.data)
-      if(res.status === 200)
-      setVariant({...res.data})
+      // console.log(res.data);
+      if (res.status === 200) setVariant({ ...res.data });
       // setVariant(null)
-
-      
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
   return (
     <>
-     {variant.show &&
-     <>
-     <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
-        Variants
-      </Typography>
-      <Divider />
-      <Box className="variants" mt={2}>
-        {variant.variants.length > 0 && 
-          variant.variants.map((s) =><Box
-          component={Link}
-              to={`/details/${s.SKU}/${s.title}/${s.category}`} 
-          className ={SKU === s.SKU ? "size borderSize" : "size"} >
-              <img src={s.product_image[0] || defaultIMG } alt="variant_image" />
-              <Typography 
-              size={"small"}
-              // variant={SKU === s.SKU ? "contained" : "outlined"}
-              className ={SKU === s.SKU ? "variant_label bold" : "variant_label"}              
-              variant = 'caption'
-              >
-                {s.product_title}
-              </Typography>
-              </Box>
-            )}
-      </Box>
-      </>
-      }
+      {variant.show && (
+        <>
+          <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
+            Variants
+          </Typography>
+          <Divider />
+          <Box className="variants" mt={2}>
+            {variant.variants.length > 0 &&
+              variant.variants.map((s) => (
+                <Box
+                  component={Link}
+                  to={`/details/${s.SKU}/${s.title}/${s.category}`}
+                  className={SKU === s.SKU ? "size borderSize" : "size"}
+                >
+                  <img
+                    src={s.product_image[0] || defaultIMG}
+                    alt="variant_image"
+                  />
+                  <Typography
+                    size={"small"}
+                    // variant={SKU === s.SKU ? "contained" : "outlined"}
+                    className={
+                      SKU === s.SKU ? "variant_label bold" : "variant_label"
+                    }
+                    variant="caption"
+                  >
+                    {s.product_title}
+                  </Typography>
+                </Box>
+              ))}
+          </Box>
+        </>
+      )}
     </>
   );
 }
 
+function CustomerTestimonials({ review }) {
+  const responsive_TC = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 4,
+    },
+    tablet: {
+      breakpoint: { max: 800, min: 600 },
+      items: 3,
+    },
+    mobile: {
+      breakpoint: { max: 600, min: 0 },
+      items: 2,
+    },
+  };
+  return (
+    <Box className="mainSec">
+      <Box className="CTcontainer">
+        <Typography sx={{ fontWeight: 500 }} variant="h5">
+          Let our customer speaks for us
+        </Typography>
+        <br />
+        <Carousel
+          keyBoardControl={true}
+          ssr={true}
+          responsive={responsive_TC}
+        >
+          {review.map((row, i) => <Box className='reviewCard' component={Link} to = {`/details/${row.product_id}/${row.product[0].product_title}/${row.product[0].category_name}`} p = {1}>
+            <Rating name="read-only" value={row.rating} readOnly />
+            <Typography variant="h6">{row.review_title}</Typography>
+            <Typography variant="body1">"{row.review}"</Typography>
+            <Typography variant="body2">{row.reviewer_name}</Typography>
+            <Box className='reviewProductImage' >
+              <img src={row.product[0].product_image[0] || defaultIMG} alt={i} />
+            </Box>
+            <Typography variant="body1">{row.product[0].product_title}</Typography>
+          </Box>
+          )}
+        </Carousel>
+      </Box>
+    </Box>
+  );
+}
 
+// {
+//   "_id": "641b1cebfdc09dc44268940c",
+//   "product_id": "P-01071",
+//   "rating": "3",
+//   "review_title": "undefined",
+//   "reviewer_name": "undefined",
+//   "reviews": [
+//       {
+//           "_id": "63ed05b9fde75826ee917706",
+//           "product_title": "(Set of 2) Classic Wave Style Chair",
+//           "product_image": []
+//       }
+//   ]
+// },
 
- // function for variant section
+// function for variant section
 //  function Variant({ACIN,SKU}) {
 
 //   const [variant, setVariant] = useState({ size: [],
@@ -1005,7 +1045,6 @@ function Variant({ACIN,SKU}) {
 //       setVariant({...res.data})
 //       // setVariant(null)
 
-      
 //     } catch (error) {
 //       console.log(error)
 //     }
@@ -1137,7 +1176,6 @@ function Variant({ACIN,SKU}) {
 //     </>
 //   );
 // }
-
 
 // {/* // ======================== Not is use for now */}
 //         {/* More Information */}

@@ -5,11 +5,11 @@ import "../../asset/css/footer.css";
 
 // images
 import footerTop from "../../asset/images/footer/footerTop.png";
-import facebook from "../../asset/images/footer/facebook.svg";
-import twitter from "../../asset/images/footer/twitter.svg";
-import insta from "../../asset/images/footer/insta.svg";
-import linkedIn from "../../asset/images/footer/linkedIn.svg";
-import youtube from "../../asset/images/footer/youtube.svg";
+import facebook from "../../asset/images/footer/facebook.png";
+import twitter from "../../asset/images/footer/twitter.png";
+import insta from "../../asset/images/footer/insta.png";
+import linkedIn from "../../asset/images/footer/linkedin.png";
+import youtube from "../../asset/images/footer/youTube.png";
 import visa from "../../asset/images/footer/visa.png";
 import master from "../../asset/images/footer/master.png";
 import paypal from "../../asset/images/footer/paypal.png";

@@ -231,6 +231,7 @@
     bottom: -20%;
     background-color:white;
     justify-content: center;
+    z-index: 1;
     align-items: center;
     flex-wrap: wrap;
     gap: 15px;

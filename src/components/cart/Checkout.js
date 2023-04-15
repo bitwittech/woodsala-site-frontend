@@ -838,12 +838,24 @@ async function placeSimpleOrder(e){
                         <FormControlLabel
                           value="UPI"
                           control={<Radio size="small" />}
-                          label="UPI Method"
+                          label="UPI (Razorpay)"
                         />
                         <FormControlLabel
                           value="Card"
                           control={<Radio size="small" />}
                           label="Debit/Credit Card Method"
+                        />
+                        <FormControlLabel
+                          value="EMI"
+                          disabled
+                          control={<Radio size="small" />}
+                          label="EMI"
+                        />
+                        <FormControlLabel
+                          value="Card"
+                          disabled
+                          control={<Radio size="small" />}
+                          label="Net Banking"
                         />
                       </RadioGroup>
                     </FormControl>

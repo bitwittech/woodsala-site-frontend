@@ -1,6 +1,6 @@
 {
-    "OfficialAPI": "http://localhost:8000/api",
-    "OfficialAPI2": "https://woodshala.in/api",
+    "OfficialAPI2": "http://localhost:8000/api",
+    "OfficialAPI": "https://woodshala.in/api",
     "PINCODE": "b7b058e0-c221-11ed-a20a-178215b14d9b",
     "client_side_recaptcha" : "6Lc0g3UlAAAAAMPXvYD0TTk0QMTet9PiFV3jpCCx",
     "server_side_recaptcha" : "6LeLW20lAAAAAGgcyq7CC-RMSM77HHiPm_X7HBR8",

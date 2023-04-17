@@ -91,3 +91,11 @@ export const setList = (parameters) => {
     }
 }
 
+// Action for setting wishlist
+export const setMasterToken = (parameters) => {
+    return {
+        type: 'MASTERTOKEN',
+        payload: parameters
+    }
+}
+

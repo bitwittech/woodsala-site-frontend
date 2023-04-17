@@ -9,9 +9,9 @@ import {
 import "./App.css";
 import "../src/asset/css/home.css";
 import "../src/asset/css/home.css";
-import config from "./config.json"
-// Google Analytics 
-import GA from  "react-ga4"
+import config from "./config.json";
+// Google Analytics
+import GA from "react-ga4";
 
 // MUI
 import { CssBaseline } from "@mui/material";
@@ -26,13 +26,15 @@ import FallBack from "./components/utility/FallBack";
 // const Home = lazy(()=>import( "./components/home/Home"))
 import Home from "./components/home/Home";
 
-// error boundaries for handling error 
+// error boundaries for handling error
 import ErrorBound from "./components/utility/ErrorBound";
+import LockIn from "./components/lockinPage/LockIn";
+import { useSelector } from "react-redux";
 
 // utility
 const Navbar = lazy(() => import("./components/utility/Navbar"));
 const Footer = lazy(() => import("./components/utility/Footer"));
-const SnakBar = lazy(() => import("./components/utility/SnakBar"));
+const SnakeBar = lazy(() => import("./components/utility/SnakBar"));
 const NotFound = lazy(() => import("./components/utility/NotFound"));
 const Thanks = lazy(() => import("./components/utility/Thanks"));
 const Verify = lazy(() => import("./components/utility/Verify"));
@@ -74,27 +76,32 @@ const light = createTheme({
 });
 
 function App() {
+  // let's initialize the React GA
+  GA.initialize(config.TRACKING_ID);
 
-// let's initialize the React GA 
-GA.initialize(config.TRACKING_ID)
-  
-useEffect(()=>{
-  // Send pageview with a custom path
-GA.send({ hitType: "visit", page: window.location.pathname , title: "Hit Page" });
+  // redux state
+  const { auth } = useSelector((state) => state);
 
-},[window.location.pathname])
+  useEffect(() => {
+    // Send pageview with a custom path
+    GA.send({
+      hitType: "visit",
+      page: window.location.pathname,
+      title: "Hit Page",
+    });
+  }, [window.location.pathname]);
   return (
     <>
       <Suspense fallback={<FallBack />}>
         <ThemeProvider theme={light}>
           <CssBaseline enableColorScheme>
-            <ErrorBound fallback = {'Sorry for the inconvenience !!! '}>
-            <BrowserRouter>
-              <Path />
-            </BrowserRouter>
-            <EntryPoint />
-            <Thanks />
-            <SnakBar />
+            <ErrorBound fallback={"Sorry for the inconvenience !!! "}>
+              <BrowserRouter>
+                <Path auth={auth} />
+              </BrowserRouter>
+              <EntryPoint />
+              <Thanks />
+              <SnakeBar />
             </ErrorBound>
           </CssBaseline>
         </ThemeProvider>
@@ -103,7 +110,7 @@ GA.send({ hitType: "visit", page: window.location.pathname , title: "Hit Page" }
   );
 }
 
-function Path() {
+function Path({ auth }) {
   const history = useNavigate();
   const { pathname } = useLocation();
 
@@ -113,74 +120,104 @@ function Path() {
 
   return (
     <>
-      {window.location.pathname !== "/verify" && <Navbar history={history} />}
+      {window.location.pathname !== "/verify" && auth.masterToken && (
+        <Navbar history={history} />
+      )}
       <Routes>
-       
         {/* // main routes  */}
-        <Route path="/" element={<Home history={history} />}></Route>
-        <Route path="/verify" element={<Verify history={history} />}></Route>
+        {!auth.masterToken && (
+          <Route path="/" element={<LockIn history={history} />}></Route>
+        )}
 
-        {/* // page routes  */}
-        <Route path="/cart" element={<Cart history={history} />}></Route>
-        <Route path="/checkout" element={<Checkout history={history}/>}></Route>
-        <Route path="/contact" element={<ContactUs history={history}/>}></Route>
-        <Route
-          path="/collection"
-          element={<Collection history={history} />}
-        ></Route>
-        <Route path="/home" element={<Home history={history} />}></Route>
-        <Route path="/profile" element={<Profile  history={history}/>}></Route>
-        <Route path="/account" element={<UserInfo  history={history}/>}></Route>
-        <Route path="/address" element={<Address  history={history}/>}></Route>
-        <Route path="/order" element={<Order  history={history}/>}></Route>
-        <Route
-          path="/wishlist"
-          element={<Wishlist history={history} />}
-        ></Route>
+        {auth.masterToken && (
+          <>
+            <Route path="/" element={<Home history={history} />}></Route>
+            <Route
+              path="/verify"
+              element={<Verify history={history} />}
+            ></Route>
 
-        {/* for Product Page  */}
-        <Route
-          path="/details/:SKU/:title/:category"
-          element={<ProductDetails history={history} />}
-        ></Route>
-        <Route
-          path="/details/:SKU/:title"
-          element={<ProductDetails history={history} />}
-        ></Route>
+            {/* // page routes  */}
+            <Route path="/cart" element={<Cart history={history} />}></Route>
+            <Route
+              path="/checkout"
+              element={<Checkout history={history} />}
+            ></Route>
+            <Route
+              path="/contact"
+              element={<ContactUs history={history} />}
+            ></Route>
+            <Route
+              path="/collection"
+              element={<Collection history={history} />}
+            ></Route>
+            <Route path="/home" element={<Home history={history} />}></Route>
+            <Route
+              path="/profile"
+              element={<Profile history={history} />}
+            ></Route>
+            <Route
+              path="/account"
+              element={<UserInfo history={history} />}
+            ></Route>
+            <Route
+              path="/address"
+              element={<Address history={history} />}
+            ></Route>
+            <Route path="/order" element={<Order history={history} />}></Route>
+            <Route
+              path="/wishlist"
+              element={<Wishlist history={history} />}
+            ></Route>
 
-        {/* // filter and Product page route */}
-        <Route
-          path="/product/:category_name/:product_title/:selling_price"
-          element={<ProductList history={history} />}
-        ></Route>
-        <Route
-          path="/product/:category_name/:product_title"
-          element={<ProductList history={history} />}
-        ></Route>
-        <Route
-          path="/product/:category_name"
-          element={<ProductList history={history} />}
-        ></Route>
-        <Route
-          path="/product"
-          element={<ProductList history={history} />}
-        ></Route>
+            {/* for Product Page  */}
+            <Route
+              path="/details/:SKU/:title/:category"
+              element={<ProductDetails history={history} />}
+            ></Route>
+            <Route
+              path="/details/:SKU/:title"
+              element={<ProductDetails history={history} />}
+            ></Route>
 
-        {/* // blog routes */}
-        <Route path="/blog" element={<BlogHome history={history} />}></Route>
-        <Route
-          path="/blog/:blog_id"
-          element={<Blog history={history} />}
-        ></Route>
+            {/* // filter and Product page route */}
+            <Route
+              path="/product/:category_name/:product_title/:selling_price"
+              element={<ProductList history={history} />}
+            ></Route>
+            <Route
+              path="/product/:category_name/:product_title"
+              element={<ProductList history={history} />}
+            ></Route>
+            <Route
+              path="/product/:category_name"
+              element={<ProductList history={history} />}
+            ></Route>
+            <Route
+              path="/product"
+              element={<ProductList history={history} />}
+            ></Route>
 
-         {/* Not found  */}
-         <Route path="*" element={<Home history={history}/>} />
+            {/* // blog routes */}
+            <Route
+              path="/blog"
+              element={<BlogHome history={history} />}
+            ></Route>
+            <Route
+              path="/blog/:blog_id"
+              element={<Blog history={history} />}
+            ></Route>
 
+            {/* Not found  */}
+            <Route path="*" element={<Home history={history} />} />
+          </>
+        )}
       </Routes>
-      {window.location.pathname !== "/verify" && <Footer history={history} />}
+      {window.location.pathname !== "/verify" && auth.masterToken && (
+        <Footer history={history} />
+      )}
     </>
   );
 }
-
 
 export default App;

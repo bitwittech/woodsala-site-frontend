@@ -11,7 +11,7 @@ import {
   Box
 } from "@mui/material";
 import { Helmet } from "react-helmet";
-
+import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode';
 import Aos from 'aos';
 import 'aos/dist/aos.css'
 // import Footer from './Utility/Footer'
@@ -40,7 +40,7 @@ export default function Blog({history}) {
 
     }
   // function for rendering the cards
-  function CardGenrator({card}) {
+  function CardGenerator({card}) {
     return (
     <Grid item data-aos = 'fade-up' sx = {12} md = {3} >
       <Card  className = {'likeCard'} onClick = {()=> {  history(`/blog/${card.uuid}`)}}>
@@ -53,15 +53,15 @@ export default function Blog({history}) {
           />
         </CardActionArea>
         <CardActions sx = {{flexDirection : 'column'}}>
-          <CardContent>
-            <Typography  gutterBottom variant="h6" >
+          <CardContent className = 'cardText'>
+            <Typography  gutterBottom variant="h5" >
               {card.title}
             </Typography>
             {/* <Typography component={'span'} variant="body2" color="text.secondary">
               {card.card_description}
               </Typography> */}
           </CardContent>
-          <Button fullWidth  size="mideum" color="primary">
+          <Button  startIcon = {<ChromeReaderModeIcon/>} fullWidth color="primary">
             Read More
           </Button>
         </CardActions>
@@ -100,7 +100,7 @@ export default function Blog({history}) {
 
       <Box className = 'youMyAlsoLike' >
           <Box className = 'cardContainerHome'>
-          {cardData.length > 0 && cardData.map((card,index)=><CardGenrator key = {index} card = {card}/>)}
+          {cardData.length > 0 && cardData.map((card,index)=><CardGenerator key = {index} card = {card}/>)}
           </Box>
       </Box>
 

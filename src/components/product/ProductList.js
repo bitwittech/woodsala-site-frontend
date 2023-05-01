@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
@@ -132,68 +132,6 @@ export default function ProductList(props) {
     });
   }, [state.auth.isAuth]);
 
-  // const categories = [
-  //   {
-  //     image: living,
-  //     name: "Living",
-  //     price: 12000,
-  //   },
-  //   {
-  //     image: wfh,
-  //     name: "Work From Home",
-  //     price: 15000,
-  //   },
-  //   {
-  //     image: bedroom,
-  //     name: "Bedroom",
-  //     price: 20000,
-  //   },
-  //   {
-  //     image: dining,
-  //     name: "Dining",
-  //     price: 12000,
-  //   },
-  //   {
-  //     image: living,
-  //     name: "Living",
-  //     price: 12000,
-  //   },
-  //   {
-  //     image: wfh,
-  //     name: "Work From Home",
-  //     price: 15000,
-  //   },
-  //   {
-  //     image: bedroom,
-  //     name: "Bedroom",
-  //     price: 20000,
-  //   },
-  //   {
-  //     image: dining,
-  //     name: "Dining",
-  //     price: 12000,
-  //   },
-  //   {
-  //     image: living,
-  //     name: "Living",
-  //     price: 12000,
-  //   },
-  //   {
-  //     image: wfh,
-  //     name: "Work From Home",
-  //     price: 15000,
-  //   },
-  //   {
-  //     image: bedroom,
-  //     name: "Bedroom",
-  //     price: 20000,
-  //   },
-  //   {
-  //     image: dining,
-  //     name: "Dining",
-  //     price: 12000,
-  //   },
-  // ];
 
   // fetch more item
 
@@ -226,9 +164,11 @@ export default function ProductList(props) {
       });
   };
 
-  useEffect(() => {
+  useMemo(() => {
+    console.log('Called')
+    console.log(filter, extraFilter.apply)
      fetchMoreData();
-  }, [filter, extraFilter.apply]);
+  }, [filter.category_name, extraFilter.apply]);
 
   // handle accordions
   const handleChange = (panel) => (event, newExpanded) => {

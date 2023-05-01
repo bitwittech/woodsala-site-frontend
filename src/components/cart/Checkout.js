@@ -203,12 +203,7 @@ export default function Checkout() {
       newDiscount = { ...newDiscount, [row.SKU]: row.discount/row.price * 100 }
       newProduct = { ...newProduct, [row.SKU]: row.price }
       items = {
-        ...items, [row.SKU]: {
-          fullfilled: false,
-          trackingId: "",
-          shipping_carrier: "",
-          qty: 0
-        }
+        ...items, [row.SKU]: []
       }
     });
 
@@ -296,7 +291,7 @@ async function placeSimpleOrder(e){
       abandoned = setInterval(async (e) => {
         // console.log(abandoned);
         clearInterval(abandoned);
-        // this is because i want current state of the textfeild without rereading too much
+        // this is because i want current state of the textfield without rereading too much
         let finalData = { ...data };
         Object.keys(ref).map((key) => {
           return (

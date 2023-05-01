@@ -83,7 +83,7 @@ function App() {
   const { auth } = useSelector((state) => state);
 
   useEffect(() => {
-    // Send pageview with a custom path
+    // Send preview with a custom path
     GA.send({
       hitType: "visit",
       page: window.location.pathname,

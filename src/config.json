@@ -1,11 +1,11 @@
 {
-    "OfficialAPI": "http://localhost:8000/api",
-    "OfficialAPI2": "https://woodshala.in/api",
+    "OfficialAPI2": "http://localhost:8000/api",
+    "OfficialAPI": "https://woodshala.in/api",
     "PINCODE": "b7b058e0-c221-11ed-a20a-178215b14d9b",
     "client_side_recaptcha_test" : "6Lc0g3UlAAAAAMPXvYD0TTk0QMTet9PiFV3jpCCx",
     "client_side_recaptcha" : "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
-    "server_side_recaptcha_test" : "6LeLW20lAAAAAGgcyq7CC-RMSM77HHiPm_X7HBR8",
-    "server_side_recaptcha" : "6LdYFW0lAAAAAMfDAZwGN-ANRZJgRGzOJwWlxRn6",
-    "TRACKING_ID" : "G-MZGPNDQH46"
+    "TRACKING_ID" : "G-MZGPNDQH46",
+    "Socket_Official_API": "http://localhost:8000",
+    "Socket_Official_API_A": "https://admin.woodshala.in"
 }
 

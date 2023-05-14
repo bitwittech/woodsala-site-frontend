@@ -28,9 +28,11 @@ import Home from "./components/home/Home";
 
 // error boundaries for handling error
 import ErrorBound from "./components/utility/ErrorBound";
+import ChatWindow from "./components/chat/ChatWindow";
 import LockIn from "./components/lockinPage/LockIn";
-import { useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+// socket 
+import Socket from "./socket/Socket";
 // utility
 const Navbar = lazy(() => import("./components/utility/Navbar"));
 const Footer = lazy(() => import("./components/utility/Footer"));
@@ -56,6 +58,9 @@ const BlogHome = lazy(() => import("./components/blog/BlogHome"));
 const Address = lazy(() => import("./components/profileMenu/Address"));
 const Order = lazy(() => import("./components/profileMenu/Order"));
 const UserInfo = lazy(() => import("./components/profileMenu/UserInfo"));
+
+
+
 // global theme
 const light = createTheme({
   palette: {
@@ -79,8 +84,10 @@ function App() {
   // let's initialize the React GA
   GA.initialize(config.TRACKING_ID);
 
-  // redux state
-  const { auth } = useSelector((state) => state);
+  // store
+  const { auth, socket } = useSelector((state) => state);
+  const dispatch = useDispatch()
+  
 
   useEffect(() => {
     // Send preview with a custom path
@@ -90,12 +97,32 @@ function App() {
       title: "Hit Page",
     });
   }, [window.location.pathname]);
+
+
+  //Socket SetUP
+  Socket.Notifications(dispatch);
+
+  useEffect(()=>{
+    makeConnection()
+  },[auth.isAuth,socket])
+
+
+  
+  function makeConnection(){
+    if(auth.isAuth && socket.id === null)
+    {
+      Socket.Connect(auth);
+      Socket.Get_ID(dispatch);
+    }
+  }
+
   return (
     <>
       <Suspense fallback={<FallBack />}>
         <ThemeProvider theme={light}>
           <CssBaseline enableColorScheme>
             <ErrorBound fallback={"Sorry for the inconvenience !!! "}>
+              <ChatWindow/>
               <BrowserRouter>
                 <Path auth={auth} />
               </BrowserRouter>

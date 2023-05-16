@@ -379,9 +379,9 @@ export default function ProductDetails(props) {
                     <Link color="primary" to="/collection">
                       Collection
                     </Link>
-                    <Link color="primary" to="/product">
+                    {/* <Link color="primary" to="/product">
                       Product
-                    </Link>
+                    </Link> */}
                     {data.category_name && (
                       <Typography color="text.primary">
                         {data.category_name}
@@ -477,7 +477,7 @@ export default function ProductDetails(props) {
                       </Typography>
                     </Typography>
                     <Typography variant="body1">
-                      Shipped By
+                      Ship By
                       <Typography sx={{ float: "right" }} variant="body1">
                         {data.manufacturing_time + data.polish_time} Days
                       </Typography>
@@ -605,7 +605,10 @@ export default function ProductDetails(props) {
                       variant="outlined"
                       value={data.qty || 1}
                       onChange={(e) =>
-                        setData({ ...data, qty: e.target.value })
+                        setData({
+                          ...data,
+                          qty: e.target.value > 0 ? e.target.value : 1,
+                        })
                       }
                       InputProps={{
                         startAdornment: (
@@ -821,7 +824,9 @@ export default function ProductDetails(props) {
             type="number"
             variant="outlined"
             value={data.qty || 1}
-            onChange={(e) => setData({ ...data, qty: e.target.value || 1 })}
+            onChange={(e) =>
+              setData({ ...data, qty: e.target.value > 0 ? e.target.value : 1 })
+            }
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">QTY</InputAdornment>

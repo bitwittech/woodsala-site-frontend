@@ -128,12 +128,12 @@ export default function Footer() {
         {/* links Ends */}
         {/* bottom */}
         <Grid item xs={12} className="footerBottom">
-          <Typography variant="body1">
-            © 2022 Woodsala (All Rights Reserved) The unit of S.K.EXPORTS ||
-            GST:08ARTPK3236G1ZJ || Plot no. 82, Hasti colony, jhalamand,
-            Jodhpur, 342001.
+          <Typography variant="body1" align="center" sx={{ flex: 1 }}>
+            © {new Date().getFullYear()} Woodsala (All Rights Reserved) The unit
+            of S.K.EXPORTS || GST:08ARTPK3236G1ZJ || Plot no. 82, Hasti colony,
+            jhalamand, Jodhpur, 342001.
           </Typography>
-          <Typography variant="caption">
+          <Typography variant="caption" align="right">
             <a
               rel="noreferrer"
               target="_blank"

@@ -135,7 +135,8 @@
 }
 
 .detailsCarousel .card button img {
-    width: 100%;
+    aspect-ratio: 1;
+    margin: auto;
     background-color: transparent !important;
     border: none !important;
 }

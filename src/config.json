@@ -2,8 +2,8 @@
     "OfficialAPI2": "http://localhost:8000/api",
     "OfficialAPI": "https://woodshala.in/api",
     "PINCODE": "b7b058e0-c221-11ed-a20a-178215b14d9b",
-    "client_side_recaptcha_test" : "6Lc0g3UlAAAAAMPXvYD0TTk0QMTet9PiFV3jpCCx",
-    "client_side_recaptcha" : "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
+    "client_side_recaptcha" : "6Lc0g3UlAAAAAMPXvYD0TTk0QMTet9PiFV3jpCCx",
+    "client_side_recaptcha_test" : "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
     "TRACKING_ID" : "G-MZGPNDQH46",
     "Socket_Official_API_A": "http://localhost:8000",
     "Socket_Official_API": "https://admin.woodshala.in"

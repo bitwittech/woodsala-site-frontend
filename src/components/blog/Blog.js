@@ -19,6 +19,7 @@ import {
   CardActions,
   Button,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import ReactHtmlParser from "react-html-parser";
 // import Footer from "../utility/Footer";
@@ -54,7 +55,7 @@ export default function BlogContent({ history }) {
   const [toc, setToc] = useState([]);
 
   useEffect(() => {
-    Aos.init({ duration: 1000 });
+    Aos.init({ duration: 900 });
     fetchData();
     setToc([]);
     setContent(null);
@@ -81,7 +82,7 @@ export default function BlogContent({ history }) {
         return (tree) => {
           visit(tree, "element", function (node) {
             if (node.tagName[0] === "h" && parseInt(node.tagName[1]) <= 6) {
-              console.log(node.tagName, node.children[0].children[0].value);
+              // console.log(node.tagName, node.children[0].children[0].value);
               const id = parameterize(node.children[0].children[0].value);
               node.properties.id = id;
               return setToc((old) => [
@@ -159,49 +160,56 @@ export default function BlogContent({ history }) {
       </Grid>
 
       {/* Read Box */}
-
-      <Grid container className="readBox">
-        {/* Table OF COntent */}
-        <Grid item xs={4} md={2} className="TOC">
-          <Typography component={"span"} variant="h6" color="primary">
-            Table Of Content
-          </Typography>
-          <List className="TOCList" color="black">
-            {toc &&
-              toc.map((jump, index) => {
-                return (
-                  <>
-                    {" "}
-                    <ListItem key={index} component={Link} href={jump.id}>
-                      <ListItemIcon>
-                        <ArrowRightOutlinedIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={jump.value} />
-                    </ListItem>
-                  </>
-                );
-              })}
-          </List>
-        </Grid>
-        {/* Table OF COntent Ends */}
-
-        {/* Content Box */}
-        {data && (
-          <Grid item xs={11.5} md={9.5} className="content">
-            <Typography variant="h5" sx={{ textAlign: "center" }}>
-              {data.title}
+      {data ? (
+        <Grid container className="readBox">
+          {/* Table OF COntent */}
+          <Grid item xs={4} md={2} className="TOC">
+            <Typography component={"span"} variant="h6" color="primary">
+              Table Of Content
             </Typography>
-            <br></br>
-            <img src={data.card_image} alt="banner blog" />
-            <br></br>
-
-            <Grid item className="content">
-              {content || ""}
-            </Grid>
+            <List className="TOCList" color="black">
+              {toc &&
+                toc.map((jump, index) => {
+                  return (
+                    <>
+                      {" "}
+                      <ListItem key={index} component={Link} href={jump.id}>
+                        <ListItemIcon>
+                          <ArrowRightOutlinedIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={jump.value} />
+                      </ListItem>
+                    </>
+                  );
+                })}
+            </List>
           </Grid>
-        )}
-        {/* Content Box Ends */}
-      </Grid>
+          {/* Table OF COntent Ends */}
+
+          {/* Content Box */}
+          {data ? (
+            <Grid item xs={11.5} md={9.5} className="content">
+              <Typography variant="h5" sx={{ textAlign: "center" }}>
+                {data.title}
+              </Typography>
+              <Box className="contentBanner">
+                {data.card_image && (
+                  <img src={data.card_image} alt="banner blog" />
+                )}
+              </Box>
+              <Grid item className="content">
+                {content || ""}
+              </Grid>
+            </Grid>
+          ) : (
+            <CircularProgress />
+          )}
+          {/* Content Box Ends */}
+        </Grid>
+      ) : (
+        <CircularProgress />
+      )}
+
       {/* Ends Read Box */}
 
       {/* back to blog  */}

@@ -154,3 +154,9 @@
         margin-bottom: 4% !important;
     }
 }
+
+@media screen and (width <= 600px) {
+    .topBox{
+        display: none;
+    }
+}

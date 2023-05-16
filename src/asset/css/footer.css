@@ -15,9 +15,11 @@
 }
 
 .footerBottom {
+    display: flex;
+    justify-content: space-between;
     background-color: #682D2D;
     color: rgb(255, 255, 255);
-    text-align: center;
+    /* text-align: center; */
     padding: 0.5%;
 }
 

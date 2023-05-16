@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, lazy, Suspense } from "react";
 import {
   BrowserRouter,
@@ -7,7 +8,6 @@ import {
   useLocation,
 } from "react-router-dom";
 import "./App.css";
-import "../src/asset/css/home.css";
 import "../src/asset/css/home.css";
 import config from "./config.json";
 // Google Analytics
@@ -31,13 +31,12 @@ import ErrorBound from "./components/utility/ErrorBound";
 import ChatWindow from "./components/chat/ChatWindow";
 import LockIn from "./components/lockinPage/LockIn";
 import { useDispatch, useSelector } from "react-redux";
-// socket 
+// socket
 import Socket from "./socket/Socket";
 // utility
 const Navbar = lazy(() => import("./components/utility/Navbar"));
 const Footer = lazy(() => import("./components/utility/Footer"));
 const SnakeBar = lazy(() => import("./components/utility/SnakBar"));
-const NotFound = lazy(() => import("./components/utility/NotFound"));
 const Thanks = lazy(() => import("./components/utility/Thanks"));
 const Verify = lazy(() => import("./components/utility/Verify"));
 
@@ -58,8 +57,6 @@ const BlogHome = lazy(() => import("./components/blog/BlogHome"));
 const Address = lazy(() => import("./components/profileMenu/Address"));
 const Order = lazy(() => import("./components/profileMenu/Order"));
 const UserInfo = lazy(() => import("./components/profileMenu/UserInfo"));
-
-
 
 // global theme
 const light = createTheme({
@@ -86,8 +83,7 @@ function App() {
 
   // store
   const { auth, socket } = useSelector((state) => state);
-  const dispatch = useDispatch()
-  
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // Send preview with a custom path
@@ -98,19 +94,15 @@ function App() {
     });
   }, [window.location.pathname]);
 
-
-  //Socket SetUP
+  // Socket SetUP
   Socket.Notifications(dispatch);
 
-  useEffect(()=>{
-    makeConnection()
-  },[auth.isAuth,socket])
+  useEffect(() => {
+    makeConnection();
+  }, [auth.isAuth, socket]);
 
-
-  
-  function makeConnection(){
-    if(auth.isAuth && socket.id === null)
-    {
+  function makeConnection() {
+    if (auth.isAuth && socket.id === null) {
       Socket.Connect(auth);
       Socket.Get_ID(dispatch);
     }
@@ -122,7 +114,7 @@ function App() {
         <ThemeProvider theme={light}>
           <CssBaseline enableColorScheme>
             <ErrorBound fallback={"Sorry for the inconvenience !!! "}>
-              <ChatWindow/>
+              <ChatWindow />
               <BrowserRouter>
                 <Path auth={auth} />
               </BrowserRouter>

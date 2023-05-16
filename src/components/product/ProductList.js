@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 // import Carousel from "react-multi-carousel";
-//mui
+// mui
 import {
   Grid,
   Box,
@@ -23,7 +24,7 @@ import {
   Checkbox,
 } from "@mui/material";
 
-//css
+// css
 import "../../asset/css/product.css";
 import "react-multi-carousel/lib/styles.css";
 
@@ -38,7 +39,7 @@ import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Helmet } from "react-helmet";
 
-//image
+// image
 import defaultIMG from "../../asset/images/defaultProduct.svg";
 
 import NoProductIMG from "../../asset/images/productPage/noProductFound.gif";
@@ -48,7 +49,6 @@ import {
   setAlert,
   addItem,
   removeItem,
-  setCart,
   addToList,
   removeFromList,
 } from "../../Redux/action/action";
@@ -61,7 +61,6 @@ import {
   getProducts,
   addCartItem,
   removeCartItem,
-  getCartItem,
   getMartialList,
   addWshList,
   removeWshList,
@@ -115,7 +114,7 @@ export default function ProductList(props) {
   const [meta, setMeta] = useState({
     hasMore: true,
     page: 1,
-    filter: filter,
+    filter,
   });
 
   // State
@@ -132,7 +131,6 @@ export default function ProductList(props) {
     });
   }, [state.auth.isAuth]);
 
-
   // fetch more item
 
   const fetchMoreData = async () => {
@@ -143,7 +141,7 @@ export default function ProductList(props) {
     getProducts({
       page:
         filter === meta.filter && extraFilter.apply === false ? meta.page : 1,
-      filter: filter,
+      filter,
       extraFilter: JSON.stringify(extraFilter),
     })
       .then((data) => {
@@ -159,15 +157,15 @@ export default function ProductList(props) {
           setExtraFilter((old) => ({ ...old, apply: false }));
         }
       })
-      .catch((err) => {
+      .catch(() => {
         // (err)
       });
   };
 
   useMemo(() => {
-    console.log('Called')
-    console.log(filter, extraFilter.apply)
-     fetchMoreData();
+    console.log("Called");
+    console.log(filter, extraFilter.apply);
+    fetchMoreData();
   }, [filter.category_name, extraFilter.apply]);
 
   // handle accordions
@@ -201,7 +199,7 @@ export default function ProductList(props) {
             })
           );
         })
-        .catch((err) => {
+        .catch(() => {
           return dispatch(
             setAlert({
               variant: "error",
@@ -249,7 +247,7 @@ export default function ProductList(props) {
             })
           );
         })
-        .catch((err) => {
+        .catch(() => {
           return dispatch(
             setAlert({
               variant: "error",
@@ -307,7 +305,7 @@ export default function ProductList(props) {
   async function addToWish(item) {
     // server side
     if (state.auth.isAuth) {
-      let response = await addWshList({
+      const response = await addWshList({
         CID: state.auth.CID,
         product_id: item.SKU,
         quantity: 1,
@@ -377,7 +375,7 @@ export default function ProductList(props) {
             })
           );
         })
-        .catch((err) => {
+        .catch(() => {
           return dispatch(
             setAlert({
               variant: "error",
@@ -497,8 +495,8 @@ export default function ProductList(props) {
                 <Box className="applyBtn">
                   <Checkbox
                     size="small"
-                    disabled={extraFilter.price ? false : true}
-                    checked={extraFilter.price ? true : false}
+                    disabled={!extraFilter.price}
+                    checked={!!extraFilter.price}
                     name="price"
                     onChange={() =>
                       setExtraFilter((old) => {
@@ -547,8 +545,8 @@ export default function ProductList(props) {
                 <Box className="applyBtn">
                   <Checkbox
                     size="small"
-                    disabled={extraFilter.length ? false : true}
-                    checked={extraFilter.length ? true : false}
+                    disabled={!extraFilter.length}
+                    checked={!!extraFilter.length}
                     name="price"
                     onChange={() =>
                       setExtraFilter((old) => {
@@ -598,8 +596,8 @@ export default function ProductList(props) {
                 <Box className="applyBtn">
                   <Checkbox
                     size="small"
-                    disabled={extraFilter.breadth ? false : true}
-                    checked={extraFilter.breadth ? true : false}
+                    disabled={!extraFilter.breadth}
+                    checked={!!extraFilter.breadth}
                     onChange={() =>
                       setExtraFilter((old) => {
                         delete old.breadth;
@@ -648,8 +646,8 @@ export default function ProductList(props) {
                 <Box className="applyBtn">
                   <Checkbox
                     size="small"
-                    disabled={extraFilter.height ? false : true}
-                    checked={extraFilter.height ? true : false}
+                    disabled={!extraFilter.height}
+                    checked={!!extraFilter.height}
                     onChange={() =>
                       setExtraFilter((old) => {
                         delete old.height;
@@ -729,8 +727,8 @@ export default function ProductList(props) {
                 <Box className="applyBtn">
                   <Checkbox
                     size="small"
-                    disabled={extraFilter.material.length > 0 ? false : true}
-                    checked={extraFilter.material.length > 0 ? true : false}
+                    disabled={!(extraFilter.material.length > 0)}
+                    checked={extraFilter.material.length > 0}
                     onChange={() =>
                       setExtraFilter((old) => {
                         return { ...old, material: [], apply: true };
@@ -824,8 +822,8 @@ export default function ProductList(props) {
                     <Box className="applyBtn">
                       <Checkbox
                         size="small"
-                        disabled={extraFilter.price ? false : true}
-                        checked={extraFilter.price ? true : false}
+                        disabled={!extraFilter.price}
+                        checked={!!extraFilter.price}
                         name="price"
                         onChange={() =>
                           setExtraFilter((old) => {
@@ -874,8 +872,8 @@ export default function ProductList(props) {
                     <Box className="applyBtn">
                       <Checkbox
                         size="small"
-                        disabled={extraFilter.length ? false : true}
-                        checked={extraFilter.length ? true : false}
+                        disabled={!extraFilter.length}
+                        checked={!!extraFilter.length}
                         name="price"
                         onChange={() =>
                           setExtraFilter((old) => {
@@ -925,8 +923,8 @@ export default function ProductList(props) {
                     <Box className="applyBtn">
                       <Checkbox
                         size="small"
-                        disabled={extraFilter.breadth ? false : true}
-                        checked={extraFilter.breadth ? true : false}
+                        disabled={!extraFilter.breadth}
+                        checked={!!extraFilter.breadth}
                         onChange={() =>
                           setExtraFilter((old) => {
                             delete old.breadth;
@@ -975,8 +973,8 @@ export default function ProductList(props) {
                     <Box className="applyBtn">
                       <Checkbox
                         size="small"
-                        disabled={extraFilter.height ? false : true}
-                        checked={extraFilter.height ? true : false}
+                        disabled={!extraFilter.height}
+                        checked={!!extraFilter.height}
                         onChange={() =>
                           setExtraFilter((old) => {
                             delete old.height;
@@ -1025,10 +1023,8 @@ export default function ProductList(props) {
                     <Box className="applyBtn">
                       <Checkbox
                         size="small"
-                        disabled={
-                          extraFilter.material.length > 0 ? false : true
-                        }
-                        checked={extraFilter.material.length > 0 ? true : false}
+                        disabled={!(extraFilter.material.length > 0)}
+                        checked={extraFilter.material.length > 0}
                         onChange={() =>
                           setExtraFilter((old) => {
                             return { ...old, material: [], apply: true };

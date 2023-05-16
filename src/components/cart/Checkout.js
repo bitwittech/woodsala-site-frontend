@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 // mui
@@ -14,7 +15,6 @@ import {
   FormControlLabel,
   Radio,
   MenuItem,
-  FormLabel,
   InputAdornment,
 } from "@mui/material";
 import { Helmet } from "react-helmet";
@@ -39,7 +39,7 @@ import {
   abandonedOrder,
   getCODLimits,
   getAddress,
-  simpleOrder
+  simpleOrder,
 } from "../../service/service";
 
 // // store
@@ -56,7 +56,7 @@ export default function Checkout() {
   // const {state,dispatch} = Store();
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
-  var abandoned = null;
+  let abandoned = null;
   // url parameter
   const location = useLocation();
   // (location)
@@ -76,26 +76,26 @@ export default function Checkout() {
     shipping: "",
     address: [],
     subTotal: subtotal,
-    quantity: quantity,
+    quantity,
     pincode: "",
     discount: 0,
     paid: 0,
-    total: total,
+    total,
     note: "",
     CUS: "",
     GST: null,
     open: false,
     payload: {},
-    classification: 'personal',
-    customer_type: '',
-    has_GST: 'no',
+    classification: "personal",
+    customer_type: "",
+    has_GST: "no",
     fulfilled: false,
     advance_received: false,
-    pay_method_remaining: 'UPI',
-    pay_method_advance: '',
-    inventory_location: '',
-    courier_company: '',
-    AWB: '',
+    pay_method_remaining: "UPI",
+    pay_method_advance: "",
+    inventory_location: "",
+    courier_company: "",
+    AWB: "",
     billing: "",
     product_array: [],
     product_price: {},
@@ -108,20 +108,19 @@ export default function Checkout() {
     PO: "",
     refresh: 0,
     sales_person: "",
-  }
+  };
   const [data, setData] = useState(initial);
 
   // catalog for city
-  const [cities, setCity] = useState([])
+  const [cities, setCity] = useState([]);
 
-  const [codLimit, setLimit] = useState(
-    {
-      limit_without_advance: 0,
-      max_advance_limit: 0,
-      min_advance_limit: 0,
-      limit: 0,
-    })
-  var ref = {
+  const [codLimit, setLimit] = useState({
+    limit_without_advance: 0,
+    max_advance_limit: 0,
+    min_advance_limit: 0,
+    limit: 0,
+  });
+  const ref = {
     customer_name: useRef(),
     customer_email: useRef(),
     customer_mobile: useRef(),
@@ -129,12 +128,11 @@ export default function Checkout() {
     state: useRef(),
     shipping: useRef(),
     note: useRef(),
-    pincode: useRef()
+    pincode: useRef(),
   };
 
   // event for monitoring the user behavior with cart
   useEffect(() => {
-
     getLimits();
 
     // 30 minutes timeout for now
@@ -149,9 +147,13 @@ export default function Checkout() {
 
   useEffect(() => {
     if (data.total > codLimit.limit_without_advance)
-      setData(old => ({ ...old, advance_received: Math.ceil((data.total / 100) * codLimit.min_advance_limit) }))
+      setData((old) => ({
+        ...old,
+        advance_received: Math.ceil(
+          (data.total / 100) * codLimit.min_advance_limit
+        ),
+      }));
   }, [data.pay_method_remaining]);
-
 
   useEffect(() => {
     if (state.auth.CID) {
@@ -183,39 +185,48 @@ export default function Checkout() {
   }, [state.auth.isAuth]);
 
   useEffect(() => {
-    setData(old => ({ ...old, O: OID }));
+    setData((old) => ({ ...old, O: OID }));
   }, [OID]);
 
   useEffect(() => {
     handelPincode();
   }, [data.pincode]);
 
-  // setting up the other information about order 
+  // setting up the other information about order
   useEffect(() => {
-
-    let newDiscount = {} // for the check on removal product
-    let newProduct = {} // for the check on removal product
-    let items = {} // for the check on removal product
+    let newDiscount = {}; // for the check on removal product
+    let newProduct = {}; // for the check on removal product
+    let items = {}; // for the check on removal product
 
     // console.log(product)
 
     product.map((row) => {
-      newDiscount = { ...newDiscount, [row.SKU]: row.discount/row.price * 100 }
-      newProduct = { ...newProduct, [row.SKU]: row.price }
+      newDiscount = {
+        ...newDiscount,
+        [row.SKU]: (row.discount / row.price) * 100,
+      };
+      newProduct = { ...newProduct, [row.SKU]: row.price };
       items = {
-        ...items, [row.SKU]: []
-      }
+        ...items,
+        [row.SKU]: [],
+      };
+      return 1;
     });
 
-    setData(old => ({ ...old, discount_per_product: newDiscount, product_price: newProduct, items }))
-  }, [quantity])
+    setData((old) => ({
+      ...old,
+      discount_per_product: newDiscount,
+      product_price: newProduct,
+      items,
+    }));
+  }, [quantity]);
 
   async function handelPincode() {
     // console.log(changeData.pincode);
     if (data.pincode && data.pincode.toString().length === 6) {
-      let res = await getAddress(data.pincode);
+      const res = await getAddress(data.pincode);
       if (res.status === 200) {
-        let pincode = res.data.results[data.pincode] || [];
+        const pincode = res.data.results[data.pincode] || [];
         setCity(pincode);
         setData((old) => ({
           ...old,
@@ -227,56 +238,49 @@ export default function Checkout() {
     }
   }
 
-async function placeSimpleOrder(e){
-  try {
+  async function placeSimpleOrder(e) {
+    try {
+      e.preventDefault();
 
-    e.preventDefault();
-
-    let res = await simpleOrder(data);
-    if(res.status === 200)
-    {
-      setData(initial);
-      // removing the item for the cart after order
-      if (state.auth.isAuth) {
-        Promise.all(
-          state.cart.items.map(
-            async (row) =>
-              (await row.product_id) &&
-              removeCartItem({
-                CID: state.auth.CID,
-                product_id: row.product_id,
-              })
-          )
+      const res = await simpleOrder(data);
+      if (res.status === 200) {
+        setData(initial);
+        // removing the item for the cart after order
+        if (state.auth.isAuth) {
+          Promise.all(
+            state.cart.items.map(
+              async (row) =>
+                (await row.product_id) &&
+                removeCartItem({
+                  CID: state.auth.CID,
+                  product_id: row.product_id,
+                })
+            )
+          );
+        }
+        dispatch(setCart({ items: [] }));
+        dispatch(
+          setAlert({
+            open: true,
+            variant: "success",
+            message: res.data.message,
+          })
+        );
+        dispatch(
+          thanks({
+            open: true,
+            payload: OID,
+          })
         );
       }
-      dispatch(setCart({ items: [] }));
-      dispatch(
-        setAlert({
-          open: true,
-          variant: "success",
-          message: res.data.message,
-        })
-      );
-      dispatch(
-        thanks({
-          open: true,
-          payload: OID,
-        })
-      );
-
-
-    }
-  } catch (error) {
-    
+    } catch (error) {}
   }
-}
 
   // for getting the COD limit to impose while choosing the he COD options
   async function getLimits() {
     // console.log('fire')
     const response = await getCODLimits();
-    if (response)
-      setLimit(response.data[0])
+    if (response) setLimit(response.data[0]);
   }
 
   // set the time for abandoned cart
@@ -292,7 +296,7 @@ async function placeSimpleOrder(e){
         // console.log(abandoned);
         clearInterval(abandoned);
         // this is because i want current state of the textfield without rereading too much
-        let finalData = { ...data };
+        const finalData = { ...data };
         Object.keys(ref).map((key) => {
           return (
             ref[`${key}`].current &&
@@ -302,7 +306,7 @@ async function placeSimpleOrder(e){
         // Object.keys(ref).map((key) => console.log(ref[key], key));
 
         // now the send the data to the backend
-        let res = await abandonedOrder(finalData);
+        await abandonedOrder(finalData);
       }, 600000); // 10 minute
     }
     window.onfocus = () => {
@@ -328,7 +332,6 @@ async function placeSimpleOrder(e){
       const res = await verifyPayment(order);
 
       if (res.status !== 200) {
-
         dispatch(
           setAlert({
             open: true,
@@ -397,7 +400,7 @@ async function placeSimpleOrder(e){
   // FOR Pay UI
   async function displayRazorpay(e) {
     e.preventDefault();
-    console.log(data)
+    console.log(data);
 
     // return 1
     // UI response check
@@ -410,15 +413,16 @@ async function placeSimpleOrder(e){
       return;
     }
 
-    const response = await placeOrder({...data, limit_without_advance : codLimit.limit_without_advance}); // local APIs for saving Order
+    const response = await placeOrder({
+      ...data,
+      limit_without_advance: codLimit.limit_without_advance,
+    }); // local APIs for saving Order
 
     if (response.status !== 200) return;
 
-    if(data.pay_method_remaining === "COD")
-    setData(old=>({...old, pay_method_advance : "Razorpay"}))
-    else
-    setData(old=>({...old, pay_method_advance : ""}))
-
+    if (data.pay_method_remaining === "COD")
+      setData((old) => ({ ...old, pay_method_advance: "Razorpay" }));
+    else setData((old) => ({ ...old, pay_method_advance: "" }));
 
     const order_id = response.data.id.toString(); // Order Id from Payment Getaway
 
@@ -431,7 +435,7 @@ async function placeSimpleOrder(e){
       name: "WoodShala",
       description: "Product Order",
       image: "https://admin.woodshala.in/favicon.ico",
-      order_id: order_id,
+      order_id,
       handler: (response) => {
         verifyPay(response, order_id);
       },
@@ -456,7 +460,7 @@ async function placeSimpleOrder(e){
     return await getLastOrder()
       .then((res) => {
         if (res.data.length > 0) {
-          let index = parseInt(res.data[0].O.split("-")[1]) + 1;
+          const index = parseInt(res.data[0].O.split("-")[1]) + 1;
 
           return setOID(`O-0${index}`);
         } else {
@@ -474,8 +478,6 @@ async function placeSimpleOrder(e){
     // (e.target.name)
     setData({ ...data, [e.target.name]: e.target.value });
   };
-
-
 
   return (
     <>
@@ -498,7 +500,12 @@ async function placeSimpleOrder(e){
       {/* Main Section */}
       <form
         method="post"
-        onSubmit={(data.pay_method_remaining === 'COD'  && codLimit.limit_without_advance > total) ? placeSimpleOrder :  displayRazorpay }
+        onSubmit={
+          data.pay_method_remaining === "COD" &&
+          codLimit.limit_without_advance > total
+            ? placeSimpleOrder
+            : displayRazorpay
+        }
         encType="multipart/form-data"
       >
         <Grid container className="mainSec">
@@ -619,7 +626,7 @@ async function placeSimpleOrder(e){
                     />
                     <TextField
                       label="Pin Code"
-                      name='pincode'
+                      name="pincode"
                       fullWidth
                       inputProps={{ ref: ref.pincode }}
                       value={data.pincode || ""}
@@ -709,8 +716,6 @@ async function placeSimpleOrder(e){
                   ))}
                 </TextField> */}
 
-
-
                 <Typography sx={{ marginTop: "3%" }} variant="h6">
                   Additional Information
                 </Typography>
@@ -738,7 +743,9 @@ async function placeSimpleOrder(e){
           <Grid xs={12} md={3.5} className="yourOrder">
             <Grid container>
               <Grid item xs={12}>
-                <Typography variant="h6" sx = {{fontWeight : 500}}>Your Order</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                  Your Order
+                </Typography>
               </Grid>
               <Grid item xs={12}>
                 <Grid container className="orderSummary">
@@ -748,12 +755,15 @@ async function placeSimpleOrder(e){
                         return (
                           <Box key={index}>
                             <Box className="productBox">
-                              <img src={item.product || defaultIMG} alt="productImage" />
+                              <img
+                                src={item.product || defaultIMG}
+                                alt="productImage"
+                              />
                               <Typography variant="body2">
                                 {item.product_name}
                               </Typography>
                               <Typography variant="body2">
-                              ₹ {item.total}
+                                ₹ {item.total}
                               </Typography>
                             </Box>
                             <Divider />
@@ -765,8 +775,10 @@ async function placeSimpleOrder(e){
                   <Grid item xs={12}>
                     <Divider />
                     <Box className="productBox text">
-                      <Typography sx = {{fontWeight : 500}} variant="body1">Subtotal</Typography>
-                      <Typography sx = {{fontWeight : 500}} variant="body1">
+                      <Typography sx={{ fontWeight: 500 }} variant="body1">
+                        Subtotal
+                      </Typography>
+                      <Typography sx={{ fontWeight: 500 }} variant="body1">
                         ₹ {subtotal}
                       </Typography>
                     </Box>
@@ -781,9 +793,11 @@ async function placeSimpleOrder(e){
                   </Grid> */}
                   <Grid item xs={12}>
                     <Box className="productBox text">
-                      <Typography sx = {{fontWeight : 500}} variant="body1">Total</Typography>
-                      <Typography sx = {{fontWeight : 500}} variant="body1">
-                      ₹ {total}
+                      <Typography sx={{ fontWeight: 500 }} variant="body1">
+                        Total
+                      </Typography>
+                      <Typography sx={{ fontWeight: 500 }} variant="body1">
+                        ₹ {total}
                       </Typography>
                     </Box>
                   </Grid>
@@ -794,35 +808,59 @@ async function placeSimpleOrder(e){
               <Grid item xs={12}>
                 <Grid container className="payMethod text">
                   {/* // advance pay module  */}
-                  {(data.pay_method_remaining === "COD" && codLimit.limit_without_advance <= total) &&
-                    <Grid mb={1} item sx={{ display: 'flex', gap: '1rem', flexDirection: 'column' }} xs={12}>
-                      <Typography variant="body1" className="text">
-                        Advance Pay
-                      </Typography>
-                      <TextField
-                        variant="outlined"
-                        size='small'
-                        disabled
-                        fullWidth
-                        InputProps={{
-                          startAdornment: <InputAdornment position="start">₹</InputAdornment>,
+                  {data.pay_method_remaining === "COD" &&
+                    codLimit.limit_without_advance <= total && (
+                      <Grid
+                        mb={1}
+                        item
+                        sx={{
+                          display: "flex",
+                          gap: "1rem",
+                          flexDirection: "column",
                         }}
-                        value={data.advance_received}
-                      />
-                      {/* <Button size='small' fullWidth variant='outlined'>Pay Advance </Button> */}
-                    </Grid>}
+                        xs={12}
+                      >
+                        <Typography variant="body1" className="text">
+                          Advance Pay
+                        </Typography>
+                        <TextField
+                          variant="outlined"
+                          size="small"
+                          disabled
+                          fullWidth
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                ₹
+                              </InputAdornment>
+                            ),
+                          }}
+                          value={data.advance_received}
+                        />
+                        {/* <Button size='small' fullWidth variant='outlined'>Pay Advance </Button> */}
+                      </Grid>
+                    )}
                   {/* // advance pay module ends */}
                   <Grid item xs={12}>
-                    <Typography sx = {{fontWeight : 500, fontSize : '1.1rem'}} variant="body1" className="text">
+                    <Typography
+                      sx={{ fontWeight: 500, fontSize: "1.1rem" }}
+                      variant="body1"
+                      className="text"
+                    >
                       Select a payment method
                     </Typography>
-                    <FormControl >
+                    <FormControl>
                       <RadioGroup
                         required={true}
                         aria-labelledby="demo-radio-buttons-group-label"
                         defaultValue="UPI"
                         value={data.pay_method_remaining}
-                        onChange={(e) => setData(old => ({ ...old, pay_method_remaining: e.target.value }))}
+                        onChange={(e) =>
+                          setData((old) => ({
+                            ...old,
+                            pay_method_remaining: e.target.value,
+                          }))
+                        }
                         name="pay_method_remaining"
                       >
                         <FormControlLabel

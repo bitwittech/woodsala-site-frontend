@@ -1,3 +1,6 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable camelcase */
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
 import Slider from "react-animated-slider";
 
@@ -16,7 +19,6 @@ import {
   Card,
   CardActionArea,
   CardActions,
-  Link,
 } from "@mui/material";
 // Images
 import living from "../../asset/images/home/sofa_SBR.png";
@@ -52,7 +54,7 @@ import FJ2 from "../../asset/images/home/FJ_2.png";
 import FJ3 from "../../asset/images/home/FJ_3.png";
 import { Helmet } from "react-helmet";
 // GA tracker
-import useTracker from '../../hooks/useTracker' 
+import useTracker from "../../hooks/useTracker";
 
 // apis
 import { getBanner } from "../../service/service";
@@ -61,20 +63,20 @@ export default function Home(props) {
   const [banner, setBanner] = useState([]);
 
   // GA tacker custom hook
-  const tracker = useTracker("Home Events")
+  const tracker = useTracker("Home Events");
   useEffect(() => {
     fetchBanner();
   }, []);
 
   async function fetchBanner() {
-    let res = await getBanner();
+    const res = await getBanner();
     if (res.status === 200) {
       // console.log(res);
       setBanner([...res.data.data]);
     }
   }
 
-  let instaPost = [
+  const instaPost = [
     post1,
     table,
     bajot,
@@ -87,7 +89,7 @@ export default function Home(props) {
     post2,
   ];
 
-  let items = [
+  const items = [
     {
       name: "Bajot",
       image: { bajot },
@@ -122,9 +124,9 @@ export default function Home(props) {
     },
   ];
 
-  let content = [bannerPic];
+  const content = [bannerPic];
 
-  let customer = [
+  const customer = [
     {
       image: bajot,
       review: "Great Product with minimal design.",
@@ -257,9 +259,10 @@ export default function Home(props) {
         banner.length > 0 && (
           <Grid container className="slider">
             <Grid item xs={12}>
-              <Slider autoplay={5000} infinite = {true}  className="center" >
+              <Slider autoplay={5000} infinite={true} className="center">
                 {banner.map((article, index) => (
-                  <Grid container 
+                  <Grid
+                    container
                     key={index}
                     className="sliderBanner"
                     style={{
@@ -283,8 +286,9 @@ export default function Home(props) {
                       <Button
                         onClick={() => {
                           tracker({
-                            action : "Shop now button clicked", 
-                            label : "All Product"})
+                            action: "Shop now button clicked",
+                            label: "All Product",
+                          });
                           props.history("/product");
                         }}
                         sx={{ margin: "5px" }}
@@ -369,8 +373,8 @@ export default function Home(props) {
             Shop By Furniture
           </Typography>
         </Grid>
-        {SBF.map((row) => (
-          <Grid item xs={12} className="image center-SBR" md={3.5}>
+        {SBF.map((row, i) => (
+          <Grid key={i} item xs={12} className="image center-SBR" md={3.5}>
             <img
               className="image"
               src={row.image}
@@ -512,7 +516,7 @@ export default function Home(props) {
                 })}
               </Carousel>
             </Grid>
-            {/* Trending Category Ends*/}
+            {/* Trending Category Ends */}
           </Grid>
         </Grid>
       </Grid>
@@ -533,7 +537,7 @@ export default function Home(props) {
             height="500"
             src="https://www.youtube.com/embed/OF2x1fx2rDE"
             title="YouTube video player"
-            frameborder="0"
+            frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
           ></iframe>
@@ -782,7 +786,7 @@ export default function Home(props) {
         </Grid>
       </Grid>
 
-      {/* Enjoy the hassle-free experience of buying furniture online  ENDS*/}
+      {/* Enjoy the hassle-free experience of buying furniture online  ENDS */}
     </>
   );
 }

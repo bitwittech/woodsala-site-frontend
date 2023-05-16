@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-//mui
+// mui
 import {
   MenuItem,
   Grid,
@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 // css
 import "../../asset/css/contactUs.css";
-//icon
+// icon
 import HomeIcon from "@mui/icons-material/Home";
 import EmailIcon from "@mui/icons-material/Email";
 import CallRoundedIcon from "@mui/icons-material/CallRounded";
@@ -84,7 +84,7 @@ export default function ContactUs() {
         );
       } else {
         setData((old) => ({ ...old, isLoading: true }));
-        let res = await addContact(FD);
+        const res = await addContact(FD);
 
         if (res) {
           setData((old) => ({
@@ -248,7 +248,7 @@ export default function ContactUs() {
               className="messageBox"
               name="message"
             />
-            <label for="upload">Upload Image If you have any </label>
+            <label htmlFor="upload">Upload Image If you have any </label>
             <Button
               sx={{ float: "left", width: "150px" }}
               component="label"
@@ -333,7 +333,7 @@ export default function ContactUs() {
             height={500}
             allowFullScreen={true}
             loading={"lazy"}
-            referrerpolicy={"no-referrer-when-downgrade"}
+            referrerPolicy={"no-referrer-when-downgrade"}
           ></iframe>
         </Grid>
       </Grid>

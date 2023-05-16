@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
 import "../../asset/css/profile.css";
 import {
@@ -17,13 +18,13 @@ import {
   Stack,
 } from "@mui/material";
 
-//icon
+// icon
 // import SaveIcon from "@mui/icons-material/Save";
 import AddIcon from "@mui/icons-material/Add";
 // image
 // import avatar from "../../asset/images/profile/avatar.svg";
 // import EditIcon from '@mui/icons-material/Edit';
-//services
+// services
 import { getCustomerAddress, updateCustomer } from "../../service/service";
 // Store
 // import { Store } from "../../store/Context";
@@ -53,7 +54,7 @@ const Address = () => {
           // (response)
           setAddressArray(response.data.address);
         })
-        .catch((err) => {
+        .catch(() => {
           // (err);
         });
     }
@@ -61,7 +62,7 @@ const Address = () => {
 
   // delete customer
   const deleteCustomer = (index) => {
-    let data = addressArray;
+    const data = addressArray;
     data.splice(index, 1);
     // // (data)
     // return 0;
@@ -94,7 +95,7 @@ const Address = () => {
           );
         }
       })
-      .catch((err) => {
+      .catch(() => {
         // (err)
         dispatch(
           setAlert({
@@ -131,7 +132,6 @@ const Address = () => {
         setController={setController}
       />
       <Box className="addressContainer">
-    
         <Box
           onClick={() => {
             setController({ ...controller, openModal: true });
@@ -148,7 +148,7 @@ const Address = () => {
         {addressArray &&
           addressArray.map((row, index) => {
             return (
-              <Box className="addressTile" item xs={2.7}>
+              <Box key={index} className="addressTile" item xs={2.7}>
                 <Stack sx={{ overflow: "hidden", minHeight: "85%" }}>
                   <Typography variant="h5">{row.customer_name}</Typography>
                   <Typography variant="body1">{row.address}</Typography>
@@ -161,7 +161,7 @@ const Address = () => {
                 <Box>
                   <Button
                     onClick={() => {
-                      setController({ openModal: true, index: index });
+                      setController({ openModal: true, index });
                     }}
                     size="small"
                     variant="outlined"
@@ -235,7 +235,7 @@ function AddAddressModal({
     e.preventDefault();
     // // (data);
 
-    let newAddress = [...addressArray, data];
+    const newAddress = [...addressArray, data];
 
     if (controller.index !== undefined) {
       newAddress.splice(controller.index, 1);
@@ -272,7 +272,7 @@ function AddAddressModal({
           );
         }
       })
-      .catch((err) => {
+      .catch(() => {
         // (err)
         dispatch(
           setAlert({
@@ -307,7 +307,7 @@ function AddAddressModal({
             className="form"
             id="myForm"
             onSubmit={handleAddress}
-            enctype="multipart/form-data"
+            encType="multipart/form-data"
             method="post"
           >
             <TextField

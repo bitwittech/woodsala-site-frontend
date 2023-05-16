@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable camelcase */
 // css
 import "../../asset/css/cart.css";
 // react
@@ -8,14 +10,14 @@ import {
   Button,
   TextField,
   Divider,
-  MenuItem,
-  InputAdornment,
+  // MenuItem,
+  // InputAdornment,
   IconButton,
   Box,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 import { Helmet } from "react-helmet";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import {
   DataGrid,
@@ -28,12 +30,17 @@ import Pagination from "@mui/material/Pagination";
 import "../../asset/css/checkout.css";
 
 // icon
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
-import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
-import OutlinedFlagSharpIcon from "@mui/icons-material/OutlinedFlagSharp";
-import DeleteIcon from '@mui/icons-material/Delete';
-// APis services 
-import { getDetails, updateQuantity, removeCartItem, verifyCoupon } from "../../service/service"
+// import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+// import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
+// import OutlinedFlagSharpIcon from "@mui/icons-material/OutlinedFlagSharp";
+import DeleteIcon from "@mui/icons-material/Delete";
+// APis services
+import {
+  getDetails,
+  updateQuantity,
+  removeCartItem,
+  verifyCoupon,
+} from "../../service/service";
 import defaultIMG from "../../asset/images/defaultProduct.svg";
 
 // state global
@@ -41,13 +48,17 @@ import defaultIMG from "../../asset/images/defaultProduct.svg";
 // import { cart, Notify } from "../store/Types";
 
 // state Redux
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from "react-redux";
 
-// action 
-import { setCart, removeItem, setAlert, addQTY, subQTY, setLoginModal } from '../../Redux/action/action'
-import { width } from "@mui/system";
-
-
+// action
+import {
+  removeItem,
+  setAlert,
+  addQTY,
+  subQTY,
+  setLoginModal,
+} from "../../Redux/action/action";
+// import { width } from "@mui/system";
 
 // pagination
 function CustomPagination() {
@@ -66,142 +77,176 @@ function CustomPagination() {
 }
 
 const Cart = (props) => {
-
-
-  // Redux 
+  // Redux
   const dispatch = useDispatch();
-  // state 
-  const state = useSelector(state => state);
+  // state
+  const state = useSelector((state) => state);
 
-  // states 
-  const [row, setRow] = useState([])
-  const [country, setCountry] = useState("EUR");
-  const [data, setData] = useState(
-    {
-      isLoading: false,
-      applied: false,
-      coupon_type: undefined,
-      coupon_value: 0,
-      code: '',
-      total: 0,
-      subtotal: 0,
-      discount: 0
-    }
-  );
-
+  // states
+  const [row, setRow] = useState([]);
+  // const [country, setCountry] = useState("EUR");
+  const [data, setData] = useState({
+    isLoading: false,
+    applied: false,
+    coupon_type: undefined,
+    coupon_value: 0,
+    code: "",
+    total: 0,
+    subtotal: 0,
+    discount: 0,
+  });
 
   // fetching the cart item
   useEffect(() => {
-    fetchCartProduct()
-  }, [state.cart])
+    fetchCartProduct();
+  }, [state.cart]);
 
   // for calculating total on value on runtime
   useEffect(() => {
-    let sub = row.reduce((partial, set) => partial + parseInt(set.price), 0);
-    let total = row.reduce((partial, set) => partial + parseInt(set.total), 0);
-    let coupon_value = data.coupon_type === "FLAT" ? data.coupon_value  : sub/100 * data.coupon_value;
+    const sub = row.reduce((partial, set) => partial + parseInt(set.price), 0);
+    const total = row.reduce(
+      (partial, set) => partial + parseInt(set.total),
+      0
+    );
+    const coupon_value =
+      data.coupon_type === "FLAT"
+        ? data.coupon_value
+        : (sub / 100) * data.coupon_value;
 
-    setData(old=>({...old,
+    setData((old) => ({
+      ...old,
       total: (total - coupon_value).toFixed(2),
       subtotal: sub.toFixed(2),
       discount: sub - total,
-    }))
-  }, [row,data.coupon_type])
+    }));
+  }, [row, data.coupon_type]);
 
-  async function fetchCartProduct(){
-     let response = await getDetails(JSON.stringify(state.cart.items.map((item) => { return item.product_id })))
+  async function fetchCartProduct() {
+    const response = await getDetails(
+      JSON.stringify(
+        state.cart.items.map((item) => {
+          return item.product_id;
+        })
+      )
+    );
 
-    if(response) {
+    if (response) {
       // console.log(state.cart.items)
       // console.log(response)
       setRow(
         response.data.map((dataSet, index) => {
-          
-          let discount = dataSet[0].categories[0].discount_limit ? (dataSet[0].discount_limit > dataSet[0].categories[0].discount_limit)
-           ?  dataSet[0].categories[0].discount_limit : dataSet[0].discount_limit : dataSet[0].discount_limit
-          
-          discount = (state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price) / 100 * discount
+          let discount = dataSet[0].categories[0].discount_limit
+            ? dataSet[0].discount_limit >
+              dataSet[0].categories[0].discount_limit
+              ? dataSet[0].categories[0].discount_limit
+              : dataSet[0].discount_limit
+            : dataSet[0].discount_limit;
+
+          discount =
+            ((state.cart.items.filter((data) => {
+              return data.product_id === dataSet[0].SKU;
+            })[0].quantity *
+              dataSet[0].selling_price) /
+              100) *
+            discount;
           return {
             id: index + 1,
             SKU: dataSet[0].SKU,
             product: dataSet[0].featured_image || dataSet[0].product_image[0],
             product_name: dataSet[0].product_title,
-            price: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price,
-            qty: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity,
-            discount : discount, 
-            total: state.cart.items.filter((data) => { return data.product_id === dataSet[0].SKU })[0].quantity * dataSet[0].selling_price - discount,
-            action: dataSet[0].SKU
-          }
+            price:
+              state.cart.items.filter((data) => {
+                return data.product_id === dataSet[0].SKU;
+              })[0].quantity * dataSet[0].selling_price,
+            qty: state.cart.items.filter((data) => {
+              return data.product_id === dataSet[0].SKU;
+            })[0].quantity,
+            discount,
+            total:
+              state.cart.items.filter((data) => {
+                return data.product_id === dataSet[0].SKU;
+              })[0].quantity *
+                dataSet[0].selling_price -
+              discount,
+            action: dataSet[0].SKU,
+          };
         })
-      )
+      );
     }
   }
 
-  // removeItemFromCart 
+  // removeItemFromCart
   const removeItemFromCart = async (item) => {
-
-    // server side 
+    // server side
     if (state.auth.isAuth) {
       await removeCartItem({
         CID: state.auth.CID,
-        product_id: item.SKU
+        product_id: item.SKU,
       })
         .then((response) => {
           // for client side
-          dispatch(removeItem(item.SKU))
+          dispatch(removeItem(item.SKU));
 
-          return dispatch(setAlert({
-            variant: 'warning',
-            message: response.data.message,
-            open: true
-          }))
+          return dispatch(
+            setAlert({
+              variant: "warning",
+              message: response.data.message,
+              open: true,
+            })
+          );
         })
-        .catch((err) => {
-          return dispatch(setAlert({
-            variant: 'error',
-            message: 'Something Went Wrong !!!',
-            open: true
-          }))
-        })
-    }
-    else {
+        .catch(() => {
+          return dispatch(
+            setAlert({
+              variant: "error",
+              message: "Something Went Wrong !!!",
+              open: true,
+            })
+          );
+        });
+    } else {
       // for client side
-      dispatch(removeItem(item.SKU))
+      dispatch(removeItem(item.SKU));
 
-      return dispatch(setAlert({
-        variant: 'warning',
-        message: 'Item removed added to the cart !!!',
-        open: true
-      }))
-
+      return dispatch(
+        setAlert({
+          variant: "warning",
+          message: "Item removed added to the cart !!!",
+          open: true,
+        })
+      );
     }
-  }
-
-  const handleChange = (event) => {
-    setCountry(event.target.value);
   };
+
+  // const handleChange = (event) => {
+  //   setCountry(event.target.value);
+  // };
 
   // decrease quantity
   const handleDecrease = (e) => {
     if (state.auth.isAuth) {
-      updateQuantity({ CID: state.auth.CID, product_id: e.product_id, quantity: parseInt(e.quantity) - 1 })
-        .then(() => {
-          dispatch(subQTY(e.product_id));
-        })
-    }
-    else dispatch(subQTY(e.product_id));
-  }
+      updateQuantity({
+        CID: state.auth.CID,
+        product_id: e.product_id,
+        quantity: parseInt(e.quantity) - 1,
+      }).then(() => {
+        dispatch(subQTY(e.product_id));
+      });
+    } else dispatch(subQTY(e.product_id));
+  };
   // increase quantity
   const handleIncrease = (e) => {
     if (state.auth.isAuth) {
-      updateQuantity({ CID: state.auth.CID, product_id: e.product_id, quantity: parseInt(e.quantity) + 1 })
-        .then(() => {
-          dispatch(addQTY(e.product_id));
-        })
-    }
-    else dispatch(addQTY(e.product_id));
-  }
-  // columns section 
+      updateQuantity({
+        CID: state.auth.CID,
+        product_id: e.product_id,
+        quantity: parseInt(e.quantity) + 1,
+      }).then(() => {
+        dispatch(addQTY(e.product_id));
+      });
+    } else dispatch(addQTY(e.product_id));
+  };
+  // columns section
   const columns = [
     { field: "id", renderHeader: () => <strong>{"S.No"}</strong>, width: 50 },
     { field: "SKU", renderHeader: () => <strong>{"SKU"}</strong>, width: 100 },
@@ -211,9 +256,16 @@ const Cart = (props) => {
       width: 200,
       renderHeader: () => <strong>{"Product"}</strong>,
       renderCell: (params) => (
-        <Box component={Link} to={`/details/${params.row.SKU}/${params.row.product_name}`}>
+        <Box
+          component={Link}
+          to={`/details/${params.row.SKU}/${params.row.product_name}`}
+        >
           {params.formattedValue !== undefined ? (
-            <img className="productImage" src={params.formattedValue || defaultIMG} alt="category" />
+            <img
+              className="productImage"
+              src={params.formattedValue || defaultIMG}
+              alt="category"
+            />
           ) : (
             <img className="productImage" src={defaultIMG} alt="category" />
           )}
@@ -230,7 +282,7 @@ const Cart = (props) => {
       renderHeader: () => <strong>{"Price (Rupee)"}</strong>,
       type: "number",
       width: 120,
-      align: 'center'
+      align: "center",
     },
 
     {
@@ -241,8 +293,15 @@ const Cart = (props) => {
         <Grid container className="qtyButtons">
           <Grid item xs={12} md={3}>
             <Button
-              onClick={() => handleDecrease({ product_id: params.row.SKU, quantity: params.row.qty })}
-              variant="outlined" size="small">
+              onClick={() =>
+                handleDecrease({
+                  product_id: params.row.SKU,
+                  quantity: params.row.qty,
+                })
+              }
+              variant="outlined"
+              size="small"
+            >
               -
             </Button>
           </Grid>
@@ -251,8 +310,15 @@ const Cart = (props) => {
           </Grid>
           <Grid item xs={12} md={3}>
             <Button
-              onClick={() => handleIncrease({ product_id: params.row.SKU, quantity: params.row.qty })}
-              variant="outlined" size="small">
+              onClick={() =>
+                handleIncrease({
+                  product_id: params.row.SKU,
+                  quantity: params.row.qty,
+                })
+              }
+              variant="outlined"
+              size="small"
+            >
               +
             </Button>
           </Grid>
@@ -264,44 +330,47 @@ const Cart = (props) => {
       renderHeader: () => <strong>{"Discount"}</strong>,
       type: "number",
       width: 100,
-      align: 'center'
-
+      align: "center",
     },
     {
       field: "total",
       renderHeader: () => <strong>{"Total"}</strong>,
       type: "number",
       width: 100,
-      align: 'center'
-
+      align: "center",
     },
     {
       field: "action",
       renderHeader: () => <strong>{"Remove"}</strong>,
       headerName: "Actions",
       width: 70,
-      renderCell: (params) =>
-        <div className="categoryImage" >
-          <IconButton onClick={() => {
-            removeItemFromCart({ SKU: params.formattedValue }).then((res) => {
-              setRow(row.filter((set) => {
-                return set.action !== params.formattedValue;
-              }))
-              dispatch(setAlert({
-                open: true,
-                variant: 'warning',
-                message: 'Item Removed !!!'
-              }))
-            })
-          }} aria-label="delete"  >
+      renderCell: (params) => (
+        <div className="categoryImage">
+          <IconButton
+            onClick={() => {
+              removeItemFromCart({ SKU: params.formattedValue }).then((res) => {
+                setRow(
+                  row.filter((set) => {
+                    return set.action !== params.formattedValue;
+                  })
+                );
+                dispatch(
+                  setAlert({
+                    open: true,
+                    variant: "warning",
+                    message: "Item Removed !!!",
+                  })
+                );
+              });
+            }}
+            aria-label="delete"
+          >
             <DeleteIcon />
           </IconButton>
-
-        </div>,
-    }
-
+        </div>
+      ),
+    },
   ];
-
 
   // data grid view
   function DataGridView() {
@@ -310,7 +379,7 @@ const Cart = (props) => {
         <DataGrid
           sx={{
             fontWeight: 400,
-            fontSize: '1rem'
+            fontSize: "1rem",
           }}
           rows={row}
           columns={columns}
@@ -330,49 +399,57 @@ const Cart = (props) => {
   // checkCoupon in DB
   async function checkCoupon() {
     try {
-      setData(old => ({ ...old, isLoading: true }))
+      setData((old) => ({ ...old, isLoading: true }));
       if (state.auth.email) {
-        let res = await verifyCoupon({ code: data.code, email: state.auth.email })
+        const res = await verifyCoupon({
+          code: data.code,
+          email: state.auth.email,
+        });
         if (res.status === 200) {
-          console.log(data)
-          // now saving the coupon and adjusting the total amount  
-          setData(old =>({ ...old, 
-            coupon_type : res.data.coupon_type, 
-            coupon_value : res.data.coupon_type === "FLAT" ?  res.data.flat_amount : res.data.off,
-            applied: true, 
-            isLoading: false 
-          }))
-          
-          dispatch(setAlert({
-            open: true,
-            variant: 'success',
-            message: 'Hurray, Coupon Applied'
-          }))
+          console.log(data);
+          // now saving the coupon and adjusting the total amount
+          setData((old) => ({
+            ...old,
+            coupon_type: res.data.coupon_type,
+            coupon_value:
+              res.data.coupon_type === "FLAT"
+                ? res.data.flat_amount
+                : res.data.off,
+            applied: true,
+            isLoading: false,
+          }));
 
+          dispatch(
+            setAlert({
+              open: true,
+              variant: "success",
+              message: "Hurray, Coupon Applied",
+            })
+          );
+        } else {
+          setData((old) => ({ ...old, isLoading: false }));
+          dispatch(
+            setAlert({
+              open: true,
+              variant: "error",
+              message: res.data.message || "Something Went Wrong !!!",
+            })
+          );
         }
-        else {
-          setData(old => ({ ...old, isLoading: false }))
-          dispatch(setAlert({
+      } else {
+        setData((old) => ({ ...old, isLoading: false }));
+
+        dispatch(
+          setLoginModal({
             open: true,
-            variant: 'error',
-            message: res.data.message || 'Something Went Wrong !!!'
-          }))
-        }
+            type: "logIn",
+          })
+        );
       }
-      else {
-      setData(old => ({ ...old, isLoading: false }))
-
-        dispatch(setLoginModal({
-          open: true,
-          type: 'logIn'
-        }))
-      }
-
     } catch (error) {
-      console.log('error', error)
+      console.log("error", error);
     }
   }
-
 
   return (
     <>
@@ -405,7 +482,6 @@ const Cart = (props) => {
             <Grid item xs={12}>
               <Typography variant="h5">Cart Total</Typography>
               <Grid container className="cartTotals">
-
                 {/* coupon section */}
 
                 <Grid item xs={12} className="couponBox">
@@ -414,20 +490,50 @@ const Cart = (props) => {
                   </Typography>
                   <br></br>
                   <div className="applyBox">
-                    <TextField size="small" variant="outlined" name='code'
+                    <TextField
+                      size="small"
+                      variant="outlined"
+                      name="code"
                       disabled={data.applied}
-                      value={data.code || ''}
-                      onChange={(e) =>setData(old => ({ ...old, code: e.target.value }))}
-                      label="Coupon Code" />
-                      {/* // button */}
-                    {data.applied ? <Button 
-                    onClick={() => setData(old =>({ ...old, code: "", coupon_value : 0, coupon_type : undefined, applied: false }))} 
-                    sx={{ fontWeight: "400" }} size="small" variant="contained">
-                      Remove
-                    </Button> : <Button disabled={data.isLoading} onClick={checkCoupon} sx={{ fontWeight: "400" }}
-                      size="small" variant="contained">
-                      {data.isLoading ? <CircularProgress size={'2rem'} color="secondary" /> : 'Apply'}
-                    </Button>}
+                      value={data.code || ""}
+                      onChange={(e) =>
+                        setData((old) => ({ ...old, code: e.target.value }))
+                      }
+                      label="Coupon Code"
+                    />
+                    {/* // button */}
+                    {data.applied ? (
+                      <Button
+                        onClick={() =>
+                          setData((old) => ({
+                            ...old,
+                            code: "",
+                            coupon_value: 0,
+                            coupon_type: undefined,
+                            applied: false,
+                          }))
+                        }
+                        sx={{ fontWeight: "400" }}
+                        size="small"
+                        variant="contained"
+                      >
+                        Remove
+                      </Button>
+                    ) : (
+                      <Button
+                        disabled={data.isLoading}
+                        onClick={checkCoupon}
+                        sx={{ fontWeight: "400" }}
+                        size="small"
+                        variant="contained"
+                      >
+                        {data.isLoading ? (
+                          <CircularProgress size={"2rem"} color="secondary" />
+                        ) : (
+                          "Apply"
+                        )}
+                      </Button>
+                    )}
                   </div>
                 </Grid>
                 {/* coupon section ends */}
@@ -436,35 +542,52 @@ const Cart = (props) => {
                 </Grid>
                 <Grid item xs={12} className="subTotal">
                   <Typography variant="body">Number Items</Typography>
-                  <Typography variant="body">{state.cart.items.length} unit</Typography>
+                  <Typography variant="body">
+                    {state.cart.items.length} unit
+                  </Typography>
                 </Grid>
 
                 {/* // Coupon  */}
-                {data.coupon_type && <Grid item xs={12} className="subTotal">
-                  <Typography variant="body">Coupon</Typography>
-                  {data.coupon_type === 'FLAT' ? 
-                    <Typography variant="body">- {(data.coupon_value).toLocaleString("us-Rs", {
-                    style: "currency",
-                    currency: "INR",
-                  })}</Typography>
-                :
-                    <Typography variant="body">- {data.coupon_value}%</Typography>}
-                </Grid>}
+                {data.coupon_type && (
+                  <Grid item xs={12} className="subTotal">
+                    <Typography variant="body">Coupon</Typography>
+                    {data.coupon_type === "FLAT" ? (
+                      <Typography variant="body">
+                        -{" "}
+                        {data.coupon_value.toLocaleString("us-Rs", {
+                          style: "currency",
+                          currency: "INR",
+                        })}
+                      </Typography>
+                    ) : (
+                      <Typography variant="body">
+                        - {data.coupon_value}%
+                      </Typography>
+                    )}
+                  </Grid>
+                )}
                 {/* // Discount  */}
 
-                {data.discount !== 0 && <Grid item xs={12} className="subTotal">
-                  <Typography variant="body">Discount</Typography>
-                  <Typography variant="body">- {(data.discount).toLocaleString("us-Rs", {
-                    style: "currency",
-                    currency: "INR",
-                  })}</Typography>
-                </Grid>}
+                {data.discount !== 0 && (
+                  <Grid item xs={12} className="subTotal">
+                    <Typography variant="body">Discount</Typography>
+                    <Typography variant="body">
+                      -{" "}
+                      {data.discount.toLocaleString("us-Rs", {
+                        style: "currency",
+                        currency: "INR",
+                      })}
+                    </Typography>
+                  </Grid>
+                )}
                 <Grid item xs={12} className="subTotal">
                   <Typography variant="body">Subtotal</Typography>
-                  <Typography variant="body">{data.subtotal.toLocaleString("us-Rs", {
-                    style: "currency",
-                    currency: "INR",
-                  })}</Typography>
+                  <Typography variant="body">
+                    {data.subtotal.toLocaleString("us-Rs", {
+                      style: "currency",
+                      currency: "INR",
+                    })}
+                  </Typography>
                 </Grid>
                 <Grid sx={{ mt: 2 }} item xs={12}>
                   <Divider></Divider>
@@ -473,26 +596,35 @@ const Cart = (props) => {
 
                 <Grid item xs={12} className="Total">
                   <Typography variant="body1">Total</Typography>
-                  <Typography variant="body1">{data.total.toLocaleString("us-Rs", {
-                    style: "currency",
-                    currency: "INR",
-                  })}</Typography>
+                  <Typography variant="body1">
+                    {data.total.toLocaleString("us-Rs", {
+                      style: "currency",
+                      currency: "INR",
+                    })}
+                  </Typography>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider></Divider>
                 </Grid>
                 <Grid item xs={12}>
-                  <Button disabled={row.length <= 0 ? true : false} onClick={() => {
-                    props.history("/checkout",
-                      {
+                  <Button
+                    disabled={row.length <= 0}
+                    onClick={() => {
+                      props.history("/checkout", {
                         state: {
                           total: data.total,
                           subtotal: data.subtotal,
-                          quantity: row.reduce((initial, set) => { return { ...initial, [set.SKU]: set.qty } }, {}),
-                          product: row
-                        }
-                      })
-                  }} sx={{ fontWeight: "500" }} variant="contained" fullWidth>
+                          quantity: row.reduce((initial, set) => {
+                            return { ...initial, [set.SKU]: set.qty };
+                          }, {}),
+                          product: row,
+                        },
+                      });
+                    }}
+                    sx={{ fontWeight: "500" }}
+                    variant="contained"
+                    fullWidth
+                  >
                     Proceed To CheckOut
                   </Button>
                 </Grid>
@@ -592,4 +724,4 @@ export default Cart;
 //                       </form>
 //                     </Grid>
 //                   </Grid>
-//                 </Grid> 
+//                 </Grid>

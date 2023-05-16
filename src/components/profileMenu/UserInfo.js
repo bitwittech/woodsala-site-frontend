@@ -6,15 +6,14 @@ import {
   TextField,
   Typography,
   CircularProgress,
-  Box,
   IconButton,
 } from "@mui/material";
-//icon
+// icon
 import SaveIcon from "@mui/icons-material/Save";
 // image
 import avatar from "../../asset/images/profile/avatar.svg";
 import EditIcon from "@mui/icons-material/Edit";
-//services
+// services
 import { getCustomer, updateCustomer } from "../../service/service";
 // Store
 // import { Store } from "../../store/Context";
@@ -63,7 +62,7 @@ const UserInfo = () => {
           // (response)
           SetFormVal({ ...formVal, ...response.data });
         })
-        .catch((err) => {
+        .catch(() => {
           // (err);
         });
     }
@@ -158,8 +157,8 @@ const UserInfo = () => {
 
   return (
     <>
-       {/* helmet tag  */}
-       <Helmet>
+      {/* helmet tag  */}
+      <Helmet>
         <title>Profile</title>
         <meta
           name="description"
@@ -174,54 +173,54 @@ const UserInfo = () => {
         </Grid>
       </Grid>
       {/* Banner ends */}
-    
-    <form
-      method="post"
-      onSubmit={handleSubmit}
-      class="form"
-      enctype="multipart/form-data"
-    >
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Grid className="profileName" spacing={4} container>
-            <Grid
-              sx={{
-                backgroundPosition: "center",
-                background: `url(${
-                  controller.preview || formVal.profile_image || avatar
-                })`,
-                backgroundSize: "100% 100%",
-                backgroundRepeat: "no-repeat",
-              }}
-              item
-              md={3}
-              className="profilePicBox"
-            >
-              <IconButton
-                size="large"
-                className="editButton"
-                color="primary"
-                aria-label="upload picture"
-                component="label"
+
+      <form
+        method="post"
+        onSubmit={handleSubmit}
+        className="form"
+        encType="multipart/form-data"
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Grid className="profileName" spacing={4} container>
+              <Grid
+                sx={{
+                  backgroundPosition: "center",
+                  background: `url(${
+                    controller.preview || formVal.profile_image || avatar
+                  })`,
+                  backgroundSize: "100% 100%",
+                  backgroundRepeat: "no-repeat",
+                }}
+                item
+                md={3}
+                className="profilePicBox"
               >
-                <input
-                  hidden
-                  name="profile_image"
-                  onChange={handleVal}
-                  accept="image/*"
-                  type="file"
-                />
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h3">{formVal.username}</Typography>
+                <IconButton
+                  size="large"
+                  className="editButton"
+                  color="primary"
+                  aria-label="upload picture"
+                  component="label"
+                >
+                  <input
+                    hidden
+                    name="profile_image"
+                    onChange={handleVal}
+                    accept="image/*"
+                    type="file"
+                  />
+                  <EditIcon fontSize="inherit" />
+                </IconButton>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography variant="h3">{formVal.username}</Typography>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <Grid container className="profileForm" spacing={4}>
-            {/* <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
+            <Grid container className="profileForm" spacing={4}>
+              {/* <Grid item xs={12} md={6}>
               <TextField
                 size="small"
                 fullWidth
@@ -233,103 +232,103 @@ const UserInfo = () => {
                 label="CID"
               />
             </Grid> */}
-            <Grid item xs={12} md={6}>
-              <TextField
-                size="small"
-                fullWidth
-                variant="outlined"
-                name="username"
-                value={formVal.username || ""}
-                onChange={handleVal}
-                type="text"
-                label="UserName"
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                size="small"
-                fullWidth
-                disabled
-                variant="outlined"
-                name="email"
-                onChange={handleVal}
-                value={formVal.email || ""}
-                type="email"
-                label="Email"
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                size="small"
-                fullWidth
-                disabled
-                variant="outlined"
-                name="mobile"
-                onChange={handleVal}
-                value={formVal.mobile || ""}
-                type="number"
-                label="Mobile Number"
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                size="small"
-                onChange={handleVal}
-                fullWidth
-                variant="outlined"
-                name="city"
-                value={formVal.city || ""}
-                type="text"
-                label="City"
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                size="small"
-                fullWidth
-                onChange={handleVal}
-                variant="outlined"
-                name="state"
-                value={formVal.state || ""}
-                type="text"
-                label="State"
-              />
-            </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  variant="outlined"
+                  name="username"
+                  value={formVal.username || ""}
+                  onChange={handleVal}
+                  type="text"
+                  label="UserName"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  disabled
+                  variant="outlined"
+                  name="email"
+                  onChange={handleVal}
+                  value={formVal.email || ""}
+                  type="email"
+                  label="Email"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  disabled
+                  variant="outlined"
+                  name="mobile"
+                  onChange={handleVal}
+                  value={formVal.mobile || ""}
+                  type="number"
+                  label="Mobile Number"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  size="small"
+                  onChange={handleVal}
+                  fullWidth
+                  variant="outlined"
+                  name="city"
+                  value={formVal.city || ""}
+                  type="text"
+                  label="City"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  onChange={handleVal}
+                  variant="outlined"
+                  name="state"
+                  value={formVal.state || ""}
+                  type="text"
+                  label="State"
+                />
+              </Grid>
 
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                size="small"
-                onChange={handleVal}
-                name="shipping"
-                value={formVal.shipping || ""}
-                type="text"
-                label="Shipping Address"
-              />
-            </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  onChange={handleVal}
+                  name="shipping"
+                  value={formVal.shipping || ""}
+                  type="text"
+                  label="Shipping Address"
+                />
+              </Grid>
 
-            <Grid item xs={12}>
-              <center>
-                <Button
-                  size="large"
-                  startIcon={<SaveIcon />}
-                  type="submit"
-                  disabled={controller.loading}
-                  variant="contained"
-                >
-                  {controller.loading ? (
-                    <CircularProgress size={"2rem"} />
-                  ) : (
-                    "Save Changes"
-                  )}{" "}
-                </Button>
-              </center>
+              <Grid item xs={12}>
+                <center>
+                  <Button
+                    size="large"
+                    startIcon={<SaveIcon />}
+                    type="submit"
+                    disabled={controller.loading}
+                    variant="contained"
+                  >
+                    {controller.loading ? (
+                      <CircularProgress size={"2rem"} />
+                    ) : (
+                      "Save Changes"
+                    )}{" "}
+                  </Button>
+                </center>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
-      </Grid>
-    </form>
+      </form>
     </>
   );
 };

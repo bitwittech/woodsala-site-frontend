@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../asset/css/chat.css";
-import { Box, Button, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Button, TextField, Tooltip } from "@mui/material";
 import { Chat, Close, Send } from "@mui/icons-material";
 // logo
 import logo from "../../asset/images/logo.webp";
@@ -30,23 +30,23 @@ const ChatWindow = () => {
       ...old,
       {
         type: "reply",
-        message : reply
+        message: reply,
       },
     ]);
-    setReply("")
+    setReply("");
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     if (message.receiver_email === auth.email) {
-    setChat((old) => [
-      ...old,
-      {
-        type: "message",
-        message : message.message
-      },
-    ]);}
-  },[message])
-
+      setChat((old) => [
+        ...old,
+        {
+          type: "message",
+          message: message.message,
+        },
+      ]);
+    }
+  }, [message]);
 
   return (
     <Box className="chat-wrapper">
@@ -59,13 +59,13 @@ const ChatWindow = () => {
           {/* // Chat Box */}
           <Box className="chat-box-display-wrapper">
             <Box className="chat-box-display">
-              {chat.map((row) =>
+              {chat.map((row, i) =>
                 row.type === "message" ? (
-                  <Box className="chat-box-message">
+                  <Box key={i} className="chat-box-message">
                     {row.message}
                   </Box>
                 ) : (
-                  <Box className="chat-box-message-right">
+                  <Box key={i} className="chat-box-message-right">
                     {row.message}
                   </Box>
                 )

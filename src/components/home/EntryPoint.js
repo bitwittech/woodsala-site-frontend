@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable camelcase */
 import React, { useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import {
@@ -31,11 +33,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 // services
-import {
-  sendVerificationLink,
-  login,
-  verifyRecaptcha,
-} from "../../service/service.js";
+import { sendVerificationLink, login } from "../../service/service.js";
 
 // Redux
 import { useDispatch, useSelector } from "react-redux";
@@ -117,10 +115,9 @@ export default function EntryPoint() {
   const handleValue = (e) => {
     // (e.target.name)
 
-    const phoneCheck = new RegExp(/^\d{10}$/);
-    const passwordCheck = new RegExp(
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
-    );
+    const phoneCheck = /^\d{10}$/;
+    const passwordCheck =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 
     switch (e.target.name) {
       case "mobile":
@@ -158,7 +155,7 @@ export default function EntryPoint() {
     });
     if (!submit) return 0;
 
-    let response = sendVerificationLink(data);
+    const response = sendVerificationLink(data);
 
     setController({
       ...controller,
@@ -181,7 +178,7 @@ export default function EntryPoint() {
         );
         handleClose();
       })
-      .catch((err) => {
+      .catch(() => {
         // (err)
         setController({
           ...controller,

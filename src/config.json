@@ -5,7 +5,7 @@
     "client_side_recaptcha_test" : "6Lc0g3UlAAAAAMPXvYD0TTk0QMTet9PiFV3jpCCx",
     "client_side_recaptcha" : "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
     "TRACKING_ID" : "G-MZGPNDQH46",
-    "Socket_Official_API": "http://localhost:8000",
-    "Socket_Official_API_A": "https://admin.woodshala.in"
+    "Socket_Official_API_A": "http://localhost:8000",
+    "Socket_Official_API": "https://admin.woodshala.in"
 }
 

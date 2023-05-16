@@ -1,6 +1,8 @@
+/* eslint-disable camelcase */
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode';
+import ChromeReaderModeIcon from "@mui/icons-material/ChromeReaderMode";
 
 import {
   Grid,
@@ -10,7 +12,6 @@ import {
   Link,
   ListItemIcon,
   ListItemText,
-  IconButton,
   Card,
   CardActionArea,
   CardMedia,
@@ -20,15 +21,15 @@ import {
   Box,
 } from "@mui/material";
 import ReactHtmlParser from "react-html-parser";
-import Footer from "../utility/Footer";
+// import Footer from "../utility/Footer";
 import Aos from "aos";
 
-import { Image } from "mui-image";
-//logo
-import logo from "../../asset/images/Blog/logo.webp";
+// import { Image } from "mui-image";
+// logo
+// import logo from "../../asset/images/Blog/logo.webp";
 import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
 import KeyboardBackspaceSharpIcon from "@mui/icons-material/KeyboardBackspaceSharp";
-//css
+// css
 import "../../asset/css/blog.css";
 import defaultIMG from "../../asset/images/defaultProduct.svg";
 
@@ -48,7 +49,6 @@ export default function BlogContent({ history }) {
 
   // useParams search parameters
   const { blog_id } = useParams();
-
 
   const [content, setContent] = useState(null);
   const [toc, setToc] = useState([]);
@@ -71,7 +71,6 @@ export default function BlogContent({ history }) {
     const content = await getBlog(blog_id);
     if (content) setData(content.data);
   }
-
 
   async function parseHTML() {
     let contentData = unified()
@@ -120,9 +119,7 @@ export default function BlogContent({ history }) {
             />
           </CardActionArea>
           <CardActions sx={{ flexDirection: "column" }}>
-            <CardContent 
-            className = 'cardText'
-            >
+            <CardContent className="cardText">
               <Typography gutterBottom variant="h5">
                 {card.title}
               </Typography>
@@ -130,7 +127,11 @@ export default function BlogContent({ history }) {
               {card.card_description}
               </Typography> */}
             </CardContent>
-            <Button startIcon = {<ChromeReaderModeIcon/>} fullWidth color="primary">
+            <Button
+              startIcon={<ChromeReaderModeIcon />}
+              fullWidth
+              color="primary"
+            >
               Read More
             </Button>
           </CardActions>
@@ -195,7 +196,7 @@ export default function BlogContent({ history }) {
             <br></br>
 
             <Grid item className="content">
-              {content ? content : ""}
+              {content || ""}
             </Grid>
           </Grid>
         )}

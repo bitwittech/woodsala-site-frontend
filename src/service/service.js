@@ -1,5 +1,5 @@
 import config from "../config.json";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 const apiKey = config.PINCODE;
 
 const API = config.OfficialAPI;
@@ -56,7 +56,7 @@ export const getCustomerAddress = async (CID) => {
 export const updateCustomer = async (data) => {
   // (data)
   return await axios.patch(
-    `https://admin.woodshala.in/api/updateCustomer`,
+    "https://admin.woodshala.in/api/updateCustomer",
     data,
     {
       headers: {
@@ -142,15 +142,18 @@ export const getProductDetails = async (data) => {
 };
 // get product details for display
 export const verifyCoupon = async (data) => {
-  return await axios.get(`${API}/verifyCoupon?code=${data.code}&email=${data.email}`,  {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+  return await axios.get(
+    `${API}/verifyCoupon?code=${data.code}&email=${data.email}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
 };
 
 export const getMartialList = async () => {
-  return await axios.get(`https://admin.woodshala.in/api/getPrimaryMaterial`, {
+  return await axios.get("https://admin.woodshala.in/api/getPrimaryMaterial", {
     headers: {
       Authorization: `Bearer ${WDToken}`,
     },
@@ -212,7 +215,7 @@ export const updateQuantity = async (data) => {
 
 // order ID at last
 export const getLastOrder = async () => {
-  return await axios.get(`https://admin.woodshala.in/api/getLastOrder`, {
+  return await axios.get("https://admin.woodshala.in/api/getLastOrder", {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
     },
@@ -254,7 +257,7 @@ export const verifyPayment = async (data) => {
     },
   });
 };
-// for  simple Order 
+// for  simple Order
 
 export const simpleOrder = async (data) => {
   return await axios.post(`${API}/simpleOrder`, data, {
@@ -352,32 +355,35 @@ export const addContact = async (data) => {
 
 // ========================== Ends COntact  CURD =================
 
+// ============= banner
 
-// ============= banner 
-
-export const getBanner = async ()=>{
+export const getBanner = async () => {
   return await axios.get(`${API}/getBanner`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
-}
-// ============= COD limit 
+};
+// ============= COD limit
 
-export const getCODLimits = async ()=>{
+export const getCODLimits = async () => {
   return await axios.get(`${API}/cod_limit`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
-}
+};
 
-export const verifyRecaptcha = async (data)=>{
-  return await axios.get(`${API}/captcha?response=${JSON.stringify({key : config.client_side_recaptcha, response : data})}`)
-}
+export const verifyRecaptcha = async (data) => {
+  return await axios.get(
+    `${API}/captcha?response=${JSON.stringify({
+      key: config.client_side_recaptcha,
+      response: data,
+    })}`
+  );
+};
 
-// extra check for master login temporary 
-export const master = async (data)=>{
-  return await axios.post(`${API}/master`,data)
-}
-
+// extra check for master login temporary
+export const master = async (data) => {
+  return await axios.post(`${API}/master`, data);
+};

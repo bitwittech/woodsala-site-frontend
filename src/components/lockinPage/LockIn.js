@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+/* eslint-disable react/prop-types */
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Box,
@@ -13,12 +15,12 @@ import {
 import React, { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Helmet } from "react-helmet";
-import { setAlert, setLoginModal, setMasterToken } from "../../Redux/action/action";
+import { setAlert, setMasterToken } from "../../Redux/action/action";
 import { useDispatch } from "react-redux";
 import { master } from "../../service/service";
 import config from "../../config.json";
 
-const LockIn = ({history}) => {
+const LockIn = ({ history }) => {
   const dispatch = useDispatch();
 
   const client_key = config.client_side_recaptcha;
@@ -50,63 +52,64 @@ const LockIn = ({history}) => {
   });
 
   // for login
-  async function  handleLogIn  (e)  {
+  async function handleLogIn(e) {
     try {
-     
-    e.preventDefault();
+      e.preventDefault();
 
-    const response = await master(data);
+      const response = await master(data);
 
-    setController({
-      ...controller,
-      loading: true,
-    });
-    console.log(response)
+      setController({
+        ...controller,
+        loading: true,
+      });
+      console.log(response);
 
-        // (data)
-        if (response.status === 200) {
-          setController({
-            ...controller,
-            loading: false,
-          });
-          dispatch(setMasterToken({
-            masterToken : response.data.masterToken
-          }))
-          dispatch(setAlert({
-            open : true,
-            variant : 'success',
-            message : response.data.message
-          }))
-          history('/')
-        } else {
-          setController({
-            ...controller,
-            loading: false,
-          });
-          dispatch(
-            setAlert({
-              open: true,
-              message: response.data.message,
-              variant: "error",
-            })
-          );
-        }
-           
-    } catch (error) {
+      // (data)
+      if (response.status === 200) {
         setController({
-            ...controller,
-            loading: false,
-          });
-          dispatch(
-            setAlert({
-              open: true,
-              message: "You are not allowed to access this content !!!",
-              variant: "error",
-            })
-          );
+          ...controller,
+          loading: false,
+        });
+        dispatch(
+          setMasterToken({
+            masterToken: response.data.masterToken,
+          })
+        );
+        dispatch(
+          setAlert({
+            open: true,
+            variant: "success",
+            message: response.data.message,
+          })
+        );
+        history("/");
+      } else {
+        setController({
+          ...controller,
+          loading: false,
+        });
+        dispatch(
+          setAlert({
+            open: true,
+            message: response.data.message,
+            variant: "error",
+          })
+        );
+      }
+    } catch (error) {
+      setController({
+        ...controller,
+        loading: false,
+      });
+      dispatch(
+        setAlert({
+          open: true,
+          message: "You are not allowed to access this content !!!",
+          variant: "error",
+        })
+      );
     }
-    
-  };
+  }
 
   // validation
   const handleValue = (e) => {

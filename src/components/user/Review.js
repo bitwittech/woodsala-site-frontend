@@ -1,4 +1,6 @@
-import React, { useState, useMemo, useEffect } from "react";
+/* eslint-disable camelcase */
+/* eslint-disable react/prop-types */
+import React, { useState, useMemo } from "react";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import {
   Typography,
@@ -26,7 +28,7 @@ import {
   listReview,
   verifyReview,
 } from "../../service/service";
-import SendIcon from "@mui/icons-material/Send";
+// import SendIcon from "@mui/icons-material/Send";
 // state
 import { useDispatch, useSelector } from "react-redux";
 import { setAlert } from "../../Redux/action/action";
@@ -76,9 +78,9 @@ function Review(props) {
       <Grid item xs={12} className="reviewContainer">
         <Grid container sx={{ gap: "20px" }}>
           {reviews.length > 0 ? (
-            reviews.map((row) => {
+            reviews.map((row, i) => {
               return (
-                <Grid item xs={12}>
+                <Grid key={i} item xs={12}>
                   <Grid container className="review">
                     <Grid xs={12} className="cusDetails">
                       <img
@@ -131,24 +133,32 @@ function Review(props) {
                           Posted On : {chat.time}
                         </Typography> */}
                       </Box>
-                      {
-                        row.admin_reply.length > 0 && row.admin_reply.map(row=> row.message &&
-                      <Box className={"reply"}>
-                        <Typography variant="body1">{row.message}</Typography>
-                        <Typography className variant="caption">
-                          Posted On : {row.time}
-                        </Typography>
-                      </Box>
-                          
-                          ) 
-                      }
+                      {row.admin_reply.length > 0 &&
+                        row.admin_reply.map(
+                          (row, i) =>
+                            row.message && (
+                              <Box key={i} className={"reply"}>
+                                <Typography variant="body1">
+                                  {row.message}
+                                </Typography>
+                                <Typography className variant="caption">
+                                  Posted On : {row.time}
+                                </Typography>
+                              </Box>
+                            )
+                        )}
                     </Grid>
                     {row.review_images.length > 0 && (
                       <Grid mt={1} item xs={12}>
                         <Typography variant="h5">Review Images</Typography>
                         <Grid container className="reviewedImagesContainer">
                           {row.review_images.map((image, index) => (
-                            <Grid className={"reviewedImages"} item xs={2.5}>
+                            <Grid
+                              key={index}
+                              className={"reviewedImages"}
+                              item
+                              xs={2.5}
+                            >
                               <img src={image} alt={`review Images ${index}`} />
                             </Grid>
                           ))}
@@ -160,13 +170,18 @@ function Review(props) {
                         <Typography variant="h5">Review Videos</Typography>
                         <Grid container className="reviewedImagesContainer">
                           {row.review_videos.map((image, index) => (
-                            <Grid className={"reviewedImages"} item xs={2.5}>
+                            <Grid
+                              className={"reviewedImages"}
+                              key={index}
+                              item
+                              xs={2.5}
+                            >
                               <video
                                 src={image}
                                 width="100"
                                 height="100"
                                 controls="controls"
-                                autoplay="true"
+                                autoPlay="true"
                               />
                             </Grid>
                           ))}
@@ -231,7 +246,7 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
       CID: auth.CID || "Not Logged In",
       rating: 4,
       review: null,
-      product_id: product_id,
+      product_id,
       review_title: "",
       yourTube_url: "",
       reviewer_name: "",
@@ -365,7 +380,7 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
         CID: auth.CID || "Not Logged In",
         rating: 4,
         review: null,
-        product_id: product_id,
+        product_id,
         review_title: "",
         yourTube_url: "",
         reviewer_name: "",
@@ -482,7 +497,7 @@ function ReviewBox({ reviewState, setReviewState, product_id }) {
                 />
               </Grid>
 
-              {/* You Tube URL*/}
+              {/* You Tube URL */}
               <Grid xs={12} item>
                 <Typography sx={{ fontWeight: "400" }} variant="body1">
                   3) Any you tube review URLs?

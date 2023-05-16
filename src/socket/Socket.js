@@ -1,8 +1,10 @@
+/* eslint-disable camelcase */
 import io from "socket.io-client";
-import config from "../config.json";
+// import config from "../config.json";
 import { setActiveUser, setMessage, setSocket } from "../Redux/action/action";
 
-const socket = io.connect(config.Socket_Official_API);
+// const socket = io.connect(config.Socket_Official_API);
+const socket = io.connect();
 
 function Send_Message(message) {
   return socket.emit("send_message_site", message);
@@ -23,20 +25,18 @@ function Get_ID(dispatch) {
 }
 
 function Send_Typing_Alert(data) {
-  return socket.emit("is_typing",data);
+  return socket.emit("is_typing", data);
 }
 
 function Typing(setTyping) {
   return socket.on("typing", (typing) => {
-     setTyping(typing)  
+    setTyping(typing);
   });
 }
 
 function Log_Out(data) {
-  return socket.emit("logout",data)
+  return socket.emit("logout", data);
 }
-
-
 
 function Notifications(dispatch) {
   return socket.on("receive_notification", (data) => {
@@ -45,10 +45,10 @@ function Notifications(dispatch) {
       case "Adding_New_User":
         dispatch(setActiveUser(data.payload));
         break;
-        case "User_Logout":
-          console.log(data.payload)
-          dispatch(setActiveUser(data.payload));
-          break;
+      case "User_Logout":
+        console.log(data.payload);
+        dispatch(setActiveUser(data.payload));
+        break;
       case "New_Message":
         dispatch(setMessage(data.payload));
         break;

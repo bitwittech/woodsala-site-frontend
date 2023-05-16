@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable react/prop-types */
+import React, { useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 
 const thumbsContainer = {
@@ -44,9 +46,12 @@ function ImageUploader({ state, setData }) {
           ...old,
           data: {
             ...old.data,
-            review_images: [...old.data.review_images, ...acceptedFiles.map((file) =>
-              Object.assign(file, { preview: URL.createObjectURL(file) })
-            )]
+            review_images: [
+              ...old.data.review_images,
+              ...acceptedFiles.map((file) =>
+                Object.assign(file, { preview: URL.createObjectURL(file) })
+              ),
+            ],
           },
         };
       });

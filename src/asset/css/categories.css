@@ -12,7 +12,7 @@
     justify-content: center;
     position: relative;
     text-align: center;
-    height: 300px;
+    aspect-ratio: 1;
     box-shadow: 0px 1px 8px 1px #00000014;
 }
 
@@ -45,4 +45,11 @@
     top: 50%;
     color: rgb(255, 255, 255);
     font-weight: 500 !important;
+}
+
+@media screen and (width <= 600px) {
+    .cardWrapper {
+        justify-content: center;
+    }
+
 }

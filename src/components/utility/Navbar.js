@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable react/prop-types */
 import React, { useState, useMemo, useEffect } from "react";
 import {
   Menu,
@@ -7,9 +9,7 @@ import {
   IconButton,
   TextField,
   Autocomplete,
-  Tabs,
   Link,
-  Tab,
   Box,
   Drawer,
   ListItemIcon,
@@ -19,11 +19,10 @@ import {
   ListItem,
   ListItemText,
   ListItemButton,
-  Divider,
   Collapse,
 } from "@mui/material";
 
-import { Link as Jump } from "react-router-dom";
+// import { Link as Jump } from "react-router-dom";
 
 // icon
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -43,7 +42,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 // import MenuOpenTwoToneIcon from "@mui/icons-material/MenuOpenTwoTone";
 // import CloseIcon from "@mui/icons-material/Close";
-import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
+// import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 // import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 // image
 import logo from "../../asset/images/logo.webp";
@@ -167,7 +166,7 @@ export default function Navbar(props) {
 
   const handleProfileIconClick = (event) => {
     auth.isAuth
-      ? props.history('/profile')
+      ? props.history("/profile")
       : dispatch(
           setLoginModal({
             open: true,
@@ -335,8 +334,13 @@ export default function Navbar(props) {
     return (
       <ListItem disablePadding className="listItem">
         {tab &&
-          linkObject[tab].map((row) => (
-            <ListItemButton fullWidth component={Link} to={row.link}>
+          linkObject[tab].map((row, index) => (
+            <ListItemButton
+              key={index}
+              fullWidth
+              component={Link}
+              to={row.link}
+            >
               {" "}
               <ListItemText primary={row.label} />
             </ListItemButton>
@@ -772,7 +776,7 @@ function HamBurgerMenu({ Ham, setHam, history, linkObject }) {
     if (tab === "Kitchen Items") {
       setList({
         open: !renderList.open,
-        list: linkObject["kitchen"],
+        list: linkObject.kitchen,
         label: tab,
       });
     } else if (tab === "Home") {
@@ -782,7 +786,7 @@ function HamBurgerMenu({ Ham, setHam, history, linkObject }) {
     } else if (tab === "Useful Products") {
       setList({
         open: !renderList.open,
-        list: linkObject["useful"],
+        list: linkObject.useful,
         label: tab,
       });
     } else {

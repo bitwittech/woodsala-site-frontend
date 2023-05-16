@@ -1,8 +1,8 @@
+/* eslint-disable react/prop-types */
 // Old Page ==============
 
 import React, { useState, useMemo, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import PropTypes from "prop-types";
 import Carousel from "react-multi-carousel";
 // import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import defaultIMG from "../../asset/images/defaultProduct.svg";
@@ -64,7 +64,7 @@ export default function ProductDetails(props) {
   // state Redux
   const state = useSelector((state) => state);
 
-  //redux
+  // redux
   const dispatch = useDispatch();
 
   // state
@@ -90,18 +90,18 @@ export default function ProductDetails(props) {
 
   async function getData(filters) {
     try {
-      let productDetails = await getProductDetails(SKU);
+      const productDetails = await getProductDetails(SKU);
 
       console.log(productDetails);
 
       // main product
       setData(productDetails.data.product);
       // CT section reviews
-      setReview(productDetails.data.reviews)
-      // for fetching the Variation 
+      setReview(productDetails.data.reviews);
+      // for fetching the Variation
       setACIN(productDetails.data.product.ACIN);
 
-      let related = await getRelatedProduct({
+      const related = await getRelatedProduct({
         product_title: title,
         category_name: category || productDetails.data.data.category_name,
       });
@@ -142,7 +142,7 @@ export default function ProductDetails(props) {
   async function addToWish(item) {
     // server side
     if (state.auth.isAuth) {
-      let response = await addWshList({
+      const response = await addWshList({
         CID: state.auth.CID,
         product_id: item.SKU,
         quantity: 1,
@@ -212,7 +212,7 @@ export default function ProductDetails(props) {
             })
           );
         })
-        .catch((err) => {
+        .catch(() => {
           return dispatch(
             setAlert({
               variant: "error",
@@ -264,7 +264,7 @@ export default function ProductDetails(props) {
             })
           );
         })
-        .catch((err) => {
+        .catch(() => {
           return dispatch(
             setAlert({
               variant: "error",
@@ -305,7 +305,7 @@ export default function ProductDetails(props) {
   function handleScroll() {
     const winScroll =
       document.body.scrollTop || document.documentElement.scrollTop;
-    if (winScroll >= 350) setShowSticky(true);
+    if (winScroll >= 350 && winScroll < 1200) setShowSticky(true);
     else setShowSticky(false);
   }
 
@@ -424,13 +424,13 @@ export default function ProductDetails(props) {
                           <strike>
                             {data.selling_price
                               ? data.selling_price.toLocaleString("us-Rs", {
-                                style: "currency",
-                                currency: "INR",
-                              })
+                                  style: "currency",
+                                  currency: "INR",
+                                })
                               : (0).toLocaleString("us-Rs", {
-                                style: "currency",
-                                currency: "INR",
-                              })}
+                                  style: "currency",
+                                  currency: "INR",
+                                })}
                           </strike>
                         </Typography>
                       )}
@@ -642,49 +642,49 @@ export default function ProductDetails(props) {
                     data.flipkart_url !== "" ||
                     data.jiomart_url ||
                     data.jiomart_url !== "") && (
-                      <>
-                        {" "}
-                        <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
-                          Also Shop From
-                        </Typography>
-                        <Divider />
-                        <Stack className="shopFrom">
-                          {(data.amazon_url || data.amazon_url !== "") && (
-                            <A href={data.amazon_url} target="_blank" rel="add">
-                              <img
-                                className="vendorIcon"
-                                src={amazon}
-                                alt="amazon_icon"
-                              />
-                            </A>
-                          )}
-                          {(data.flipkart_url || data.flipkart_url !== "") && (
-                            <A href={data.flipkart_url} target="_blank" rel="add">
-                              {" "}
-                              <img
-                                className="vendorIcon"
-                                src={flipkart}
-                                alt="flipkart_icon"
-                              />
-                            </A>
-                          )}
-                          Please
-                          {(data.jiomart_url || data.jiomart_url !== "") && (
-                            <A href={data.jiomart_url} target="_blank" rel="add">
-                              {" "}
-                              <img
-                                className="vendorIcon"
-                                src={jioMart}
-                                alt="jio_icon"
-                              />
-                            </A>
-                          )}
-                        </Stack>
-                      </>
-                    )}
-                  {/* Affiliate Vendors Ends*/}
+                    <>
+                      {" "}
+                      <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
+                        Also Shop From
+                      </Typography>
+                      <Divider />
+                      <Stack className="shopFrom">
+                        {(data.amazon_url || data.amazon_url !== "") && (
+                          <A href={data.amazon_url} target="_blank" rel="add">
+                            <img
+                              className="vendorIcon"
+                              src={amazon}
+                              alt="amazon_icon"
+                            />
+                          </A>
+                        )}
+                        {(data.flipkart_url || data.flipkart_url !== "") && (
+                          <A href={data.flipkart_url} target="_blank" rel="add">
+                            {" "}
+                            <img
+                              className="vendorIcon"
+                              src={flipkart}
+                              alt="flipkart_icon"
+                            />
+                          </A>
+                        )}
+                        Please
+                        {(data.jiomart_url || data.jiomart_url !== "") && (
+                          <A href={data.jiomart_url} target="_blank" rel="add">
+                            {" "}
+                            <img
+                              className="vendorIcon"
+                              src={jioMart}
+                              alt="jio_icon"
+                            />
+                          </A>
+                        )}
+                      </Stack>
+                    </>
+                  )}
+                  {/* Affiliate Vendors Ends */}
                 </Grid>
-                {/* More Details ends*/}
+                {/* More Details ends */}
               </Grid>
             </Grid>
             {/* details sec ends */}
@@ -775,7 +775,7 @@ export default function ProductDetails(props) {
                             (
                               article.selling_price -
                               (article.selling_price / 100) *
-                              article.discount_limit
+                                article.discount_limit
                             ).toLocaleString("us-Rs", {
                               style: "currency",
                               currency: "INR",
@@ -874,7 +874,7 @@ function Price({ item }) {
         // checking every possible value
         return setValue(
           item.selling_price -
-          (item.selling_price / 100) * item.categories[0].discount_limit
+            (item.selling_price / 100) * item.categories[0].discount_limit
         );
       else
         return setValue(
@@ -913,7 +913,7 @@ function Variant({ ACIN, SKU }) {
 
   async function getVariants() {
     try {
-      let res = await fetchVariants(ACIN);
+      const res = await fetchVariants(ACIN);
 
       // console.log(res.data);
       if (res.status === 200) setVariant({ ...res.data });
@@ -933,8 +933,9 @@ function Variant({ ACIN, SKU }) {
           <Divider />
           <Box className="variants" mt={2}>
             {variant.variants.length > 0 &&
-              variant.variants.map((s) => (
+              variant.variants.map((s, i) => (
                 <Box
+                  key={i}
                   component={Link}
                   to={`/details/${s.SKU}/${s.title}/${s.category}`}
                   className={SKU === s.SKU ? "size borderSize" : "size"}
@@ -963,7 +964,7 @@ function Variant({ ACIN, SKU }) {
 }
 
 function CustomerTestimonials({ review }) {
-  const responsive_TC = {
+  const responsiveTC = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
       items: 4,
@@ -984,22 +985,30 @@ function CustomerTestimonials({ review }) {
           Let our customer speaks for us
         </Typography>
         <br />
-        <Carousel
-          keyBoardControl={true}
-          ssr={true}
-          responsive={responsive_TC}
-        >
-          {review.map((row, i) => <Box className='reviewCard' component={Link} to = {`/details/${row.product_id}/${row.product[0].product_title}/${row.product[0].category_name}`} p = {1}>
-            <Rating name="read-only" value={row.rating} readOnly />
-            <Typography variant="h6">{row.review_title}</Typography>
-            <Typography variant="body1">"{row.review}"</Typography>
-            <Typography variant="body2">{row.reviewer_name}</Typography>
-            <Box className='reviewProductImage' >
-              <img src={row.product[0].product_image[0] || defaultIMG} alt={i} />
+        <Carousel keyBoardControl={true} ssr={true} responsive={responsiveTC}>
+          {review.map((row, i) => (
+            <Box
+              key={i}
+              className="reviewCard"
+              component={Link}
+              to={`/details/${row.product_id}/${row.product[0].product_title}/${row.product[0].category_name}`}
+              p={1}
+            >
+              <Rating name="read-only" value={row.rating} readOnly />
+              <Typography variant="h6">{row.review_title}</Typography>
+              <Typography variant="body1">{row.review}</Typography>
+              <Typography variant="body2">{row.reviewer_name}</Typography>
+              <Box className="reviewProductImage">
+                <img
+                  src={row.product[0].product_image[0] || defaultIMG}
+                  alt={i}
+                />
+              </Box>
+              <Typography variant="body1">
+                {row.product[0].product_title}
+              </Typography>
             </Box>
-            <Typography variant="body1">{row.product[0].product_title}</Typography>
-          </Box>
-          )}
+          ))}
         </Carousel>
       </Box>
     </Box>

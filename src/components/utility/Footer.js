@@ -13,6 +13,8 @@ import youtube from "../../asset/images/footer/youTube.png";
 import visa from "../../asset/images/footer/visa.png";
 import master from "../../asset/images/footer/master.png";
 import paypal from "../../asset/images/footer/paypal.png";
+import cod from "../../asset/images/footer/cod.png";
+import rupay from "../../asset/images/footer/upi.png";
 
 export default function Footer() {
   return (
@@ -54,10 +56,10 @@ export default function Footer() {
                 <Typography variant="h6">Get in touch</Typography>
                 <Typography variant="body1">Whatsapp: +91 950658944</Typography>
                 <Typography variant="body1">
-                  Toll Free: +91 8587918978
+                  Toll Free: +91 80-694-55055
                 </Typography>
                 <Typography variant="body1">
-                  Email: sales@woodsala.com
+                  Email: info@woodshala.com
                 </Typography>
               </Stack>
               <br></br>
@@ -120,6 +122,12 @@ export default function Footer() {
                 </Grid>
                 <Grid item xs={12} md={2}>
                   <img src={paypal} alt="facebook.svg" />
+                </Grid>
+                <Grid item xs={12} md={2}>
+                  <img src={rupay} alt="facebook.svg" />
+                </Grid>
+                <Grid item xs={12} md={2}>
+                  <img src={cod} alt="facebook.svg" />
                 </Grid>
               </Grid>
             </Grid>

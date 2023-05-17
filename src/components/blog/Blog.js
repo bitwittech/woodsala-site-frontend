@@ -66,7 +66,9 @@ export default function BlogContent({ history }) {
   }, [data.description]);
 
   async function fetchData() {
-    const list = await getBlogHome();
+    const list = await getBlogHome({
+      pageNumber: Math.floor(Math.random() * 10),
+    });
     if (list) setCardData(list.data);
 
     const content = await getBlog(blog_id);
@@ -233,6 +235,13 @@ export default function BlogContent({ history }) {
             cardData.map((card, index) => (
               <CardGenerator key={index} card={card} />
             ))}
+        </Box>
+        <Box p={5}>
+          <center>
+            <Button variant="contained" onClick={() => history("/blog")}>
+              Browse All
+            </Button>
+          </center>
         </Box>
       </Box>
 

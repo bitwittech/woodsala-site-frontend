@@ -321,8 +321,8 @@ export const getWishList = async (data) => {
 
 // getBlogHome
 
-export const getBlogHome = async () => {
-  return await axios.get(`${API}/getBlogHome`, {
+export const getBlogHome = async (data) => {
+  return await axios.get(`${API}/getBlogHome?pageNumber=${data.pageNumber}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },

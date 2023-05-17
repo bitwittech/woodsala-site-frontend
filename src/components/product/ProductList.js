@@ -87,25 +87,6 @@ export default function ProductList(props) {
     material: [],
   });
 
-  // // responsive oject for Slider
-  // const responsive = {
-  //   desktop: {
-  //     breakpoint: { max: 3000, min: 1024 },
-  //     items: 3,
-  //   },
-  //   tablet: {
-  //     breakpoint: { max: 800, min: 600 },
-  //     items: 2,
-  //   },
-  //   mobile: {
-  //     breakpoint: { max: 600, min: 0 },
-  //     items: 1,
-  //   },
-  // };
-
-  // store
-  // const { state, dispatch } = Store();
-
   // states
   const [items, setItems] = useState([]);
   const [expanded, setExpanded] = useState("");
@@ -134,8 +115,6 @@ export default function ProductList(props) {
   // fetch more item
 
   const fetchMoreData = async () => {
-    // (meta)
-    // (filter)
     if (filter !== meta.filter || extraFilter.apply) setItems([]);
 
     getProducts({

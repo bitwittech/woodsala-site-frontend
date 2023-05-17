@@ -77,6 +77,10 @@ img {
 .youMyAlsoLike{
     padding : 2% 1% 1% 1%;
     margin : 2%;
+    display: flex;
+    flex-direction: column;
+    /* width: 100%; */
+    margin-top: 2%;
 }
 
 .cardContainer {
@@ -87,20 +91,26 @@ img {
     align-items : baseline;
 }
 .cardContainerHome{
-    display : flex;
-    gap : 1.5rem;
-    padding : 0% 3% 0% 3%;
-    flex-wrap : wrap;
-    align-items : baseline;
+    display: flex;
+    flex-wrap: wrap;
+    height: fit-content;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
 }
 
 .likeCard{
     display : flex;
     flex-direction : column ; 
     max-width : 280px;
-    height: 370px;
-    align-items : baseline;
+    height: fit-content;
+    align-items : center;
 }
+
+.infinite-scroll-component{
+    overflow: hidden !important;
+} 
+
 
 .cardText > h5{
   height : 85px;

@@ -359,7 +359,7 @@ export default function Navbar(props) {
           <Grid container>
             <Grid item xs={12} md={3} className="center">
               <Typography variant="button">
-                +91-8587918978, 9509658944 (WhatsApp)
+                +91 80-694-55055 (WhatsApp)
               </Typography>
             </Grid>
             <Grid item xs={12} md={6} />

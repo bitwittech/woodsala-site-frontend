@@ -35,6 +35,7 @@ import {
   Breadcrumbs,
   IconButton,
   Link as A,
+  Tooltip,
 } from "@mui/material";
 import { Helmet } from "react-helmet";
 
@@ -59,7 +60,9 @@ import {
   addToList,
   removeFromList,
 } from "../../Redux/action/action";
-
+// icon
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 export default function ProductDetails(props) {
   // state Redux
   const state = useSelector((state) => state);
@@ -309,6 +312,12 @@ export default function ProductDetails(props) {
     else setShowSticky(false);
   }
 
+  function handlePreviewNav(direction, size) {
+    const val = imageIndex;
+    if (direction === "left" && val - 1 >= 0) setIndex(val - 1);
+    else if (direction === "right" && val + 1 < size) setIndex(val + 1);
+  }
+
   return (
     <>
       {/* helmet tag  */}
@@ -342,25 +351,55 @@ export default function ProductDetails(props) {
                 </Grid>
                 <Grid item xs={12}>
                   <Grid container className="preview" spacing={2}>
-                    {data.product_image.length > 0 &&
-                      data.product_image.map((item, index) => {
-                        return (
-                          <Grid
-                            item
-                            xs={2}
-                            key={index}
-                            onClick={() => {
-                              setIndex(index);
-                            }}
-                          >
-                            <img
-                              src={item}
-                              className="showImage"
-                              alt="images"
-                            />
-                          </Grid>
-                        );
-                      })}
+                    <Grid item xs={2} className="preViewButton">
+                      <Tooltip title="Previous">
+                        <IconButton
+                          onClick={() =>
+                            handlePreviewNav("left", data.product_image.length)
+                          }
+                        >
+                          <ArrowBackIosIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Grid>
+                    <Grid xs={10} item className="previewImageContainerOuter">
+                      <Box
+                        className="previewImageContainerInner"
+                        sx={{ right: `${100 * imageIndex}px` }}
+                      >
+                        {data.product_image.length > 0 &&
+                          data.product_image.map((item, index) => {
+                            return (
+                              <img
+                                key={index}
+                                style={{
+                                  border:
+                                    imageIndex === index
+                                      ? "1px solid brown"
+                                      : "",
+                                }}
+                                onClick={() => {
+                                  setIndex(index);
+                                }}
+                                src={item}
+                                className="showImage"
+                                alt="images"
+                              />
+                            );
+                          })}
+                      </Box>
+                    </Grid>
+                    <Grid item xs={2} className="preViewButton">
+                      <Tooltip title="Next">
+                        <IconButton
+                          onClick={() =>
+                            handlePreviewNav("right", data.product_image.length)
+                          }
+                        >
+                          <ArrowForwardIosIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
@@ -1019,393 +1058,3 @@ function CustomerTestimonials({ review }) {
     </Box>
   );
 }
-
-// {
-//   "_id": "641b1cebfdc09dc44268940c",
-//   "product_id": "P-01071",
-//   "rating": "3",
-//   "review_title": "undefined",
-//   "reviewer_name": "undefined",
-//   "reviews": [
-//       {
-//           "_id": "63ed05b9fde75826ee917706",
-//           "product_title": "(Set of 2) Classic Wave Style Chair",
-//           "product_image": []
-//       }
-//   ]
-// },
-
-// function for variant section
-//  function Variant({ACIN,SKU}) {
-
-//   const [variant, setVariant] = useState({ size: [],
-//     range: [],
-//     material: [],
-//     fabric: [],
-//     fitting : [],
-//     mattress : []});
-
-//   useMemo(()=>{
-//     getVariants()
-//   },[ACIN])
-
-//   async function getVariants (){
-//     try {
-
-//       let res = await fetchVariants(ACIN);
-
-//       console.log(res.data)
-//       if(res.status === 200)
-//       setVariant({...res.data})
-//       // setVariant(null)
-
-//     } catch (error) {
-//       console.log(error)
-//     }
-//   }
-
-//   return (
-//     <>
-//      {variant.show &&
-//      <>
-//      <Typography sx={{ mt: 2, fontWeight: 400 }} variant="h6">
-//         Variants
-//       </Typography>
-//       <Divider />
-//       <Box className="Variants" mt={2}>
-//         {/* // size   */}
-//         {variant.size.length > 0 && (
-//           <Typography variant="button">Dimension</Typography>
-//         )}
-//         {variant.size.length > 0 && (
-//           <Box className="size">
-//             {variant.size.map((s) => (
-//               <Button
-//                 component={Link}
-//                 to={`/details/${s.SKU}/${s.title}/${s.category}`}
-//                 size={"small"}
-//                 variant={SKU === s.SKU ? "contained" : "outlined"}
-//               >
-//                 {s.size}
-//               </Button>
-//             ))}
-//           </Box>
-//         )}
-
-//         {/* material  */}
-//         {variant.material.length > 0 && (
-//           <Typography variant="button">Material</Typography>
-//         )}
-//         {variant.material.length > 0 && (
-//           <Box className="size materialBox">
-//             {variant.material.map((s) => (
-//               <Button
-//                 component={Link}
-//                 to={`/details/${s.SKU}/${s.title}/${s.category}`}
-//                 size={"small"}
-//                 variant={SKU === s.SKU ? "contained" : "outlined"}
-//                 className="item"
-//               >
-//                 {s.material}
-//               </Button>
-//             ))}
-//           </Box>
-//         )}
-
-//         {/* range
-//         {variant.range.length > 0 && (
-//           <Typography variant="button">Range</Typography>
-//         )}
-//         {variant.range.length > 0 && (
-//           <Box className=" size rang">
-//             {variant.range.map((s) => (
-//               <Button
-//                 component={Link}
-//                 to={`/details/${s.SKU}/${s.title}/${s.category}`}
-//                 size={"small"}
-//                 variant={SKU === s.SKU ? "contained" : "outlined"}
-//               >
-//                 {s.range}
-//               </Button>
-//             ))}
-//           </Box>
-//         )} */}
-//         {/* fabric */}
-//         {variant.fabric.length > 0 && (
-//           <Typography variant="button">Range</Typography>
-//         )}
-//         {variant.fabric.length > 0 && (
-//           <Box className=" size rang">
-//             {variant.fabric.map((s) => (
-//               <Button
-//                 component={Link}
-//                 to={`/details/${s.SKU}/${s.title}/${s.category}`}
-//                 size={"small"}
-//                 variant={SKU === s.SKU ? "contained" : "outlined"}
-//               >
-//                 {s.fabric}
-//               </Button>
-//             ))}
-//           </Box>
-//         )}
-//         {/* Fitting */}
-//         {variant.fitting.length > 0 && (
-//           <Typography variant="button">Fitting</Typography>
-//         )}
-//         {variant.fitting.length > 0 && (
-//           <Box className=" size rang">
-//             {variant.fitting.map((s) => (
-//               <Button
-//                 component={Link}
-//                 to={`/details/${s.SKU}/${s.title}/${s.category}`}
-//                 size={"small"}
-//                 variant={SKU === s.SKU ? "contained" : "outlined"}
-//               >
-//                 {s.fitting}
-//               </Button>
-//             ))}
-//           </Box>
-//         )}
-//         {/* mattress */}
-//         {variant.fitting.length > 0 && (
-//           <Typography variant="button">Mattress</Typography>
-//         )}
-//         {variant.mattress.length > 0 && (
-//           <Box className=" size rang">
-//             {variant.mattress.map((s) => (
-//               <Button
-//               component={Link}
-//               to={`/details/${s.SKU}/${s.title}/${s.category}`}
-//               size={"small"}
-//               variant={SKU === s.SKU ? "contained" : "outlined"}
-//               >
-//                 {s.mattress}
-//               </Button>
-//             ))}
-//           </Box>
-//         )}
-//       </Box>
-//       </>
-//       }
-//     </>
-//   );
-// }
-
-// {/* // ======================== Not is use for now */}
-//         {/* More Information */}
-
-//         {/* <Grid container className="moreInfo" >
-//           <Grid item xs={12}>
-//             <Typography sx={{ fontWeight: 500 }} variant="h5">
-//               MORE INFORMATION
-//             </Typography>
-//           </Grid>
-//           <Grid item xs={12}>
-//             <Typography sx={{ fontWeight: 100, padding: "1% 0%" }} component='span' variant="body1">
-//               Explore full product details here !!!
-//             </Typography>
-//           </Grid>
-
-//           <Grid item xs={12}>
-//             <Box sx={{ width: '100%' }}>
-//               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-//                 <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
-//                   <Tab label="Specification" {...a11yProps(0)} />
-//                   <Tab label="Image" {...a11yProps(1)} />
-//                   <Tab label="Features" {...a11yProps(2)} />
-//                   <Tab label="Miscellaneous" {...a11yProps(3)} />
-//                   <Tab label="Inventory & Shipping" {...a11yProps(4)} />
-//                   <Tab label="SEO" {...a11yProps(5)} />
-//                   <Tab label="Extra Details" {...a11yProps(6)} />
-//                 </Tabs>
-//               </Box>
-//               <TabPanel value={value} index={0}>
-//                 <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
-//                   {specification.map((item) => {
-//                     return <>
-//                       <Typography variant="body1">
-//                         {item}<Typography sx={{ float: "right" }} variant="body1">{data[item]}</Typography>
-//                       </Typography>
-//                       <Divider />
-//                     </>
-//                   })}
-//                 </Stack>
-//               </TabPanel>
-//               <TabPanel value={value} index={1}>
-//                 <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
-//                   {image.map((item) => {
-//                     return <>
-//                       <Typography variant="h6">
-//                         {item.toUpperCase()}<img src={data[item]} sx={{ float: "right" }} />
-//                       </Typography>
-//                       <Divider sx={{ mb: 2 }} />
-//                     </>
-//                   })}
-//                 </Stack>
-//               </TabPanel>
-//               <TabPanel value={value} index={2}>
-//                 <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
-//                   {feature.map((item) => {
-//                     return <>
-//                       <Typography variant="body1">
-//                         {item}<Typography sx={{ float: "right", color: data[item] ? 'green' : 'red' }}
-//                           variant="body1">{data[item] ? 'true' : 'false'}</Typography>
-//                       </Typography>
-//                       <Divider />
-//                     </>
-//                   })}
-//                 </Stack>
-//               </TabPanel>
-//               <TabPanel value={value} index={3}>
-//                 <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
-//                   {miscellanous.map((item) => {
-//                     return <>
-//                       <Typography variant="body1">
-//                         {item}<Typography sx={{ float: "right" }}
-//                           variant="body1">{data[item]}</Typography>
-//                       </Typography>
-//                       <Divider />
-//                     </>
-//                   })}
-//                 </Stack>
-//               </TabPanel>
-//               <TabPanel value={value} index={4}>
-//                 <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
-//                   {inventory.map((item) => {
-//                     return <>
-//                       <Typography variant="body1">
-//                         {item}<Typography sx={{ float: "right" }}
-//                           variant="body1">{data[item]}</Typography>
-//                       </Typography>
-//                       <Divider />
-//                     </>
-//                   })}
-//                 </Stack>
-//               </TabPanel>
-//               <TabPanel value={value} index={5}>
-//                 <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
-//                   {seo.map((item) => {
-//                     return <>
-//                       <Typography variant="body1">
-//                         {item}<Typography sx={{ float: "right" }}
-//                           variant="body1">{data[item]}</Typography>
-//                       </Typography>
-//                       <Divider />
-//                     </>
-//                   })}
-//                 </Stack>
-//               </TabPanel>
-//               <TabPanel value={value} index={6}>
-//                 <Stack sx={{ padding: "5%", paddingTop: '1%' }}>
-//                   {extra.map((item) => {
-//                     return <>
-//                       <Typography variant="body1">
-//                         {item}<Typography sx={{ float: "right" }}
-//                           variant="body1">{data[item]}</Typography>
-//                       </Typography>
-//                       <Divider />
-//                     </>
-//                   })}
-//                 </Stack>
-//               </TabPanel>
-//             </Box>
-//           </Grid>
-
-//         </Grid> */}
-
-// const specification = [
-//   'product_title',
-//   'category_name',
-//   'sub_category_name',
-//   'primary_material',
-//   'length_main',
-//   'breadth',
-//   'height',
-//   'weight',
-//   'polish_name',
-//   'assembly_required',
-//   'assembly_part',
-//   'selling_price',
-//   'showroom_price',
-//   'discount_limit',
-//   'show_on_mobile',
-//   'range',
-// ]
-
-// const image = [
-//   'featured_image',
-//   'mannequin_image',
-//   'specification_image',
-// ]
-
-// const feature = [
-//   "rotating_seats",
-//   "eatable_oil_polish",
-//   "no_chemical",
-//   "weaving",
-//   "knife",
-//   "not_suitable_for_Micro_Dish",
-//   "tilt_top",
-//   "inside_compartments",
-//   "stackable",
-//   "ceramic_drawers",
-//   "ceramic_tiles",
-// ]
-
-// const miscellanous = [
-//   "weight_capacity",
-//   "joints",
-//   "drawer",
-//   "drawer_count",
-//   "back_style",
-// ]
-
-// const inventory = [
-//   'warehouse',
-//   'bangalore_stock',
-//   'jodhpur_stock',
-//   'selling_points',
-//   'polish_time',
-//   'manufacturing_time',
-//   'returnDays',
-//   'COD',
-//   'returnable',
-//   'package_length',
-//   'package_height',
-//   'package_breadth',
-//   'quantity',
-//   'unit',
-// ]
-
-// const seo = [
-//   'product_description',
-//   'seo_title',
-//   'seo_description',
-//   'seo_keyword',
-// ]
-
-// const extra = [
-//   'hinge_name',
-//   'knob_name',
-//   'textile_name',
-//   'textile_type',
-//   'door_name',
-//   'fitting_name',
-//   'top_size',
-//   'dial_size',
-//   'seating_size_width',
-//   'seating_size_depth',
-//   'seating_size_height',
-//   'fabric',
-//   'fabric_name',
-//   'mirror',
-//   'mirror_length',
-//   'mirror_width',
-//   'silver',
-//   'silver_weight',
-//   'wheel',
-//   'trolley',
-//   'trolley_material',
-//   'tax_rate',
-//   'legs'
-// ]

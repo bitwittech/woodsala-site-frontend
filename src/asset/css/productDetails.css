@@ -15,7 +15,38 @@
 }
 
 .preview {
-    padding: 5% 2%;
+    flex: 1;
+    align-items: center;
+    padding: 5%;
+    /* overflow-x: scroll; */
+    flex-wrap: nowrap;
+}
+
+.preViewButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.previewImageContainerOuter{
+    position: relative;
+    display: flex;
+    gap: 1rem;
+    overflow: hidden;
+    height: 170px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+.previewImageContainerInner{
+    display: flex;
+    position: relative;
+    gap: 1rem;
+    height: 150px;
+    padding: 3% 1%;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    transition: right 300ms ;
+
 }
 
 .contentSec {

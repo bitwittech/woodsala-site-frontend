@@ -22,7 +22,7 @@ import {
   Collapse,
 } from "@mui/material";
 
-// import { Link as Jump } from "react-router-dom";
+import { Link as Jump } from "react-router-dom";
 
 // icon
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -338,7 +338,7 @@ export default function Navbar(props) {
             <ListItemButton
               key={index}
               fullWidth
-              component={Link}
+              component={Jump}
               to={row.link}
             >
               {" "}
@@ -399,12 +399,7 @@ export default function Navbar(props) {
         {/* Brown Middle bar  */}
         <Grid item xs={12} className="secondBar">
           <Box>
-            <Typography
-              onClick={() => {
-                props.history("/blog");
-              }}
-              variant="body1"
-            >
+            <Typography component={Jump} to={"/blog"} variant="body1">
               Blog Post &nbsp;&nbsp;
             </Typography>
             <Typography variant="body1">
@@ -412,12 +407,7 @@ export default function Navbar(props) {
             </Typography>
             <Typography variant="body1">Videos &nbsp;&nbsp;</Typography>
             <Typography variant="body1">Website Review &nbsp;&nbsp;</Typography>
-            <Typography
-              onClick={() => {
-                props.history("/contact");
-              }}
-              variant="body1"
-            >
+            <Typography component={Jump} to={"/contact"} variant="body1">
               Contact Us
             </Typography>
           </Box>
@@ -551,16 +541,17 @@ export default function Navbar(props) {
                   )
                 }
                 color="primary"
-                onClick={() => {
-                  props.history("/cart");
-                }}
+                component={Jump}
+                to={"/cart"}
+                // onClick={() => {
+                //   props.history("/cart");
+                // }}
               >
                 Cart
               </Button>
               <Button
-                onClick={() => {
-                  props.history("/wishlist");
-                }}
+                component={Jump}
+                to={"/wishlist"}
                 color="primary"
                 startIcon={
                   window.location.pathname === "/wishlist" ? (
@@ -852,7 +843,7 @@ function HamBurgerMenu({ Ham, setHam, history, linkObject }) {
                   <List component="div" disablePadding>
                     {renderList.list.map((row, index) => (
                       <ListItemButton
-                        component={Link}
+                        component={Jump}
                         to={row.link}
                         key={index}
                         sx={{ pl: 4 }}

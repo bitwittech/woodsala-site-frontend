@@ -33,6 +33,7 @@
     justify-content: space-between;
 }
 
+
 .secondBar div {
     font-weight: 500 !important;
     display: flex;
@@ -40,12 +41,13 @@
     flex-flow: wrap;
 }
 
-.secondBar p {
+.secondBar a,p {
     cursor: pointer;
     font-size: 1rem;
+    color: black;
 }
 
-.secondBar div p:hover {
+.secondBar div a:hover,p:hover {
     color: rgb(146, 59, 38);
 }
 

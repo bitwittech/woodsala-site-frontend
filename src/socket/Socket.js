@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
 import io from "socket.io-client";
-// import config from "../config.json";
+import config from "../config.json";
 import { setActiveUser, setMessage, setSocket } from "../Redux/action/action";
 
-// const socket = io.connect(config.Socket_Official_API);
-const socket = io.connect();
+const socket = io.connect(config.Socket_Official_API);
+// const socket = io.connect();
 
 function Send_Message(message) {
   return socket.emit("send_message_site", message);

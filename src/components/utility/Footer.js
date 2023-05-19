@@ -114,19 +114,19 @@ export default function Footer() {
             <Grid item xs={12} md={2.5}>
               <Typography variant="h6">We accept</Typography>
               <Grid container className="payIcons">
-                <Grid item xs={12} md={2}>
+                <Grid item xs={1} md={2}>
                   <img src={visa} alt="facebook.svg" />
                 </Grid>
-                <Grid item xs={12} md={2}>
+                <Grid item xs={1} md={2}>
                   <img src={master} alt="facebook.svg" />
                 </Grid>
-                <Grid item xs={12} md={2}>
+                <Grid item xs={1} md={2}>
                   <img src={paypal} alt="facebook.svg" />
                 </Grid>
-                <Grid item xs={12} md={2}>
+                <Grid item xs={1} md={2}>
                   <img src={rupay} alt="facebook.svg" />
                 </Grid>
-                <Grid item xs={12} md={2}>
+                <Grid item xs={1} md={2}>
                   <img src={cod} alt="facebook.svg" />
                 </Grid>
               </Grid>

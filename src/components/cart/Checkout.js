@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable camelcase */
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
@@ -16,6 +17,7 @@ import {
   Radio,
   MenuItem,
   InputAdornment,
+  Checkbox,
 } from "@mui/material";
 import { Helmet } from "react-helmet";
 import defaultIMG from "../../asset/images/defaultProduct.svg";
@@ -49,6 +51,7 @@ import {
 // redux
 import { useDispatch, useSelector } from "react-redux";
 import { setAlert, setCart, thanks } from "../../Redux/action/action";
+// import { CheckBox } from "@mui/icons-material";
 // import { AbcRounded } from "@mui/icons-material";
 
 export default function Checkout() {
@@ -108,6 +111,7 @@ export default function Checkout() {
     PO: "",
     refresh: 0,
     sales_person: "",
+    product
   };
   const [data, setData] = useState(initial);
 
@@ -400,6 +404,7 @@ export default function Checkout() {
   // FOR Pay UI
   async function displayRazorpay(e) {
     e.preventDefault();
+    console.log(product);
     console.log(data);
 
     // return 1
@@ -455,6 +460,14 @@ export default function Checkout() {
     const paymentObject = new window.Razorpay(options);
     paymentObject.open();
   }
+
+  function handleCopyAddress(e){
+    if(e.target.checked)
+    setData(old=>({...old,billing : old.shipping, sameAsShip : e.target.checked}))
+    else
+    setData(old=>({...old,billing : "", sameAsShip : e.target.checked}))
+  }
+
   // function for generating product OID ID
   const getOID = async () => {
     return await getLastOrder()
@@ -587,136 +600,103 @@ export default function Checkout() {
                   size="small"
                 />
 
-                {state.auth.isAuth && data.address.length > 0 ? (
-                  <TextField
-                    sx={{ mt: 2 }}
-                    size="small"
-                    fullWidth
-                    // required
-                    id="outlined-select"
-                    select
-                    required
-                    name="shipping"
-                    inputProps={{ ref: ref.shipping }}
-                    label="Address"
-                    value={data.shipping || ""}
-                    multiple
-                    onChange={handleData}
-                    helperText="Please select your address"
-                  >
-                    {data.address.map((option) => (
-                      <MenuItem key={option.address} value={option.address}>
-                        {option.customer_name} : {option.address}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                ) : (
-                  <>
-                    <TextField
-                      required
-                      name="shipping"
-                      inputProps={{ ref: ref.shipping }}
-                      onChange={handleData}
-                      value={data.shipping || ""}
-                      label="Address"
-                      fullWidth
-                      id="outlined-start-adornment"
-                      sx={{ marginTop: "2%" }}
-                      size="small"
-                    />
-                    <TextField
-                      label="Pin Code"
-                      name="pincode"
-                      fullWidth
-                      inputProps={{ ref: ref.pincode }}
-                      value={data.pincode || ""}
-                      id="outlined-start-adornment"
-                      sx={{ marginTop: "2%" }}
-                      size="small"
-                      onChange={handleData}
-                    />
-
-                    <TextField
-                      label="State"
-                      fullWidth
-                      value={data.state || ""}
-                      inputProps={{ ref: ref.state }}
-                      name="state"
-                      onChange={handleData}
-                      id="outlined-start-adornment"
-                      sx={{ marginTop: "2%" }}
-                      size="small"
-                    />
-                    <TextField
-                      label="Town/City"
-                      value={data.city || ""}
-                      inputProps={{ ref: ref.city }}
-                      name="city"
-                      select
-                      onChange={handleData}
-                      fullWidth
-                      id="outlined-start-adornment"
-                      sx={{ marginTop: "2%" }}
-                      size="small"
-                    >
-                      {cities.map((option) => (
-                        <MenuItem key={option.city} value={option.city}>
-                          {option.city}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </>
-                )}
-                {/* 
                 <TextField
-                  select
-                  size="small"
-                  sx={{ marginTop: "2%" }}
-                  name = 'country'
-                  onChange = {handleData}
-                  value = {data.country || ''}
-                  label="Country"
-                  value={country}
+                  label="Pin Code"
+                  name="pincode"
                   fullWidth
-                  onChange={handleChange}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PublicOutlinedIcon small = "true" />
-                      </InputAdornment>
-                    ),
-                  }}
-                >
-                  {countries.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.value}
-                    </MenuItem>
-                  ))}
-                </TextField> */}
-                {/* <TextField
-                  select
+                  inputProps={{ ref: ref.pincode }}
+                  value={data.pincode || ""}
+                  id="outlined-start-adornment"
                   sx={{ marginTop: "2%" }}
                   size="small"
-                  label="State"
-                  value={country}
-                  fullWidth
-                  onChange={handleChange}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <OutlinedFlagSharpIcon small = "true" />
-                      </InputAdornment>
-                    ),
-                  }}
-                >
-                  {countries.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.value}
-                    </MenuItem>
-                  ))}
-                </TextField> */}
+                  onChange={handleData}
+                />
 
-                <Typography sx={{ marginTop: "3%" }} variant="h6">
+                <TextField
+                  label="State"
+                  fullWidth
+                  value={data.state || ""}
+                  inputProps={{ ref: ref.state }}
+                  name="state"
+                  onChange={handleData}
+                  id="outlined-start-adornment"
+                  sx={{ marginTop: "2%" }}
+                  size="small"
+                />
+                <TextField
+                  label="Town/City"
+                  value={data.city || ""}
+                  inputProps={{ ref: ref.city }}
+                  name="city"
+                  select
+                  onChange={handleData}
+                  fullWidth
+                  id="outlined-start-adornment"
+                  sx={{ marginTop: "2%" }}
+                  size="small"
+                >
+                  {cities.map((option) => (
+                    <MenuItem key={option.city} value={option.city}>
+                      {option.city}
+                    </MenuItem>
+                  ))}
+                </TextField>
+
+                {/* <TextField
+                  required
+                  name="shipping"
+                  inputProps={{ ref: ref.shipping }}
+                  onChange={handleData}
+                  value={data.shipping || ""}
+                  label="Address"
+                  fullWidth
+                  id="outlined-start-adornment"
+                  sx={{ marginTop: "2%" }}
+                  size="small"
+                /> */}
+
+                <TextField
+                  sx={{ marginTop: "2%" }}
+                  id="standard-multiline-static"
+                  label="Shipping Address"
+                  required={true}
+                  inputProps={{ ref: ref.note }}
+                  value={data.shipping}
+                  name="shipping"
+                  onChange={handleData}
+                  // required
+                  fullWidth
+                  multiline
+                  rows={4}
+                  variant="outlined"
+                />
+
+                <TextField
+                  sx={{ marginTop: "2%" }}
+                  id="standard-multiline-static"
+                  label="Billing Address"
+                  required={true}
+                  inputProps={{ ref: ref.billing }}
+                  value={data.billing}
+                  name="billing"
+                  onChange={handleData}
+                  // required
+                  fullWidth
+                  multiline
+                  rows={4}
+                  variant="outlined"
+                />
+
+                {data.shipping && (
+                  <FormControl sx={{ width: "100%", padding:'1%' }} >
+                    <FormControlLabel 
+                      control={<Checkbox checked = {data.sameAsShip} onChange={handleCopyAddress} />}
+                      label="Same as shipping address"
+                    />
+                  </FormControl>
+                )}
+
+                <Typography sx={{ marginTop: "1%" }} variant="h6">
                   Additional Information
                 </Typography>
 
@@ -914,3 +894,141 @@ export default function Checkout() {
     </>
   );
 }
+
+// old address
+
+// {
+//   state.auth.isAuth && data.address.length > 0 ? (
+//     <TextField
+//       sx={{ mt: 2 }}
+//       size="small"
+//       fullWidth
+//       // required
+//       id="outlined-select"
+//       select
+//       required
+//       name="shipping"
+//       inputProps={{ ref: ref.shipping }}
+//       label="Shipping Address"
+//       value={data.shipping || ""}
+//       multiple
+//       onChange={handleData}
+//       helperText="Please select your address"
+//     >
+//       {data.address.map((option) => (
+//         <MenuItem key={option.address} value={option.address}>
+//           {option.customer_name} : {option.address}
+//         </MenuItem>
+//       ))}
+//     </TextField>
+//   ) : (
+//     <>
+//       <TextField
+//         required
+//         name="shipping"
+//         inputProps={{ ref: ref.shipping }}
+//         onChange={handleData}
+//         value={data.shipping || ""}
+//         label="Address"
+//         fullWidth
+//         id="outlined-start-adornment"
+//         sx={{ marginTop: "2%" }}
+//         size="small"
+//       />
+//       <TextField
+//         label="Pin Code"
+//         name="pincode"
+//         fullWidth
+//         inputProps={{ ref: ref.pincode }}
+//         value={data.pincode || ""}
+//         id="outlined-start-adornment"
+//         sx={{ marginTop: "2%" }}
+//         size="small"
+//         onChange={handleData}
+//       />
+
+//       <TextField
+//         label="State"
+//         fullWidth
+//         value={data.state || ""}
+//         inputProps={{ ref: ref.state }}
+//         name="state"
+//         onChange={handleData}
+//         id="outlined-start-adornment"
+//         sx={{ marginTop: "2%" }}
+//         size="small"
+//       />
+//       <TextField
+//         label="Town/City"
+//         value={data.city || ""}
+//         inputProps={{ ref: ref.city }}
+//         name="city"
+//         select
+//         onChange={handleData}
+//         fullWidth
+//         id="outlined-start-adornment"
+//         sx={{ marginTop: "2%" }}
+//         size="small"
+//       >
+//         {cities.map((option) => (
+//           <MenuItem key={option.city} value={option.city}>
+//             {option.city}
+//           </MenuItem>
+//         ))}
+//       </TextField>
+//     </>
+//   );
+// }
+
+// {
+//   /*
+//                 <TextField
+//                   select
+//                   size="small"
+//                   sx={{ marginTop: "2%" }}
+//                   name = 'country'
+//                   onChange = {handleData}
+//                   value = {data.country || ''}
+//                   label="Country"
+//                   value={country}
+//                   fullWidth
+//                   onChange={handleChange}
+//                   InputProps={{
+//                     startAdornment: (
+//                       <InputAdornment position="start">
+//                         <PublicOutlinedIcon small = "true" />
+//                       </InputAdornment>
+//                     ),
+//                   }}
+//                 >
+//                   {countries.map((option) => (
+//                     <MenuItem key={option.value} value={option.value}>
+//                       {option.value}
+//                     </MenuItem>
+//                   ))}
+//                 </TextField> */
+// }
+// {
+//   /* <TextField
+//                   select
+//                   sx={{ marginTop: "2%" }}
+//                   size="small"
+//                   label="State"
+//                   value={country}
+//                   fullWidth
+//                   onChange={handleChange}
+//                   InputProps={{
+//                     startAdornment: (
+//                       <InputAdornment position="start">
+//                         <OutlinedFlagSharpIcon small = "true" />
+//                       </InputAdornment>
+//                     ),
+//                   }}
+//                 >
+//                   {countries.map((option) => (
+//                     <MenuItem key={option.value} value={option.value}>
+//                       {option.value}
+//                     </MenuItem>
+//                   ))}
+//                 </TextField> */
+// }

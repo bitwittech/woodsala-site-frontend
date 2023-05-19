@@ -131,24 +131,22 @@ const Cart = (props) => {
     );
 
     if (response) {
-      // console.log(state.cart.items)
-      // console.log(response)
       setRow(
         response.data.map((dataSet, index) => {
-          let discount = dataSet[0].categories[0].discount_limit
+          const discount_product = dataSet[0].categories[0].discount_limit
             ? dataSet[0].discount_limit >
               dataSet[0].categories[0].discount_limit
               ? dataSet[0].categories[0].discount_limit
               : dataSet[0].discount_limit
             : dataSet[0].discount_limit;
 
-          discount =
+          const discount =
             ((state.cart.items.filter((data) => {
               return data.product_id === dataSet[0].SKU;
             })[0].quantity *
               dataSet[0].selling_price) /
               100) *
-            discount;
+            discount_product;
           return {
             id: index + 1,
             SKU: dataSet[0].SKU,
@@ -168,6 +166,8 @@ const Cart = (props) => {
               })[0].quantity *
                 dataSet[0].selling_price -
               discount,
+            discount_product,
+            parts: dataSet[0].assembly_part,
             action: dataSet[0].SKU,
           };
         })

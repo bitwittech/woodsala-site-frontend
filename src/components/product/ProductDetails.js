@@ -63,6 +63,8 @@ import {
 // icon
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+// Zoom functionality
+import { SideBySideMagnifier } from "sunzi-image-magnifiers";
 export default function ProductDetails(props) {
   // state Redux
   const state = useSelector((state) => state);
@@ -72,7 +74,7 @@ export default function ProductDetails(props) {
 
   // state
   const [imageIndex, setIndex] = useState(0); // use for updating the images
-  const [ratting, setRatting] = useState(2);
+  // const [ratting, setRatting] = useState(2);
   const [ACIN, setACIN] = useState([]);
   // const [expanded, setExpanded] = useState("panel1");
 
@@ -343,32 +345,41 @@ export default function ProductDetails(props) {
                     margin: "auto",
                   }}
                 >
-                  <img
+                  {/* <img
                     className="showImage"
                     src={data.product_image[imageIndex] || defaultIMG}
                     alt="image2"
+                  /> */}
+                  <SideBySideMagnifier
+                    alwaysInPlace={true}
+                    className="showImage"
+                    imageSrc={data.product_image[imageIndex] || defaultIMG}
+                    imageAlt="Example"
                   />
                 </Grid>
-                <Grid item xs={12}>
-                  <Grid container className="preview" spacing={2}>
-                    <Grid item xs={2} className="preViewButton">
-                      <Tooltip title="Previous">
-                        <IconButton
-                          onClick={() =>
-                            handlePreviewNav("left", data.product_image.length)
-                          }
+                {data.product_image.length > 0 && (
+                  <Grid item xs={12}>
+                    <Grid container className="preview" spacing={2}>
+                      <Grid item xs={2} className="preViewButton">
+                        <Tooltip title="Previous">
+                          <IconButton
+                            onClick={() =>
+                              handlePreviewNav(
+                                "left",
+                                data.product_image.length
+                              )
+                            }
+                          >
+                            <ArrowBackIosIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Grid>
+                      <Grid xs={10} item className="previewImageContainerOuter">
+                        <Box
+                          className="previewImageContainerInner"
+                          sx={{ right: `${100 * imageIndex}px` }}
                         >
-                          <ArrowBackIosIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </Grid>
-                    <Grid xs={10} item className="previewImageContainerOuter">
-                      <Box
-                        className="previewImageContainerInner"
-                        sx={{ right: `${100 * imageIndex}px` }}
-                      >
-                        {data.product_image.length > 0 &&
-                          data.product_image.map((item, index) => {
+                          {data.product_image.map((item, index) => {
                             return (
                               <img
                                 key={index}
@@ -387,21 +398,25 @@ export default function ProductDetails(props) {
                               />
                             );
                           })}
-                      </Box>
-                    </Grid>
-                    <Grid item xs={2} className="preViewButton">
-                      <Tooltip title="Next">
-                        <IconButton
-                          onClick={() =>
-                            handlePreviewNav("right", data.product_image.length)
-                          }
-                        >
-                          <ArrowForwardIosIcon />
-                        </IconButton>
-                      </Tooltip>
+                        </Box>
+                      </Grid>
+                      <Grid item xs={2} className="preViewButton">
+                        <Tooltip title="Next">
+                          <IconButton
+                            onClick={() =>
+                              handlePreviewNav(
+                                "right",
+                                data.product_image.length
+                              )
+                            }
+                          >
+                            <ArrowForwardIosIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
+                )}
               </Grid>
             </Grid>
             {/* Image sec ends */}
@@ -441,14 +456,15 @@ export default function ProductDetails(props) {
                   <Typography variant="h5">{data.SKU}</Typography>
                   {/* ratting  */}
                   <Box className="ratting">
-                    <Rating
+                    {/* commentated for now until i created the ranking system  */}
+                    {/* <Rating
                       readOnly
                       name="simple-controlled"
                       value={ratting}
                       onChange={(event, newValue) => {
                         setRatting(newValue);
                       }}
-                    />
+                    /> */}
                     {/* // wishlist */}
                     {/* <Box className="wishlist">
                       <FavoriteBorderIcon />

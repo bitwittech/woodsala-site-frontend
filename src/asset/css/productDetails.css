@@ -59,6 +59,8 @@
 }
 
 .ratting {
+    position: relative;
+    z-index: -1 !important;
     display: flex;
     padding: 2% 0%;
     justify-content: space-between;

@@ -12,6 +12,10 @@
     border-radius: 20px;
 }
 
+.sideBox p{
+   color: white;
+}
+
 .subheadings {
     display: flex;
     align-items: center;

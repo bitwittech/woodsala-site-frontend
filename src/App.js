@@ -42,6 +42,7 @@ const Verify = lazy(() => import("./components/utility/Verify"));
 
 // components
 const Cart = lazy(() => import("./components/cart/Cart"));
+const CheckOutNew = lazy(() => import("./components/cart/CheckOutNew"));
 const Wishlist = lazy(() => import("./components/cart/Wishlist"));
 const Checkout = lazy(() => import("./components/cart/Checkout"));
 const ProductDetails = lazy(() =>
@@ -158,6 +159,10 @@ function Path({ auth }) {
 
             {/* // page routes  */}
             <Route path="/cart" element={<Cart history={history} />}></Route>
+            <Route
+              path="/cartNew"
+              element={<CheckOutNew history={history} />}
+            ></Route>
             <Route
               path="/checkout"
               element={<Checkout history={history} />}

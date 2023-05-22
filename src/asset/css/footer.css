@@ -18,9 +18,13 @@
     display: flex;
     justify-content: space-between;
     background-color: #682D2D;
-    color: rgb(255, 255, 255);
+    color: rgb(255, 255, 255) !important;
     /* text-align: center; */
     padding: 0.5%;
+}
+
+.footerBottom p {
+    color: white;
 }
 
 .linkContainer {

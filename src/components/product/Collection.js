@@ -1,5 +1,11 @@
 import React from "react";
-import { Grid, Typography } from "@mui/material";
+import {
+  // Box,
+  Grid,
+  //  MenuItem,
+  //   TextField,
+  Typography,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 import "../../asset/css/categories.css";
 import { Helmet } from "react-helmet";
@@ -61,8 +67,7 @@ const Collection = () => {
         />
       </Helmet>
       {/* helmet tag ends  */}
-      <title>Collection</title>
-      {/* {(meta)} */}
+
       {/* Main Container */}
       <Grid container sx={{ padding: "1%", gap: "50px" }}>
         {/* Banner */}
@@ -77,6 +82,21 @@ const Collection = () => {
 
         <Grid item className="outerWrapper" xs={12}>
           <Grid container className="cardWrapper">
+            {/* <Grid xs={12} item>
+              <Box alignSelf={"right"} sx={{ width: "7%" }}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  label={"Sort"}
+                  variant="outlined"
+                  select
+                  name="sort"
+                  value={""}
+                >
+                  <MenuItem>Sort 1</MenuItem>
+                </TextField>
+              </Box>
+            </Grid> */}
             {items.map((row) => {
               return (
                 <>

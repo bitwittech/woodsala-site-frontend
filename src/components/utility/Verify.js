@@ -29,86 +29,78 @@ export default function Verify(props) {
   });
 
   // for login
-  const handleLogIn = async (data) => {
-    const response = login(data);
+  async function handleLogIn(data) {
+    const FD = new FormData();
+    FD.append("email", data.email);
+    FD.append("password", data.password);
+    const response = await login(FD);
 
-    response
-      .then((data) => {
-        // (data)
-        if (data.status === 200) {
-          window.location.href = "/";
+    console.log(response);
+    if (response.status === 200) {
+      window.location.href = "/";
 
-          dispatch(
-            setAlert({
-              open: true,
-              message: data.data.message,
-              variant: "success",
-            })
-          );
+      dispatch(
+        setAlert({
+          open: true,
+          message: response.data.message,
+          variant: "success",
+        })
+      );
 
-          dispatch(
-            setAuth({
-              isAuth: true,
-              username: data.data.name,
-              email: data.data.email,
-              CID: data.data.CID,
-              token: data.data.token,
-            })
-          );
+      dispatch(
+        setAuth({
+          isAuth: true,
+          username: response.data.data.name,
+          email: response.data.data.email,
+          CID: response.data.data.CID,
+          token: response.data.data.token,
+        })
+      );
 
-          return (window.location.href = "/");
-        } else {
-          dispatch(
-            setAlert({
-              open: true,
-              message: data.data.message,
-              variant: "error",
-            })
-          );
-        }
-      })
-      .catch((err) => {
-        setUser({ ...user, verify: "Not Done" });
-
-        dispatch(
-          setAlert({
-            open: true,
-            message:
-              err.response.data.message ||
-              "Sorry some technical issue happened !!!",
-            variant: "error",
-          })
-        );
-      });
-  };
+      return (window.location.href = "/");
+    } else {
+      setUser({ ...user, verify: "Not Done" });
+      dispatch(
+        setAlert({
+          open: true,
+          message: response.data.message,
+          variant: "error",
+        })
+      );
+    }
+  }
 
   async function verifyToken(token) {
-    verify(token)
-      .then(async (res) => {
-        const isRegistered = await register(res.data);
-        if (isRegistered.data.data) {
-          setUser({
-            name: isRegistered.data.data.username,
-            email: isRegistered.data.data.email,
-            verify: "done",
-          });
-          return handleLogIn(isRegistered.data.data);
-        } else {
-          setUser({ ...user, verify: "Not Done" });
-        }
-      })
-      .catch((err) => {
+    const res = await verify(token);
+    if (res.data.status === 200) {
+      const isRegistered = await register(res.data.data);
+      if (isRegistered.data.status === 200) {
+        setUser({
+          name: isRegistered.data.username,
+          email: isRegistered.data.email,
+          verify: "done",
+        });
+        return handleLogIn(isRegistered.data.data);
+      } else {
         setUser({ ...user, verify: "Not Done" });
-        dispatch(
+        return dispatch(
           setAlert({
             open: true,
-            message:
-              err.response.data.message ||
-              "Sorry some technical issue happened !!!",
+            message: isRegistered.data.message,
             variant: "error",
           })
         );
-      });
+      }
+    } else {
+      setUser({ ...user, verify: "Not Done" });
+      dispatch(
+        setAlert({
+          open: true,
+          message: res.data.data.message,
+          variant: "error",
+        })
+      );
+    }
   }
 
   useEffect(() => {

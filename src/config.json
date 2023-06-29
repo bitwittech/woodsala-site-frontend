@@ -3,8 +3,8 @@
     "TRACKING_ID" : "G-MZGPNDQH46",
     "OfficialAPI": "https://woodshala.in/api",
     "OfficialAPI_A": "http://localhost:8000/api",
-    "client_side_recaptcha" : "6Lc0g3UlAAAAAMPXvYD0TTk0QMTet9PiFV3jpCCx",
-    "client_side_recaptcha_A" : "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
+    "client_side_recaptcha_A" : "6Lc0g3UlAAAAAMPXvYD0TTk0QMTet9PiFV3jpCCx",
+    "client_side_recaptcha" : "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
     "Socket_Official_API": "https://admin.woodshala.in",
     "Socket_Official_API_A": "http://localhost:8000"
 }

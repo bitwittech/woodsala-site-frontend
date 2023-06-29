@@ -29,7 +29,7 @@ import Home from "./components/home/Home";
 // error boundaries for handling error
 import ErrorBound from "./components/utility/ErrorBound";
 import ChatWindow from "./components/chat/ChatWindow";
-import LockIn from "./components/lockinPage/LockIn";
+// import LockIn from "./components/lockinPage/LockIn";
 import { useDispatch, useSelector } from "react-redux";
 // socket
 import Socket from "./socket/Socket";
@@ -143,103 +143,99 @@ function Path({ auth }) {
       {window.location.pathname !== "/verify" && auth.masterToken && (
         <Navbar history={history} />
       )}
+      {window.location.pathname !== "/verify" && <Navbar history={history} />}
       <Routes>
         {/* // main routes  */}
-        {!auth.masterToken && (
+        {/* {!auth.masterToken && (
           <Route path="/" element={<LockIn history={history} />}></Route>
-        )}
+        )} */}
 
-        {auth.masterToken && (
-          <>
-            <Route path="/" element={<Home history={history} />}></Route>
-            <Route
-              path="/verify"
-              element={<Verify history={history} />}
-            ></Route>
+        {/* {auth.masterToken && ( */}
+        <>
+          <Route path="/" element={<Home history={history} />}></Route>
+          <Route path="/verify" element={<Verify history={history} />}></Route>
 
-            {/* // page routes  */}
-            <Route path="/cart" element={<Cart history={history} />}></Route>
-            <Route
-              path="/cartNew"
-              element={<CheckOutNew history={history} />}
-            ></Route>
-            <Route
-              path="/checkout"
-              element={<Checkout history={history} />}
-            ></Route>
-            <Route
-              path="/contact"
-              element={<ContactUs history={history} />}
-            ></Route>
-            <Route
-              path="/collection"
-              element={<Collection history={history} />}
-            ></Route>
-            <Route path="/home" element={<Home history={history} />}></Route>
-            <Route
-              path="/profile"
-              element={<Profile history={history} />}
-            ></Route>
-            <Route
-              path="/account"
-              element={<UserInfo history={history} />}
-            ></Route>
-            <Route
-              path="/address"
-              element={<Address history={history} />}
-            ></Route>
-            <Route path="/order" element={<Order history={history} />}></Route>
-            <Route
-              path="/wishlist"
-              element={<Wishlist history={history} />}
-            ></Route>
+          {/* // page routes  */}
+          <Route path="/cart" element={<Cart history={history} />}></Route>
+          <Route
+            path="/cartNew"
+            element={<CheckOutNew history={history} />}
+          ></Route>
+          <Route
+            path="/checkout"
+            element={<Checkout history={history} />}
+          ></Route>
+          <Route
+            path="/contact"
+            element={<ContactUs history={history} />}
+          ></Route>
+          <Route
+            path="/collection"
+            element={<Collection history={history} />}
+          ></Route>
+          <Route path="/home" element={<Home history={history} />}></Route>
+          <Route
+            path="/profile"
+            element={<Profile history={history} />}
+          ></Route>
+          <Route
+            path="/account"
+            element={<UserInfo history={history} />}
+          ></Route>
+          <Route
+            path="/address"
+            element={<Address history={history} />}
+          ></Route>
+          <Route path="/order" element={<Order history={history} />}></Route>
+          <Route
+            path="/wishlist"
+            element={<Wishlist history={history} />}
+          ></Route>
 
-            {/* for Product Page  */}
-            <Route
-              path="/details/:SKU/:title/:category"
-              element={<ProductDetails history={history} />}
-            ></Route>
-            <Route
-              path="/details/:SKU/:title"
-              element={<ProductDetails history={history} />}
-            ></Route>
+          {/* for Product Page  */}
+          <Route
+            path="/details/:SKU/:title/:category"
+            element={<ProductDetails history={history} />}
+          ></Route>
+          <Route
+            path="/details/:SKU/:title"
+            element={<ProductDetails history={history} />}
+          ></Route>
 
-            {/* // filter and Product page route */}
-            <Route
-              path="/product/:category_name/:product_title/:selling_price"
-              element={<ProductList history={history} />}
-            ></Route>
-            <Route
-              path="/product/:category_name/:product_title"
-              element={<ProductList history={history} />}
-            ></Route>
-            <Route
-              path="/product/:category_name"
-              element={<ProductList history={history} />}
-            ></Route>
-            <Route
-              path="/product"
-              element={<ProductList history={history} />}
-            ></Route>
+          {/* // filter and Product page route */}
+          <Route
+            path="/product/:category_name/:product_title/:selling_price"
+            element={<ProductList history={history} />}
+          ></Route>
+          <Route
+            path="/product/:category_name/:product_title"
+            element={<ProductList history={history} />}
+          ></Route>
+          <Route
+            path="/product/:category_name"
+            element={<ProductList history={history} />}
+          ></Route>
+          <Route
+            path="/product"
+            element={<ProductList history={history} />}
+          ></Route>
 
-            {/* // blog routes */}
-            <Route
-              path="/blog"
-              element={<BlogHome history={history} />}
-            ></Route>
-            <Route
-              path="/blog/:blog_id"
-              element={<Blog history={history} />}
-            ></Route>
+          {/* // blog routes */}
+          <Route path="/blog" element={<BlogHome history={history} />}></Route>
+          <Route
+            path="/blog/:blog_id"
+            element={<Blog history={history} />}
+          ></Route>
 
-            {/* Not found  */}
-            <Route path="*" element={<Home history={history} />} />
-          </>
-        )}
+          {/* Not found  */}
+          <Route path="*" element={<Home history={history} />} />
+        </>
+        {/* )} */}
       </Routes>
-      {window.location.pathname !== "/verify" && auth.masterToken && (
+      {/* {window.location.pathname !== "/verify" && auth.masterToken && (
         <Footer history={history} />
-      )}
+      )} */}
+      {window.location.pathname !== "/verify" && <Footer history={history} />}
     </>
   );
 }

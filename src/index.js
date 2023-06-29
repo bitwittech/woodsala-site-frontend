@@ -13,7 +13,7 @@ import { store, persistor } from "./Redux/store";
 // subscribe
 
 // subscribe this function is used for console the current state if there is no Redux extension there
-// store.subscribe(() => console.log(store.getState()));
+store.subscribe(() => console.log(store.getState()));
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

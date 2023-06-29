@@ -32,7 +32,11 @@ export const verify = async (token) => {
 
 // for login
 export const login = async (data) => {
-  return await axios.post(`${API}/login`, data);
+  return await axios.post(`${API}/login`, data, {
+    headers: {
+      "content-type": "multipart/form-data",
+    },
+  });
 };
 
 // for getting user details

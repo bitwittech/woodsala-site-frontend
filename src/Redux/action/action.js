@@ -53,6 +53,13 @@ export const subQTY = (parameters) => {
     payload: parameters,
   };
 };
+// Action for DECREMENT in Product Quantity
+export const handleItemQTY = (parameters) => {
+  return {
+    type: "HANDLEQTY",
+    payload: parameters,
+  };
+};
 // Action for setting cart while customer logged in
 export const setCart = (parameters) => {
   return {

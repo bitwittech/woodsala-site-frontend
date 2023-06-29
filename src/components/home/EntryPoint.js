@@ -205,9 +205,11 @@ export default function EntryPoint() {
       loading: true,
     });
 
+    console.log(response);
+
     if (response) {
       // (data)
-      if (response.status === 200) {
+      if (response.data.status === 200) {
         setController({
           ...controller,
           loading: false,
@@ -225,10 +227,10 @@ export default function EntryPoint() {
           setAuth({
             ...state.auth,
             isAuth: true,
-            username: response.data.name,
-            email: response.data.email,
-            CID: response.data.CID,
-            token: response.data.token,
+            username: response.data.data.name,
+            email: response.data.data.email,
+            CID: response.data.data.CID,
+            token: response.data.data.token,
           })
         );
 

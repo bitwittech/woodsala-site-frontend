@@ -39,7 +39,7 @@ const Address = () => {
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
 
-  // satat for saved array data
+  // state for saved array data
   const [addressArray, setAddressArray] = useState([]);
   // state controls
   const [controller, setController] = useState({
@@ -52,7 +52,7 @@ const Address = () => {
       getCustomerAddress(state.auth.CID)
         .then((response) => {
           // (response)
-          setAddressArray(response.data.address);
+          setAddressArray(response.data.data.address);
         })
         .catch(() => {
           // (err);
@@ -64,8 +64,6 @@ const Address = () => {
   const deleteCustomer = (index) => {
     const data = addressArray;
     data.splice(index, 1);
-    // // (data)
-    // return 0;
     const FD = new FormData();
     FD.append("address", JSON.stringify([...data]));
     FD.append("CID", state.auth.CID);

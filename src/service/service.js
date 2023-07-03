@@ -229,7 +229,7 @@ export const getLastOrder = async () => {
 // for  adding order to the list
 
 export const placeOrder = async (data) => {
-  return await axios.post(`${API}/placeOrder`, data, {
+  return await axios.post(`http://localhost:8000/app/checkoutUPI`, data, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
     },
@@ -255,7 +255,7 @@ export const getAddress = async (data) => {
 // for  verify check out
 
 export const verifyPayment = async (data) => {
-  return await axios.post(`${API}/verifyPayment`, data, {
+  return await axios.post(`http://localhost:8000/app/verifyPayment`, data, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("WDToken")}`,
     },

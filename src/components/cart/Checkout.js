@@ -323,12 +323,10 @@ export default function Checkout() {
   async function verifyPay(response, order_id) {
     try {
       const order = {
-        ...data,
-        O: OID,
-        orderCreationId: order_id,
-        razorpayPaymentId: response.razorpay_payment_id,
-        razorpayOrderId: response.razorpay_order_id,
-        razorpaySignature: response.razorpay_signature,
+        order_id: "O-01060",
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_signature: response.razorpay_signature,
+        razorpay_order_id: response.razorpay_order_id ,
       };
 
       console.log(order);
@@ -401,12 +399,14 @@ export default function Checkout() {
     });
   }
 
+  console.log(process.env.REACT_APP_PAY_KEY)
+
   // FOR Pay UI
   async function displayRazorpay(e) {
     e.preventDefault();
     console.log(product);
     console.log(data);
-
+    
     // return 1
     // UI response check
     const res = await loadScript(
@@ -418,10 +418,12 @@ export default function Checkout() {
       return;
     }
 
-    const response = await placeOrder({
-      ...data,
-      limit_without_advance: codLimit.limit_without_advance,
-    }); // local APIs for saving Order
+    // const response = await placeOrder({
+    //   ...data,
+    //   limit_without_advance: codLimit.limit_without_advance,
+    // }); // local APIs for saving Order
+
+    const response = await placeOrder({DID : "43e5d9098636610", order_id : "O-01060"    }); // local APIs for saving Order
 
     if (response.status !== 200) return;
 
@@ -429,7 +431,7 @@ export default function Checkout() {
       setData((old) => ({ ...old, pay_method_advance: "Razorpay" }));
     else setData((old) => ({ ...old, pay_method_advance: "" }));
 
-    const order_id = response.data.id.toString(); // Order Id from Payment Getaway
+    const order_id = response.data.data.id.toString(); // Order Id from Payment Getaway
 
     // amount: amount,
 

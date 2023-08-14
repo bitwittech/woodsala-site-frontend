@@ -1,11 +1,11 @@
 {
     "PINCODE": "b7b058e0-c221-11ed-a20a-178215b14d9b",
     "TRACKING_ID" : "G-MZGPNDQH46",
-    "OfficialAPI": "https://woodshala.in/api",
-    "OfficialAPI_A": "http://localhost:8000/api",
+    "OfficialAPI_A": "https://woodshala.in/api",
+    "OfficialAPI": "http://localhost:8000/api",
     "client_side_recaptcha_A" : "6Lc0g3UlAAAAAMPXvYD0TTk0QMTet9PiFV3jpCCx",
     "client_side_recaptcha" : "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
-    "Socket_Official_API": "https://admin.woodshala.in",
-    "Socket_Official_API_A": "http://localhost:8000"
+    "Socket_Official_API_A": "https://admin.woodshala.in",
+    "Socket_Official_API": "http://localhost:8000"
 }
 

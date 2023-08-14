@@ -142,8 +142,6 @@ export default function ProductList(props) {
   };
 
   useMemo(() => {
-    console.log("Called");
-    console.log(filter, extraFilter.apply);
     fetchMoreData();
   }, [filter.category_name, extraFilter.apply]);
 

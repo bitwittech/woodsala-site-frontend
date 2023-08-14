@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/prop-types */
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Menu,
   MenuItem,
@@ -113,7 +113,11 @@ export default function Navbar(props) {
   });
 
   // use Effect
-  useMemo(() => {
+  useEffect(() => {
+    refreshCartAndWish();
+  }, [auth.isAuth]);
+
+  function refreshCartAndWish() {
     if (auth.isAuth) {
       if (wishlist.items.length > 0) {
         Promise.all(
@@ -162,7 +166,7 @@ export default function Navbar(props) {
         });
       }
     }
-  }, [auth.isAuth]);
+  }
 
   const handleProfileIconClick = (event) => {
     auth.isAuth

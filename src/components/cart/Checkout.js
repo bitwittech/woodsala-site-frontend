@@ -323,7 +323,9 @@ export default function Checkout() {
   async function verifyPay(response, order_id) {
     try {
       const order = {
-        order_id: "O-01060",
+        order_id: "O-01074",
+        CID: response.CID,
+        DID: response.DID,
         razorpay_payment_id: response.razorpay_payment_id,
         razorpay_signature: response.razorpay_signature,
         razorpay_order_id: response.razorpay_order_id ,
@@ -423,7 +425,7 @@ export default function Checkout() {
     //   limit_without_advance: codLimit.limit_without_advance,
     // }); // local APIs for saving Order
 
-    const response = await placeOrder({DID : "43e5d9098636610", order_id : "O-01060"    }); // local APIs for saving Order
+    const response = await placeOrder({DID : "43e5d9098636610", order_id : "O-01074"    }); // local APIs for saving Order
 
     if (response.status !== 200) return;
 
@@ -444,7 +446,7 @@ export default function Checkout() {
       image: "https://admin.woodshala.in/favicon.ico",
       order_id,
       handler: (response) => {
-        verifyPay(response, order_id);
+        verifyPay({...response,CID:"",DID : "43e5d9098636610"}, order_id);
       },
       prefill: {
         name: data.customer_name,

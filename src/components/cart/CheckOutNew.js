@@ -589,96 +589,126 @@ function Delivery({ size, localState, setState }) {
   }
   return (
     <Grid xs={12} md={size} className="delivery-wrapper flex-utility">
+      {/* // add customer address  */}
       <Box className="delivery-inner-wrapper">
         <Box className="step-heading">
           <Typography variant="body1">2. Delivery Address</Typography>
         </Box>
-        <Box p={1}>
-          <Typography variant="body2">All fields are required.</Typography>
-        </Box>
-        <Box className="delivery-form flex-utility">
-          <TextField
-            required
-            variant="outlined"
-            size="small"
-            name="customer_email"
-            label="Email Address"
-            value={localState.customer_email || ""}
-            onChange={handleValue}
-          ></TextField>
-          <TextField
-            required
-            variant="outlined"
-            size="small"
-            name="customer_name"
-            label="Full Name"
-            value={localState.customer_name || ""}
-            onChange={handleValue}
-          ></TextField>
-          <TextField
-            required
-            variant="outlined"
-            size="small"
-            name="customer_mobile"
-            label="Mobile Number"
-            value={localState.customer_mobile || ""}
-            onChange={handleValue}
-          ></TextField>
-          <TextField
-            required
-            variant="outlined"
-            size="small"
-            name="pincode"
-            label="Pincode/ZIP code"
-            value={localState.pincode || ""}
-            onChange={handleValue}
-          ></TextField>
-          <TextField
-            required
-            variant="outlined"
-            size="small"
-            name="shipping"
-            value={localState.shipping || ""}
-            onChange={handleValue}
-            label="Shipping Address"
-          ></TextField>
-          <TextField
-            required
-            variant="outlined"
-            size="small"
-            name="city"
-            value={localState.city || ""}
-            onChange={handleValue}
-            label="City/Town"
-          ></TextField>
-          <TextField
-            required
-            variant="outlined"
-            size="small"
-            name="state"
-            label="State/territory"
-            value={localState.state || ""}
-            onChange={handleValue}
-          ></TextField>
-          <TextField
-            required
-            variant="outlined"
-            disabled
-            size="small"
-            name="country"
-            label="Country"
-            value={localState.country || ""}
-            onChange={handleValue}
-          ></TextField>
-          <FormControlLabel
-            control={<Checkbox size="small" defaultChecked />}
-            label="Same billing address "
-          />
+
+        {/* address cards is available */}
+        <Grid container className="available_address">
+          <Grid item xs={12} className="address_card" p={1}>
+            <RadioGroup
+              aria-labelledby="demo-radio-buttons-group-label"
+              defaultValue="female"
+              name="radio-buttons-group"
+            >
+              <FormControlLabel
+                value="female"
+                control={<Radio />}
+                label={
+                  <>
+                    <Typography variant="body1">
+                      {" "}
+                      <h4> Yashwant Sahu </h4> 8302043259 |
+                      yashwantsahu3002@gmail.com | Dargah Bazar Ajmer
+                    </Typography>
+                  </>
+                }
+              />
+            </RadioGroup>
+          </Grid>
+        </Grid>
+
+        <Box>
+          <Box p={1}>
+            <Typography variant="body2">All fields are required.</Typography>
+          </Box>
+          <Box className="delivery-form flex-utility">
+            <TextField
+              required
+              variant="outlined"
+              size="small"
+              name="customer_email"
+              label="Email Address"
+              value={localState.customer_email || ""}
+              onChange={handleValue}
+            ></TextField>
+            <TextField
+              required
+              variant="outlined"
+              size="small"
+              name="customer_name"
+              label="Full Name"
+              value={localState.customer_name || ""}
+              onChange={handleValue}
+            ></TextField>
+            <TextField
+              required
+              variant="outlined"
+              size="small"
+              name="customer_mobile"
+              label="Mobile Number"
+              value={localState.customer_mobile || ""}
+              onChange={handleValue}
+            ></TextField>
+            <TextField
+              required
+              variant="outlined"
+              size="small"
+              name="pincode"
+              label="Pincode/ZIP code"
+              value={localState.pincode || ""}
+              onChange={handleValue}
+            ></TextField>
+            <TextField
+              required
+              variant="outlined"
+              size="small"
+              name="shipping"
+              value={localState.shipping || ""}
+              onChange={handleValue}
+              label="Shipping Address"
+            ></TextField>
+            <TextField
+              required
+              variant="outlined"
+              size="small"
+              name="city"
+              value={localState.city || ""}
+              onChange={handleValue}
+              label="City/Town"
+            ></TextField>
+            <TextField
+              required
+              variant="outlined"
+              size="small"
+              name="state"
+              label="State/territory"
+              value={localState.state || ""}
+              onChange={handleValue}
+            ></TextField>
+            <TextField
+              required
+              variant="outlined"
+              disabled
+              size="small"
+              name="country"
+              label="Country"
+              value={localState.country || ""}
+              onChange={handleValue}
+            ></TextField>
+            <FormControlLabel
+              control={<Checkbox size="small" defaultChecked />}
+              label="Same billing address "
+            />
+          </Box>
         </Box>
       </Box>
     </Grid>
   );
 }
+
 function SelectPayment({
   size,
   localState,

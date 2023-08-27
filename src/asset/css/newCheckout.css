@@ -1,5 +1,5 @@
-:root{
-    --bgColor : rgba(236, 236, 236, 0.233);
+:root {
+    --bgColor: rgba(236, 236, 236, 0.233);
 }
 
 .flex-utility {
@@ -7,30 +7,31 @@
     gap: 1rem;
 }
 
-.checkout-main-container{
+.checkout-main-container {
     justify-content: center;
     gap: 1rem;
     margin-top: 2%;
 }
 
-.checkout-main-container img{
+.checkout-main-container img {
     width: 100%;
 }
 
-.step-heading p{
+.step-heading p {
     font-size: 1.1rem;
     font-weight: 500;
 }
 
+
 /* ////////// =============== Step 1 Css ==================== //////////// */
 
-.review-order-wrapper{
+.review-order-wrapper {
     padding: 1%;
     background-color: var(--bgColor);
     flex-direction: column;
 }
 
-.close-icon{
+.close-icon {
     position: absolute;
     right: 0%;
     top: -3%;
@@ -38,87 +39,109 @@
     cursor: pointer;
 }
 
-.review-text-clip{
+.review-text-clip {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.review-order-products{
+
+.review-order-products {
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.review-product-card-wrapper{
- position: relative;
- flex-wrap: wrap;
- padding: 2%;
- border-bottom: 1px solid rgba(179, 177, 177, 0.438);
+.review-product-card-wrapper {
+    position: relative;
+    flex-wrap: wrap;
+    padding: 2%;
+    border-bottom: 1px solid rgba(179, 177, 177, 0.438);
 }
 
-.review-product-card-details{
+.review-product-card-details {
     width: 40%;
     flex-direction: column;
     gap: 0.1rem;
 }
 
-.review-product-img{
+.review-product-img {
     width: 30%;
     padding: 1%;
 }
 
-.review-product-price{
+.review-product-price {
     justify-content: center;
     align-items: flex-end;
     width: 20%;
     padding: 1%;
 }
 
+
 /* ////////// =============== Step 1 Css Ends ==================== //////////// */
+
 
 /* ////////// =============== Step 2 Css  ==================== //////////// */
 
-.delivery-wrapper{
+.delivery-wrapper {
     background-color: var(--bgColor);
     padding: 1%;
     flex-direction: column;
 }
 
-.delivery-form{
+.delivery-form {
     /* padding: 1%; */
     flex-direction: column;
 }
 
-.address_card{
-    border: 1px dotted #682D2D;
+.address_card {
+    border: 1px dotted brown;
+    height: 70px;
+    margin-top: 1%;
 }
+
+.address_card label {
+    white-space: nowrap;
+    /* Prevent text from wrapping */
+    overflow: hidden;
+    /* Hide overflowing content */
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.address_card_wrapper {
+    display: flex;
+    gap: 3px;
+}
+
 
 /* ////////// =============== Step 2 Css Ends ==================== //////////// */
 
+
 /* ////////// =============== Step 3 Select Pay  ==================== //////////// */
 
-.payment-method-wrapper{
+.payment-method-wrapper {
     background-color: white;
     flex-direction: column;
 }
 
-.pay-inner-wrapper{
+.pay-inner-wrapper {
     background-color: var(--bgColor);
     padding: 3%;
 }
 
-.order-summary-wrapper{
+.order-summary-wrapper {
     background-color: var(--bgColor);
     padding: 3%;
 }
 
-.order-summary-product{
+.order-summary-product {
     justify-content: space-between;
 }
 
-.order-total{
+.order-total {
     justify-content: space-between;
     padding: 3% 1%;
     background-color: rgba(192, 192, 192, 0.233);
 }
+
 
 /* ////////// =============== Step 3 Select Pay Ends ==================== //////////// */

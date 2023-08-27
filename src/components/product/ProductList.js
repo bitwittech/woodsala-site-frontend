@@ -152,40 +152,13 @@ export default function ProductList(props) {
 
   // addItemToCart
   const addToCart = async (item) => {
-    // server side
-    if (state.auth.isAuth) {
-      await addCartItem({
-        CID: state.auth.CID,
-        product_id: item.SKU,
-        quantity: 1,
-      })
-        .then((response) => {
-          // for client side
-          dispatch(
-            addItem({
-              CID: state.auth.CID || "Not Logged In",
-              product_id: item.SKU,
-              quantity: 1,
-            })
-          );
-          return dispatch(
-            setAlert({
-              variant: "success",
-              message: response.data.message,
-              open: true,
-            })
-          );
-        })
-        .catch(() => {
-          return dispatch(
-            setAlert({
-              variant: "error",
-              message: "Something Went Wrong !!!",
-              open: true,
-            })
-          );
-        });
-    } else {
+    const res = await addCartItem({
+      CID: state.auth.CID,
+      product_id: item.SKU,
+      quantity: 1,
+    });
+
+    if (res.data.status === 200) {
       // for client side
       dispatch(
         addItem({
@@ -197,7 +170,15 @@ export default function ProductList(props) {
       return dispatch(
         setAlert({
           variant: "success",
-          message: "Item added to the cart !!!",
+          message: res.data.message,
+          open: true,
+        })
+      );
+    } else {
+      return dispatch(
+        setAlert({
+          variant: "error",
+          message: "Something Went Wrong !!!",
           open: true,
         })
       );
@@ -206,41 +187,26 @@ export default function ProductList(props) {
 
   // removeItemFromCart
   const removeItemFromCart = async (item) => {
-    // server side
-    if (state.auth.isAuth) {
-      await removeCartItem({
-        CID: state.auth.CID,
-        product_id: item.SKU,
-      })
-        .then((response) => {
-          // for client side
-          dispatch(removeItem(item.SKU));
-
-          return dispatch(
-            setAlert({
-              variant: "warning",
-              message: response.data.message,
-              open: true,
-            })
-          );
-        })
-        .catch(() => {
-          return dispatch(
-            setAlert({
-              variant: "error",
-              message: "Something Went Wrong !!!",
-              open: true,
-            })
-          );
-        });
-    } else {
+    const response = await removeCartItem({
+      CID: state.auth.CID,
+      product_id: item.SKU,
+    });
+    if (response.data.status === 200) {
       // for client side
       dispatch(removeItem(item.SKU));
 
       return dispatch(
         setAlert({
           variant: "warning",
-          message: "Item removed from cart !!!",
+          message: response.data.message,
+          open: true,
+        })
+      );
+    } else {
+      return dispatch(
+        setAlert({
+          variant: "error",
+          message: "Something Went Wrong !!!",
           open: true,
         })
       );

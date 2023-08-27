@@ -33,6 +33,8 @@ import LockIn from "./components/lockinPage/LockIn";
 import { useDispatch, useSelector } from "react-redux";
 // socket
 import Socket from "./socket/Socket";
+import { getSession } from "./service/service";
+import Quotation from "./components/quotation/Quotation";
 // utility
 const Navbar = lazy(() => import("./components/utility/Navbar"));
 const Footer = lazy(() => import("./components/utility/Footer"));
@@ -100,7 +102,17 @@ function App() {
 
   useEffect(() => {
     makeConnection();
+    saveSession();
   }, [auth.isAuth, socket]);
+
+  useEffect(() => {
+    saveSession();
+  }, []);
+
+  async function saveSession() {
+    const session = await getSession();
+    document.cookie = `sessionID=${session.data.sessionID}; path=/`;
+  }
 
   function makeConnection() {
     if (auth.isAuth && socket.id === null) {
@@ -117,15 +129,15 @@ function App() {
             <ErrorBound fallback={"Sorry for the inconvenience !!! "}>
               <ChatWindow />
               <BrowserRouter>
-                <Path auth={auth} />
-              </BrowserRouter>
+                <Path auth={auth} />{" "}
+              </BrowserRouter>{" "}
               <EntryPoint />
               <Thanks />
               <SnakeBar />
-            </ErrorBound>
-          </CssBaseline>
-        </ThemeProvider>
-      </Suspense>
+            </ErrorBound>{" "}
+          </CssBaseline>{" "}
+        </ThemeProvider>{" "}
+      </Suspense>{" "}
     </>
   );
 }
@@ -140,108 +152,108 @@ function Path({ auth }) {
 
   return (
     <>
+      {" "}
       {window.location.pathname !== "/verify" && auth.masterToken && (
         <Navbar history={history} />
-      )}
-      {/* {window.location.pathname !== "/verify" && <Navbar history={history} />} */}
+      )}{" "}
+      {/* {window.location.pathname !== "/verify" && <Navbar history={history} />} */}{" "}
       <Routes>
-        {/* // main routes  */}
+        {" "}
+        {/* // main routes  */}{" "}
         {!auth.masterToken && (
           <Route path="/" element={<LockIn history={history} />}></Route>
-        )}
-
+        )}{" "}
         {auth.masterToken && (
           <>
             <Route path="/" element={<Home history={history} />}></Route>
             <Route
               path="/verify"
               element={<Verify history={history} />}
-            ></Route>
-
-            {/* // page routes  */}
-            {/* <Route path="/cart" element={<Cart history={history} />}></Route> */}
+            ></Route>{" "}
+            {/* // page routes  */}{" "}
+            {/* <Route path="/cart" element={<Cart history={history} />}></Route> */}{" "}
             <Route
               path="/cart"
               element={<CheckOutNew history={history} />}
-            ></Route>
+            ></Route>{" "}
             <Route
               path="/checkout"
               element={<Checkout history={history} />}
-            ></Route>
+            ></Route>{" "}
             <Route
               path="/contact"
               element={<ContactUs history={history} />}
-            ></Route>
+            ></Route>{" "}
             <Route
               path="/collection"
               element={<Collection history={history} />}
-            ></Route>
+            ></Route>{" "}
             <Route path="/home" element={<Home history={history} />}></Route>
             <Route
               path="/profile"
               element={<Profile history={history} />}
-            ></Route>
+            ></Route>{" "}
             <Route
               path="/account"
               element={<UserInfo history={history} />}
-            ></Route>
+            ></Route>{" "}
             <Route
               path="/address"
               element={<Address history={history} />}
-            ></Route>
+            ></Route>{" "}
             <Route path="/order" element={<Order history={history} />}></Route>
             <Route
               path="/wishlist"
               element={<Wishlist history={history} />}
-            ></Route>
-
-            {/* for Product Page  */}
+            ></Route>{" "}
+            {/* for Product Page  */}{" "}
             <Route
               path="/details/:SKU/:title/:category"
               element={<ProductDetails history={history} />}
-            ></Route>
+            ></Route>{" "}
             <Route
               path="/details/:SKU/:title"
               element={<ProductDetails history={history} />}
-            ></Route>
-
-            {/* // filter and Product page route */}
+            ></Route>{" "}
+            {/* // filter and Product page route */}{" "}
             <Route
               path="/product/:category_name/:product_title/:selling_price"
               element={<ProductList history={history} />}
-            ></Route>
+            ></Route>{" "}
             <Route
               path="/product/:category_name/:product_title"
               element={<ProductList history={history} />}
-            ></Route>
+            ></Route>{" "}
             <Route
               path="/product/:category_name"
               element={<ProductList history={history} />}
-            ></Route>
+            ></Route>{" "}
             <Route
               path="/product"
               element={<ProductList history={history} />}
-            ></Route>
-
-            {/* // blog routes */}
+            ></Route>{" "}
+            {/* // blog routes */}{" "}
             <Route
               path="/blog"
               element={<BlogHome history={history} />}
-            ></Route>
+            ></Route>{" "}
             <Route
               path="/blog/:blog_id"
               element={<Blog history={history} />}
-            ></Route>
-
-            {/* Not found  */}
+            ></Route>{" "}
+            {/* Quotation */}{" "}
+            <Route path="/quotation" element={<Quotation />}>
+              {" "}
+            </Route>{" "}
+            {/* Quotation ends */} {/* Not found  */}{" "}
             <Route path="*" element={<Home history={history} />} />
           </>
-        )}
-      </Routes>
+        )}{" "}
+      </Routes>{" "}
       {window.location.pathname !== "/verify" && auth.masterToken && (
         <Footer history={history} />
-      )}
-      {/* {window.location.pathname !== "/verify" && <Footer history={history} />} */}
+      )}{" "}
+      {/* {window.location.pathname !== "/verify" && <Footer history={history} />} */}{" "}
     </>
   );
 }

@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-case-declarations */
 /* eslint-disable camelcase */
 /* eslint-disable spaced-comment */
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 // css
 import "../../asset/css/newCheckout.css";
 // MUI
@@ -14,6 +15,7 @@ import {
   Divider,
   FormControl,
   FormControlLabel,
+  FormGroup,
   // FormLabel,
   Grid,
   IconButton,
@@ -22,7 +24,7 @@ import {
   RadioGroup,
   TextField,
   Tooltip,
-  Typography,
+  Typography
 } from "@mui/material";
 import { Helmet } from "react-helmet";
 //image
@@ -32,20 +34,22 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getCODLimits,
   getCartItem,
+  getCartItemDetails,
   getCustomer,
+  getCustomerAddress,
   getDetails,
   placeOrder,
   removeCartItem,
   simpleOrder,
   updateQuantity,
-  verifyPayment,
+  verifyPayment
 } from "../../service/service";
 import {
   handleItemQTY,
   removeItem,
   setAlert,
   setCart,
-  thanks,
+  thanks
 } from "../../Redux/action/action";
 // import localStorage from "redux-persist/es/storage";
 
@@ -97,6 +101,7 @@ function CheckOutNew() {
     refresh: 0,
     sales_person: "",
     products: [],
+    saved_address: []
   };
   const [localState, setState] = useReducer(reducer, initialState);
 
@@ -122,7 +127,7 @@ function CheckOutNew() {
         orderCreationId: order_id,
         razorpayPaymentId: response.razorpay_payment_id,
         razorpayOrderId: response.razorpay_order_id,
-        razorpaySignature: response.razorpay_signature,
+        razorpaySignature: response.razorpay_signature
       };
 
       //console.log(order);
@@ -134,7 +139,7 @@ function CheckOutNew() {
           setAlert({
             open: true,
             variant: "error",
-            message: res.data.message || "Something Went Wrong !!!",
+            message: res.data.message || "Something Went Wrong !!!"
           })
         );
       } else {
@@ -147,7 +152,7 @@ function CheckOutNew() {
                 (await row.product_id) &&
                 removeCartItem({
                   CID: auth.CID,
-                  product_id: row.product_id,
+                  product_id: row.product_id
                 })
             )
           );
@@ -157,13 +162,13 @@ function CheckOutNew() {
           setAlert({
             open: true,
             variant: "success",
-            message: res.data.message,
+            message: res.data.message
           })
         );
         dispatch(
           thanks({
             open: true,
-            payload: localState.OID,
+            payload: localState.OID
           })
         );
 
@@ -174,7 +179,7 @@ function CheckOutNew() {
         setAlert({
           open: true,
           variant: "error",
-          message: "Something Went Wrong !!!",
+          message: "Something Went Wrong !!!"
         })
       );
     }
@@ -213,7 +218,7 @@ function CheckOutNew() {
 
     const response = await placeOrder({
       ...localState,
-      limit_without_advance: localState.codLimit.limit_without_advance,
+      limit_without_advance: localState.codLimit.limit_without_advance
     }); // local APIs for saving Order
 
     if (response.status !== 200) return;
@@ -221,7 +226,7 @@ function CheckOutNew() {
     if (localState.pay_method_remaining === "COD")
       setState({
         type: "Set_State",
-        payload: { pay_method_advance: "Razorpay" },
+        payload: { pay_method_advance: "Razorpay" }
       });
     else setState({ type: "Set_State", payload: { pay_method_advance: "" } });
 
@@ -243,14 +248,14 @@ function CheckOutNew() {
       prefill: {
         name: localState.customer_name,
         email: localState.customer_email,
-        contact: localState.customer_mobile,
+        contact: localState.customer_mobile
       },
       notes: {
-        address: localState.shipping,
+        address: localState.shipping
       },
       theme: {
-        color: "#91441f",
-      },
+        color: "#91441f"
+      }
     };
 
     const paymentObject = new window.Razorpay(options);
@@ -259,100 +264,61 @@ function CheckOutNew() {
 
   // helper function
   async function fetchProductDetails() {
-    const response = await getDetails(
-      JSON.stringify(
-        cart.items.map((item) => {
-          return item.product_id;
-        })
-      )
-    );
+    const response = await getCartItemDetails({ CID: auth.CID || undefined });
 
-    if (response) {
-      const CartItems = response.data.map((dataSet, index) => {
-        const discount_product = dataSet[0].categories[0].discount_limit
-          ? dataSet[0].discount_limit > dataSet[0].categories[0].discount_limit
-            ? dataSet[0].categories[0].discount_limit
-            : dataSet[0].discount_limit
-          : dataSet[0].discount_limit;
-
-        const discount =
-          ((cart.items.filter((data) => {
-            return data.product_id === dataSet[0].SKU;
-          })[0].quantity *
-            dataSet[0].selling_price) /
-            100) *
-          discount_product;
+    if (response.data.status === 200 && response.data.data[0].cartItems) {
+      const cart_data = response.data.data[0].cartItems;
+      const CartItems = cart_data.map((item) => {
+        console.log(item);
         return {
-          price:
-            cart.items.filter((data) => {
-              return data.product_id === dataSet[0].SKU;
-            })[0].quantity * dataSet[0].selling_price,
-          qty: cart.items.filter((data) => {
-            return data.product_id === dataSet[0].SKU;
-          })[0].quantity,
-          discount,
-          total:
-            cart.items.filter((data) => {
-              return data.product_id === dataSet[0].SKU;
-            })[0].quantity *
-              dataSet[0].selling_price -
-            discount,
-          discount_product,
-          SKU: dataSet[0].SKU,
-          image: dataSet[0].featured_image || dataSet[0].product_image[0],
-          assembly_part: dataSet[0].assembly_part,
+          title: item.productDetails.title,
+          price: item.productDetails.price,
+          qty: item.quantity,
+          discount: item.effectiveDiscount,
+          total: item.totalPricePerItem,
+          SKU: item.productDetails.SKU,
+          image:
+            item.productDetails.featured_image ||
+            item.productDetails.product_images[0],
           size:
-            dataSet[0].length_main +
+            item.productDetails.length +
             "X" +
-            dataSet[0].breadth +
+            item.productDetails.breadth +
             "X" +
-            dataSet[0].height,
-          product_title: dataSet[0].product_title,
-          dispatch: dataSet[0].polish_time + dataSet[0].manufacturing_time,
-          material: dataSet[0].primary_material_name,
+            item.productDetails.height,
+          dispatch:
+            item.productDetails.polish_time +
+            item.productDetails.manufacturing_time,
+          material: item.productDetails.material.join()
         };
       });
 
       setState({
         type: "Set_Cart",
         payload: {
-          products: CartItems,
-        },
+          products: CartItems
+        }
       });
       setState({
         type: "Set_Total",
         payload: {
-          products: CartItems,
-        },
+          subTotal: response.data.data[0] ? response.data.data[0].subtotal : 0,
+          total: response.data.data[0] ? response.data.data[0].total : 0
+        }
       });
     }
   }
 
   async function fetchCustomerDetails() {
-    if (auth.CID && auth.isAuth) {
-      const customer = await getCustomer(auth.CID);
-      if (customer) {
-        setState({
-          type: "Set_Customer",
-          payload: {
-            CID: auth.CID,
-            customer_name: customer.data.username,
-            customer_email: customer.data.email,
-            customer_mobile: customer.data.mobile,
-            city: customer.data.city,
-            state: customer.data.state,
-            shipping:
-              customer.data.address.length > 0
-                ? customer.data.address[0].address
-                : "",
-          },
-        });
-      }
-
-      const cart = await getCartItem(auth.CID);
-      if (cart) {
-        if (cart.data.length > 0) dispatch(setCart({ items: cart.data }));
-      }
+    const customer = await getCustomerAddress(auth.CID);
+    if (customer.data.status === 200) {
+      setState({
+        type: "Set_Customer",
+        payload: {
+          CID: auth.CID,
+          saved_address: [...customer.data.data]
+        }
+      });
     }
   }
 
@@ -380,7 +346,7 @@ function CheckOutNew() {
                 (await row.product_id) &&
                 removeCartItem({
                   CID: auth.CID,
-                  product_id: row.product_id,
+                  product_id: row.product_id
                 })
             )
           );
@@ -390,13 +356,13 @@ function CheckOutNew() {
           setAlert({
             open: true,
             variant: "success",
-            message: res.data.message,
+            message: res.data.message
           })
         );
         dispatch(
           thanks({
             open: true,
-            payload: localState.OID,
+            payload: localState.OID
           })
         );
       }
@@ -455,7 +421,7 @@ function ReviewOrder({ size, localState, setState, auth, dispatch }) {
       const res = await updateQuantity({
         CID: auth.CID,
         product_id,
-        quantity: parseInt(e.target.value),
+        quantity: parseInt(e.target.value)
       });
       if (res) console.log(res);
     }
@@ -467,7 +433,7 @@ function ReviewOrder({ size, localState, setState, auth, dispatch }) {
     if (auth.isAuth) {
       const response = await removeCartItem({
         CID: auth.CID,
-        product_id: item.SKU,
+        product_id: item.SKU
       });
       if (response) {
         // for client side
@@ -477,7 +443,7 @@ function ReviewOrder({ size, localState, setState, auth, dispatch }) {
           setAlert({
             variant: "warning",
             message: response.data.message,
-            open: true,
+            open: true
           })
         );
       } else {
@@ -485,7 +451,7 @@ function ReviewOrder({ size, localState, setState, auth, dispatch }) {
           setAlert({
             variant: "error",
             message: "Something Went Wrong !!!",
-            open: true,
+            open: true
           })
         );
       }
@@ -497,7 +463,7 @@ function ReviewOrder({ size, localState, setState, auth, dispatch }) {
         setAlert({
           variant: "warning",
           message: "Item removed added to the cart !!!",
-          open: true,
+          open: true
         })
       );
     }
@@ -544,7 +510,7 @@ function ProductCard({ details, handleQTY, removeItemFromCart }) {
           sx={{ fontWeight: 500 }}
           variant="body1"
         >
-          {details.product_title}
+          {details.title}
         </Typography>
         <Typography className="review-text-clip" variant="caption">
           SKU : {details.SKU}
@@ -562,7 +528,7 @@ function ProductCard({ details, handleQTY, removeItemFromCart }) {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">Qty</InputAdornment>
-            ),
+            )
           }}
           size="small"
           onChange={(e) => handleQTY(e, details.SKU)}
@@ -581,129 +547,170 @@ function ProductCard({ details, handleQTY, removeItemFromCart }) {
 }
 
 function Delivery({ size, localState, setState }) {
+  const [addressToggle, setAddressToggle] = useState({ open: false });
   function handleValue(e) {
     setState({
       type: "Set_Values",
-      payload: { [e.target.name]: e.target.value },
+      payload: { [e.target.name]: e.target.value }
     });
+  }
+  function handleToggle() {
+    setAddressToggle({
+      open: !addressToggle.open
+    });
+   // this will remove the address_id if customer wants to write a new address 
+    setState(
+      {
+        type: "Set_Values",
+        payload: { address_id : addressToggle.open ? "" : localState.address_id }
+      }
+    )
+  }
+  function handleAddress(e){
+    setState(
+      {
+        type: "Set_Values",
+        payload: { address_id : e.target.value }
+      }
+    )
   }
   return (
     <Grid xs={12} md={size} className="delivery-wrapper flex-utility">
-      {/* // add customer address  */}
       <Box className="delivery-inner-wrapper">
         <Box className="step-heading">
           <Typography variant="body1">2. Delivery Address</Typography>
         </Box>
-
-        {/* address cards is available */}
-        <Grid container className="available_address">
-          <Grid item xs={12} className="address_card" p={1}>
-            <RadioGroup
-              aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue="female"
-              name="radio-buttons-group"
-            >
-              <FormControlLabel
-                value="female"
-                control={<Radio />}
-                label={
-                  <>
-                    <Typography variant="body1">
-                      {" "}
-                      <h4> Yashwant Sahu </h4> 8302043259 |
-                      yashwantsahu3002@gmail.com | Dargah Bazar Ajmer
-                    </Typography>
-                  </>
-                }
-              />
-            </RadioGroup>
+        {!addressToggle.open ? (
+          <Grid container className="available_address">
+            {/* address cards is available */}
+            <Grid item xs={12} className="address_card_wrapper" p={1}>
+              <RadioGroup
+                onChange={handleAddress}
+                value={localState.address_id || ""}
+                 sx={{width:"100%"}}
+                aria-labelledby="demo-radio-buttons-group-label"
+                name="address_id"
+              >
+                {localState.saved_address.map((row) => (
+                  <FormControlLabel
+                    className="address_card"
+                    key={row.id}
+                    value={row.id}
+                    control={<Radio />}
+                    label={
+                      <>
+                        <Typography variant="body1">
+                          <h4> {row.name || row.customer_name} </h4> {row.mobile} |
+                          {row.email} | {row.shipping || row.address}
+                        </Typography>
+                      </>
+                    }
+                  />
+                ))}
+              </RadioGroup>
+            </Grid>
+            <Grid>
+              <FormGroup>
+                <FormControlLabel
+                  control={<Checkbox size="small" onChange={handleToggle} />}
+                  label="Add new address"
+                />
+              </FormGroup>
+            </Grid>
           </Grid>
-        </Grid>
-
-        <Box>
-          <Box p={1}>
-            <Typography variant="body2">All fields are required.</Typography>
+        ) : (
+          <Box>
+            {/* // add customer address  */}
+            <Box p={1}>
+              <Typography variant="body2">All fields are required.</Typography>
+            </Box>
+            <Box className="delivery-form flex-utility">
+              <TextField
+                required
+                variant="outlined"
+                size="small"
+                name="customer_email"
+                label="Email Address"
+                value={localState.customer_email || ""}
+                onChange={handleValue}
+              ></TextField>
+              <TextField
+                required
+                variant="outlined"
+                size="small"
+                name="customer_name"
+                label="Full Name"
+                value={localState.customer_name || ""}
+                onChange={handleValue}
+              ></TextField>
+              <TextField
+                required
+                variant="outlined"
+                size="small"
+                name="customer_mobile"
+                label="Mobile Number"
+                value={localState.customer_mobile || ""}
+                onChange={handleValue}
+              ></TextField>
+              <TextField
+                required
+                variant="outlined"
+                size="small"
+                name="pincode"
+                label="Pincode/ZIP code"
+                value={localState.pincode || ""}
+                onChange={handleValue}
+              ></TextField>
+              <TextField
+                required
+                variant="outlined"
+                size="small"
+                name="shipping"
+                value={localState.shipping || ""}
+                onChange={handleValue}
+                label="Shipping Address"
+              ></TextField>
+              <TextField
+                required
+                variant="outlined"
+                size="small"
+                name="city"
+                value={localState.city || ""}
+                onChange={handleValue}
+                label="City/Town"
+              ></TextField>
+              <TextField
+                required
+                variant="outlined"
+                size="small"
+                name="state"
+                label="State/territory"
+                value={localState.state || ""}
+                onChange={handleValue}
+              ></TextField>
+              <TextField
+                required
+                variant="outlined"
+                disabled
+                size="small"
+                name="country"
+                label="Country"
+                value={localState.country || ""}
+                onChange={handleValue}
+              ></TextField>
+              <FormGroup>
+                <FormControlLabel
+                  control={<Checkbox size="small" />}
+                  label="Same billing address."
+                />
+                <FormControlLabel
+                  control={<Checkbox size="small" onChange={handleToggle} />}
+                  label="Choose from address."
+                />
+              </FormGroup>
+            </Box>
           </Box>
-          <Box className="delivery-form flex-utility">
-            <TextField
-              required
-              variant="outlined"
-              size="small"
-              name="customer_email"
-              label="Email Address"
-              value={localState.customer_email || ""}
-              onChange={handleValue}
-            ></TextField>
-            <TextField
-              required
-              variant="outlined"
-              size="small"
-              name="customer_name"
-              label="Full Name"
-              value={localState.customer_name || ""}
-              onChange={handleValue}
-            ></TextField>
-            <TextField
-              required
-              variant="outlined"
-              size="small"
-              name="customer_mobile"
-              label="Mobile Number"
-              value={localState.customer_mobile || ""}
-              onChange={handleValue}
-            ></TextField>
-            <TextField
-              required
-              variant="outlined"
-              size="small"
-              name="pincode"
-              label="Pincode/ZIP code"
-              value={localState.pincode || ""}
-              onChange={handleValue}
-            ></TextField>
-            <TextField
-              required
-              variant="outlined"
-              size="small"
-              name="shipping"
-              value={localState.shipping || ""}
-              onChange={handleValue}
-              label="Shipping Address"
-            ></TextField>
-            <TextField
-              required
-              variant="outlined"
-              size="small"
-              name="city"
-              value={localState.city || ""}
-              onChange={handleValue}
-              label="City/Town"
-            ></TextField>
-            <TextField
-              required
-              variant="outlined"
-              size="small"
-              name="state"
-              label="State/territory"
-              value={localState.state || ""}
-              onChange={handleValue}
-            ></TextField>
-            <TextField
-              required
-              variant="outlined"
-              disabled
-              size="small"
-              name="country"
-              label="Country"
-              value={localState.country || ""}
-              onChange={handleValue}
-            ></TextField>
-            <FormControlLabel
-              control={<Checkbox size="small" defaultChecked />}
-              label="Same billing address "
-            />
-          </Box>
-        </Box>
+        )}
       </Box>
     </Grid>
   );
@@ -714,14 +721,14 @@ function SelectPayment({
   localState,
   placeSimpleOrder,
   displayRazorpay,
-  setState,
+  setState
 }) {
   function handlePayment(e) {
     setState({
       type: "Set_State",
       payload: {
-        pay_method_remaining: e.target.value,
-      },
+        pay_method_remaining: e.target.value
+      }
     });
   }
 
@@ -842,9 +849,10 @@ function SelectPayment({
 function ProductRowOrder({ details }) {
   return (
     <Box className="order-summary-product flex-utility">
+      {console.log(details)}
       <Box sx={{ width: "50%" }}>
         <Typography className="review-text-clip" variant="body1">
-          {details.product_title}
+          {details.title}
         </Typography>
       </Box>
       <Typography variant="body1">X{details.qty}</Typography>
@@ -870,16 +878,17 @@ function reducer(state, action) {
       state = { ...state, ...action.payload };
       return state;
     case "Set_Total":
-      const { products } = action.payload;
-      if (products.length > 0) {
-        state = {
-          ...state,
-          subTotal: products.reduce((sum, row) => sum + row.price, 0),
-          total: products.reduce((sum, row) => sum + row.total, 0),
-        };
-      } else {
-        state = { ...state, subTotal: 0, total: 0 };
-      }
+      state = { ...state, ...action.payload };
+      // const { products } = action.payload;
+      // if (products.length > 0) {
+      //   state = {
+      //     ...state,
+      //     subTotal: products.reduce((sum, row) => sum + row.price, 0),
+      //     total: products.reduce((sum, row) => sum + row.total, 0),
+      //   };
+      // } else {
+      //   state = { ...state, subTotal: 0, total: 0 };
+      // }
       return { ...state };
     default:
       return state;

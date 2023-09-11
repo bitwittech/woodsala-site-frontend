@@ -339,3 +339,11 @@ export const master = async (data) => {
 export const getSession = async () => {
   return await axios.get(`${API}/getSession`);
 };
+
+// quotation
+export const placeQuotation = async (data) => {
+  return await axios.post(
+    `https://admin.woodshala.in/api/placeQuotation`,
+    data
+  );
+};

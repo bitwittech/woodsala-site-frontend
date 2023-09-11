@@ -5,11 +5,14 @@ import "../../asset/css/quotation.css";
 import { Helmet } from "react-helmet";
 import { Autocomplete, Box, Button, Checkbox, FormControlLabel, FormGroup, Grid, InputAdornment, ListItemText, MenuItem, Select, TextField, TextareaAutosize, Typography } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import quotation from "../../asset/images/quotation/quotation.jpg";
+import quotation from "../../asset/images/quotation/quotation.jpeg";
 import ImageUploader from "../utility/ImageUploader";
-import { getMiscellaneous, getProductList } from "../../service/service"
+import { getMiscellaneous, getProductList, placeQuotation } from "../../service/service"
 import SendIcon from '@mui/icons-material/Send';
+import { useDispatch } from "react-redux";
+import { setAlert } from "../../Redux/action/action";
 const Quotation = () => {
+    const dispatch = useDispatch();
     const initialState = {
         form: "None",
         SKU: "",
@@ -23,9 +26,77 @@ const Quotation = () => {
         cus_design_note: "",
         cus_polish: false,
         cus_polish_note: "",
-        material: []
+        material: [],
     };
     const [localState, setLocalState] = useReducer(reducer, initialState);
+
+    async function submitQuotation(partData) {
+        try {
+            const FD = new FormData;
+
+            // let's collect the data and create final data object
+            // polish
+            if (localState.cus_polish) {
+                FD.append("cus_polish", true);
+                FD.append("cus_polish_note", localState.cus_polish_note);
+                FD.append("polish", "");
+                partData.customPolish.data.review_images.map(row => FD.append("customPolishImage", row));
+            }
+            else {
+                FD.append("cus_polish", false)
+                FD.append("cus_polish_note", "")
+                FD.append("polish", localState.polish);
+            }
+            // upholstery
+            if (localState.cus_upholstery) {
+                FD.append("cus_upholstery", true);
+                FD.append("cus_upholstery_note", localState.cus_upholstery_note);
+                FD.append("upholstery", "");
+                partData.customUpholster.data.review_images.map(row => FD.append("customUpholsteryImage", row));
+            }
+            else {
+                FD.append("cus_upholstery", false)
+                FD.append("cus_upholstery_note", "")
+                FD.append("upholstery", localState.upholstery);
+            }
+            // upholstery
+            if (localState.cus_design) {
+                FD.append("cus_design", true);
+                FD.append("cus_design_note", localState.cus_design_note);
+                partData.customDesign.data.review_images.map(row => FD.append("customDesignImage", row));
+            }
+            else {
+                FD.append("cus_design_note", "");
+                FD.append("cus_design", false)
+            }
+            localState.material.map(row => FD.append("material", row))
+            FD.append("form", localState.form)
+            FD.append("SKU", localState.SKU)
+            FD.append("title", localState.title)
+            FD.append("length", localState.length)
+            FD.append("breadth", localState.breadth)
+            FD.append("height", localState.height)
+
+            const res = await placeQuotation(FD);
+
+            if (res.data.status === 200)
+            {
+                dispatch(setAlert({
+                    open: true, varian: "success", message: res.data.message
+                }));
+                setLocalState({
+                    type : "Set_Val",
+                    payload : initialState
+                })
+            }
+                
+        } catch (error) {
+            dispatch(setAlert({
+                open: true, varian: "error", message: "Something Went Wrong !!!"
+            }))
+        }
+
+    }
     return (
         <>
             {/* helmet tag  */}
@@ -64,7 +135,7 @@ const Quotation = () => {
                     <StepBox />
                 </Grid>
                 <Grid item xs={12} mt={5}>
-                    <QuotationForm state={localState} setState={setLocalState} />
+                    <QuotationForm state={localState} setState={setLocalState} submitQuotation={submitQuotation} />
                 </Grid>
             </Grid>
             {/* Main Container Ends */}
@@ -108,7 +179,7 @@ function StepBox() {
     );
 }
 
-function QuotationForm({ state, setState }) {
+function QuotationForm({ state, setState, submitQuotation }) {
     function handleForm(type) {
         setState({
             type: "Set_Val",
@@ -121,7 +192,19 @@ function QuotationForm({ state, setState }) {
         setState({
             type: "Set_Val",
             payload: {
-                form: "None"
+                form: "None",
+                SKU: "",
+                title: "",
+                length: 0,
+                breadth: 0,
+                height: 0,
+                cus_upholstery: false,
+                cus_upholstery_note: "",
+                cus_design: false,
+                cus_design_note: "",
+                cus_polish: false,
+                cus_polish_note: "",
+                material: []
             }
         })
     }
@@ -172,12 +255,12 @@ function QuotationForm({ state, setState }) {
                 )}
                 {state.form === "existing" && (
                     <Grid item xs={12}>
-                        <Existing getBack={getBack} setState={setState} state={state} />
+                        <Existing getBack={getBack} setState={setState} state={state} submitQuotation={submitQuotation} />
                     </Grid>
                 )}
                 {state.form === "custom" && (
                     <Grid item xs={12}>
-                        <Custom getBack={getBack} setState={setState} state={state} />
+                        <Custom getBack={getBack} setState={setState} state={state} submitQuotation={submitQuotation} />
                     </Grid>
                 )}
             </Grid>
@@ -185,12 +268,9 @@ function QuotationForm({ state, setState }) {
     );
 }
 
-// form
+// form Existing
 
-function Existing({ state, setState, getBack }) {
-
-    // checked values
-    const check = ["cus_upholstery", "cus_design", "cus_polish"]
+function Existing({ state, setState, getBack, submitQuotation }) {
 
     useEffect(() => {
         setPresetVal()
@@ -200,6 +280,10 @@ function Existing({ state, setState, getBack }) {
         handleMiscellaneous()
     }, [])
 
+    // checked values
+    const check = ["cus_upholstery", "cus_design", "cus_polish"]
+
+    // catalog state for select fields
     const [List, setList] = useState({
         product: [],
         upholstery: [],
@@ -212,7 +296,6 @@ function Existing({ state, setState, getBack }) {
             review_images: []
         }
     })
-
     const [customDesign, setCusDesign] = useState({
         data: {
             review_images: []
@@ -224,25 +307,26 @@ function Existing({ state, setState, getBack }) {
         }
     })
 
+    // fetch the dropdown data
     async function handleMiscellaneous(params) {
         const res = await getMiscellaneous();
         setList(old => ({ ...old, upholstery: [...res.data.data.upholstery], material: [...res.data.data.material], polish: [...res.data.data.polish] }))
     }
-
+    // for set up default attribute values like title and size
     function setPresetVal() {
         const data = List.product.find(row => state.SKU === row.SKU) || {};
         console.log(data)
         setState({
             type: "Set_Val",
             payload: {
-                title: data.product_title,
-                length: data.length_main,
-                breadth: data.breadth,
-                height: data.height,
+                title: data.product_title || "",
+                length: data.length_main || 0,
+                breadth: data.breadth || 0,
+                height: data.height || 0,
             }
         })
     }
-
+    // field value handler
     function handleVal(e) {
         if (check.includes(e.target.name))
             setState({
@@ -259,7 +343,7 @@ function Existing({ state, setState, getBack }) {
                 }
             })
     }
-
+    // product ID search
     async function handleSearch(e) {
         const delayDebounceFn = setTimeout(() => {
             getProductList(e.target.value)
@@ -273,8 +357,9 @@ function Existing({ state, setState, getBack }) {
         return () => clearTimeout(delayDebounceFn);
     }
 
+    // final submissions
     function handleSubmit() {
-
+        submitQuotation({ customDesign, customPolish, customUpholster })
     }
 
     return <>
@@ -364,7 +449,7 @@ function Existing({ state, setState, getBack }) {
                                         <ImageUploader setData={setCusPolish} state={customPolish}></ImageUploader>
                                     </Box>
                                     <TextareaAutosize style={{ width: "100%", resize: "none" }} name="cus_polish_note"
-                                        placeholder="Note For Polish" minRows={5} maxRows={5} />
+                                        placeholder="Note For Polish" minRows={5} maxRows={5} onChange={handleVal} />
                                 </Box>
                             }
                             <FormGroup pl={1}>
@@ -402,7 +487,7 @@ function Existing({ state, setState, getBack }) {
                                     <Box sx={{ border: "1px dotted brown", textAlign: "center", padding: "1rem" }}>
                                         <ImageUploader setData={setCusUpholster} state={customUpholster}></ImageUploader>
                                     </Box>
-                                    <TextareaAutosize style={{ width: "100%", resize: "none" }} name="cus_upholstery_note"
+                                    <TextareaAutosize onChange={handleVal} style={{ width: "100%", resize: "none" }} name="cus_upholstery_note"
                                         placeholder="Note For Upholstery" minRows={5} maxRows={5} />
                                 </Box>
                             }
@@ -445,7 +530,7 @@ function Existing({ state, setState, getBack }) {
                                     <Box sx={{ border: "1px dotted brown", textAlign: "center", padding: "1rem" }}>
                                         <ImageUploader setData={setCusDesign} state={customDesign}></ImageUploader>
                                     </Box>
-                                    <TextareaAutosize style={{ width: "100%", resize: "none" }} name="cus_design_note"
+                                    <TextareaAutosize onChange={handleVal} style={{ width: "100%", resize: "none" }} name="cus_design_note"
                                         placeholder="Note For Custom Design" minRows={5} maxRows={5} />
                                 </Box>
                             }
@@ -468,87 +553,90 @@ function Existing({ state, setState, getBack }) {
     </>;
 }
 
-function Custom({ state, setState, getBack }) {
-       // checked values
-       const check = ["cus_upholstery", "cus_design", "cus_polish"]
+// form Custom
 
-       useEffect(() => {
-           setPresetVal()
-       }, [state.SKU])
-   
-       useEffect(() => {
-           handleMiscellaneous()
-       }, [])
-   
-       const [List, setList] = useState({
-           product: [],
-           upholstery: [],
-           material: [],
-           polish: [],
-       })
-   
-       const [customPolish, setCusPolish] = useState({
-           data: {
-               review_images: []
-           }
-       })
-   
-       const [customDesign, setCusDesign] = useState({
-           data: {
-               review_images: []
-           }
-       })
-       const [customUpholster, setCusUpholster] = useState({
-           data: {
-               review_images: []
-           }
-       })
-   
-       async function handleMiscellaneous(params) {
-           const res = await getMiscellaneous();
-           setList(old => ({ ...old, upholstery: [...res.data.data.upholstery], material: [...res.data.data.material], polish: [...res.data.data.polish] }))
-       }
-   
-       function setPresetVal() {
-           const data = List.product.find(row => state.SKU === row.SKU) || {};
-           console.log(data)
-           setState({
-               type: "Set_Val",
-               payload: {
-                   title: data.product_title,
-                   length: data.length_main,
-                   breadth: data.breadth,
-                   height: data.height,
-               }
-           })
-       }
-   
-       function handleVal(e) {
-           if (check.includes(e.target.name))
-               setState({
-                   type: "Set_Val",
-                   payload: {
-                       [e.target.name]: e.target.checked
-                   }
-               })
-           else
-               setState({
-                   type: "Set_Val",
-                   payload: {
-                       [e.target.name]: e.target.value
-                   }
-               })
-       }
-   
-    function handleSubmit(params) {
-        
+function Custom({ state, setState, getBack, submitQuotation }) {
+    // checked values use while saving the value as bool
+    const check = ["cus_upholstery", "cus_design", "cus_polish"]
+
+    useEffect(() => {
+        setPresetVal()
+    }, [state.SKU])
+
+    useEffect(() => {
+        handleMiscellaneous()
+    }, [])
+
+    const [List, setList] = useState({
+        product: [],
+        upholstery: [],
+        material: [],
+        polish: [],
+    })
+
+    const [customPolish, setCusPolish] = useState({
+        data: {
+            review_images: []
+        }
+    })
+
+    const [customDesign, setCusDesign] = useState({
+        data: {
+            review_images: []
+        }
+    })
+    const [customUpholster, setCusUpholster] = useState({
+        data: {
+            review_images: []
+        }
+    })
+
+    async function handleMiscellaneous(params) {
+        const res = await getMiscellaneous();
+        setList(old => ({ ...old, upholstery: [...res.data.data.upholstery], material: [...res.data.data.material], polish: [...res.data.data.polish] }))
     }
-   
+
+    function setPresetVal() {
+        const data = List.product.find(row => state.SKU === row.SKU) || {};
+        console.log(data)
+        setState({
+            type: "Set_Val",
+            payload: {
+                title: data.product_title,
+                length: data.length_main,
+                breadth: data.breadth,
+                height: data.height,
+            }
+        })
+    }
+
+    function handleVal(e) {
+        if (check.includes(e.target.name))
+            setState({
+                type: "Set_Val",
+                payload: {
+                    [e.target.name]: e.target.checked
+                }
+            })
+        else
+            setState({
+                type: "Set_Val",
+                payload: {
+                    [e.target.name]: e.target.value
+                }
+            })
+    }
+
+   // final submissions
+   function handleSubmit() {
+    submitQuotation({ customDesign, customPolish, customUpholster })
+}
+
     return <>
         <Grid container>
             <Grid item xs={12} >
                 <Button startIcon={<ArrowBackIcon />} onClick={getBack} size="small">Back</Button>
-                <Box mt={3} p = {2}>
+                <Box mt={3} p={2}>
                     <Typography variant="h4">Create A Custom Product</Typography>
                 </Box>
             </Grid>
@@ -557,7 +645,7 @@ function Custom({ state, setState, getBack }) {
                     {/* Form  */}
                     <Grid item xs={12} md={6}>
                         <Box className={"quotation-form"}>
-                            <TextField name = {"title"} onChange={handleVal}   label="Product Title" size="small" value={state.title || ""} />
+                            <TextField name={"title"} onChange={handleVal} label="Product Title" size="small" value={state.title || ""} />
                             {/* Size=================== */}
                             <Typography variant="h6">Size</Typography>
                             <TextField name="length" onChange={handleVal} InputProps={{
@@ -601,7 +689,7 @@ function Custom({ state, setState, getBack }) {
                                     <Box sx={{ border: "1px dotted brown", textAlign: "center", padding: "1rem" }}>
                                         <ImageUploader setData={setCusPolish} state={customPolish}></ImageUploader>
                                     </Box>
-                                    <TextareaAutosize style={{ width: "100%", resize: "none" }} name="cus_polish_note"
+                                    <TextareaAutosize onChange={handleVal} style={{ width: "100%", resize: "none" }} name="cus_polish_note"
                                         placeholder="Note For Polish" minRows={5} maxRows={5} />
                                 </Box>
                             }
@@ -640,7 +728,7 @@ function Custom({ state, setState, getBack }) {
                                     <Box sx={{ border: "1px dotted brown", textAlign: "center", padding: "1rem" }}>
                                         <ImageUploader setData={setCusUpholster} state={customUpholster}></ImageUploader>
                                     </Box>
-                                    <TextareaAutosize style={{ width: "100%", resize: "none" }} name="cus_upholstery_note"
+                                    <TextareaAutosize onChange={handleVal} style={{ width: "100%", resize: "none" }} name="cus_upholstery_note"
                                         placeholder="Note For Upholstery" minRows={5} maxRows={5} />
                                 </Box>
                             }
@@ -683,7 +771,7 @@ function Custom({ state, setState, getBack }) {
                                     <Box sx={{ border: "1px dotted brown", textAlign: "center", padding: "1rem" }}>
                                         <ImageUploader setData={setCusDesign} state={customDesign}></ImageUploader>
                                     </Box>
-                                    <TextareaAutosize style={{ width: "100%", resize: "none" }} name="cus_design_note"
+                                    <TextareaAutosize onChange={handleVal} style={{ width: "100%", resize: "none" }} name="cus_design_note"
                                         placeholder="Note For Custom Design" minRows={5} maxRows={5} />
                                 </Box>
                             }

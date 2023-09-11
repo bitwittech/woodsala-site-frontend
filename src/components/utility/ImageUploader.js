@@ -1,8 +1,9 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/prop-types */
+import { Box, IconButton } from "@mui/material";
 import React, { useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-
+import CancelIcon from "@mui/icons-material/Cancel";
 const thumbsContainer = {
   display: "flex",
   flexDirection: "row",
@@ -58,7 +59,27 @@ function ImageUploader({ state, setData }) {
     },
   });
 
-  const thumbs = state.data.review_images.map((file) => (
+  const style = {
+    removeImg: {
+      position: "absolute",
+    },
+  };
+
+  function handleRemoveImg(pos) {
+    setData((old) => {
+      return {
+        ...old,
+        data: {
+          ...old.data,
+          review_images: old.data.review_images.filter(
+            (row, index) => index !== pos
+          ),
+        },
+      };
+    });
+  }
+
+  const thumbs = state.data.review_images.map((file, index) => (
     <div style={thumb} key={file.name}>
       <div style={thumbInner}>
         <img
@@ -69,6 +90,11 @@ function ImageUploader({ state, setData }) {
             URL.revokeObjectURL(file.preview);
           }}
         />
+        <Box sx={style.removeImg}>
+          <IconButton onClick={() => handleRemoveImg(index)}>
+            <CancelIcon color="primary" />
+          </IconButton>
+        </Box>
       </div>
     </div>
   ));

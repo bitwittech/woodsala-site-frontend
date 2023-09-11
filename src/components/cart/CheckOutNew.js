@@ -118,6 +118,7 @@ function CheckOutNew() {
     getLimits();
   }, []);
 
+
   // verify Payment
   async function verifyPay(response, order_id) {
     try {
@@ -203,9 +204,8 @@ function CheckOutNew() {
   // FOR Pay UI
   async function displayRazorpay(e) {
     e.preventDefault();
-    //console.log(">>>",process.env.REACT_APP_PAY_KEY)
 
-    //console.log(localState)
+    console.log(localState)
 
     const res = await loadScript(
       "https://checkout.razorpay.com/v1/checkout.js"
@@ -402,6 +402,7 @@ function CheckOutNew() {
         <SelectPayment
           setState={setState}
           dispatch={dispatch}
+          placeOrder= {placeOrder}
           displayRazorpay={displayRazorpay}
           placeSimpleOrder={placeSimpleOrder}
           localState={localState}
@@ -412,7 +413,7 @@ function CheckOutNew() {
     </>
   );
 }
-
+// step 1
 function ReviewOrder({ size, localState, setState, auth, dispatch }) {
   // decrease quantity
   async function handleQTY(e, product_id) {
@@ -545,7 +546,7 @@ function ProductCard({ details, handleQTY, removeItemFromCart }) {
     </Box>
   );
 }
-
+// step 2
 function Delivery({ size, localState, setState }) {
   const [addressToggle, setAddressToggle] = useState({ open: false });
   function handleValue(e) {
@@ -588,7 +589,6 @@ function Delivery({ size, localState, setState }) {
                 onChange={handleAddress}
                 value={localState.address_id || ""}
                  sx={{width:"100%"}}
-                aria-labelledby="demo-radio-buttons-group-label"
                 name="address_id"
               >
                 {localState.saved_address.map((row) => (
@@ -715,7 +715,7 @@ function Delivery({ size, localState, setState }) {
     </Grid>
   );
 }
-
+// step 3 
 function SelectPayment({
   size,
   localState,
